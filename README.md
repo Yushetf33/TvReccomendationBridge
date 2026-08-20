@@ -1,112 +1,111 @@
 # TvRecommendationBridge
 
-Aplicación para Android TV / Google TV que permite personalizar el comportamiento de las recomendaciones del launcher de Google TV.
+App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
-Cuando el usuario selecciona una tarjeta de película o serie compatible, TvRecommendationBridge identifica el contenido y permite abrir su ficha en **Nuvio** o **Stremio**, según la aplicación configurada por el usuario.
+When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio** or **Stremio**, depending on the app configured by the user.
 
-TvRecommendationBridge es una herramienta independiente de automatización y redirección. **No aloja, almacena, distribuye ni proporciona películas, series, streams, torrents ni ningún otro contenido audiovisual.** No tiene ninguna relación con Nuvio, Stremio, ni con el origen o la legalidad del contenido al que el usuario acceda a través de esas aplicaciones — eso depende únicamente de qué apps y complementos tenga instalados y configurados cada usuario, bajo su propia responsabilidad.
+TvRecommendationBridge is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
 
-## Requisitos
+## Requirements
 
-- Un dispositivo con el launcher **Google TV** (Chromecast con Google TV, o dispositivos Sony, TCL, Hisense, etc. con Google TV).
-- **Nuvio** y/o **Stremio** instalado en el dispositivo.
-- Una suscripción activa a TvRecommendationBridge (ver [Suscripción](#suscripción) abajo).
+- A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.).
+- **Nuvio** and/or **Stremio** installed on the device.
+- An active TvRecommendationBridge subscription (see [Subscription](#subscription) below).
 
-> **Nota:** TvRecommendationBridge está diseñada específicamente para dispositivos que utilizan el launcher de Google TV. No está diseñada para dispositivos Android TV que utilicen otros launchers ni para Fire TV.
+> **Note:** TvRecommendationBridge is designed specifically for devices using the Google TV launcher. It is not designed for Android TV devices using other launchers, nor for Fire TV.
 
-## Instalación
+## Installation
 
-TvRecommendationBridge no se distribuye actualmente a través de Google Play. La aplicación se instala manualmente ("sideload") mediante el archivo APK disponible en la sección de releases de este repositorio.
+TvRecommendationBridge is not currently distributed through Google Play. The app is installed manually ("sideloaded") using the APK file available in this repository's releases section.
 
-### Opción A: con el móvil usando Send Files to TV
+### Option A: from your phone, using Send Files to TV
 
-1. En el TV, instala **[Send Files to TV](https://play.google.com/store/apps/details?id=com.jstenpal.sendfilestotv)** desde Google Play.
-2. Abre la aplicación en el TV. Te mostrará una dirección o un código QR para establecer la conexión con el móvil.
-3. Desde el navegador del móvil, accede a la dirección indicada y selecciona el archivo `app-release.apk`, que puedes descargar desde la sección de releases:
-   👉 **[Descargar la última versión](https://github.com/Yushetf33/TvReccomendationBridge/releases/latest)**
-4. Una vez transferido el archivo, el TV permitirá iniciar la instalación.
-5. Si Android TV muestra un aviso relacionado con la instalación desde fuentes desconocidas, será necesario autorizar temporalmente la instalación desde esa fuente.
+1. On the TV, install **[Send Files to TV](https://play.google.com/store/apps/details?id=com.jstenpal.sendfilestotv)** from Google Play.
+2. Open the app on the TV. It will show an address or a QR code to connect from your phone.
+3. From your phone's browser, go to that address and select the `app-release.apk` file, which you can download from the releases section:
+   👉 **[Download the latest version](https://github.com/Yushetf33/TvReccomendationBridge/releases/latest)**
+4. Once the file has transferred, the TV will let you start the installation.
+5. If Android TV shows a warning about installing from an unknown source, you'll need to temporarily allow installation from that source.
 
-### Opción B: mediante ADB
+### Option B: via ADB
 
-1. Descarga el APK desde la sección de releases.
-2. Activa las opciones de desarrollador en el TV:
-   **Ajustes → Preferencias del dispositivo → Información → pulsa 7 veces sobre "Build"**.
-3. Activa **Depuración USB** o **Depuración de red**, según el dispositivo.
-4. Desde el ordenador:
+1. Download the APK from the releases section.
+2. Enable developer options on the TV:
+   **Settings → Device Preferences → About → tap "Build" 7 times**.
+3. Enable **USB debugging** or **Network debugging**, depending on the device.
+4. From your computer:
 
 ```bash
-adb connect <ip-del-tv>:5555
+adb connect <tv-ip>:5555
 adb install app-release.apk
 ```
 
-### Activar el servicio
+### Activating the service
 
-Una vez instalada, abre la app **TvRecommendationBridge** desde el
-launcher del TV y pulsa **"Activar el servicio en Accesibilidad"** (te
-llevará directamente a la pantalla correspondiente). Actívala ahí.
+Once installed, open the **TvRecommendationBridge** app from the TV's
+launcher and tap **"Enable the service in Accessibility"** (it will take
+you straight to the right screen). Enable it there.
 
-En algunos dispositivos (sobre todo cajas Android TV de fabricantes
-chinos con gestores de batería agresivos) puede hacer falta además
-excluir la app de cualquier "optimizador"/limpiador de RAM del propio
-fabricante, o el sistema matará el proceso del servicio a los pocos
-segundos. Si el servicio aparece activado en Ajustes pero deja de
-detectar clics al rato, ese suele ser el motivo.
+On some devices (especially Chinese-manufacturer Android TV boxes with
+aggressive battery managers) you may also need to exclude the app from
+any manufacturer "optimizer"/RAM cleaner, or the system will kill the
+service's process after a few seconds. If the service shows as enabled
+in Settings but stops detecting clicks after a while, that's usually the
+reason.
 
-## Suscripción
+## Subscription
 
-TvRecommendationBridge requiere una suscripción de pago para funcionar:
+TvRecommendationBridge requires a paid subscription to work:
 
-| Plan | Precio |
+| Plan | Price |
 |---|---|
-| Mensual | 2,50 € / mes |
-| Semestral | 7,99 € / 6 meses |
-| Anual | 12,99 € / año |
+| Monthly | €2.50 / month |
+| Semiannual | €7.99 / 6 months |
+| Annual | €12.99 / year |
 
-Dentro de la app verás un QR para cada plan — escanéalo con el móvil y
-paga con el mismo email que luego vas a introducir en el TV (tarjeta,
-Google Pay, Apple Pay... lo que te ofrezca la pasarela de pago). Una vez
-pagado, vuelve a la app, escribe ese email y pulsa **"Verificar
-suscripción"**.
+Inside the app you'll see a QR code for each plan — scan it with your
+phone and pay using the same email you'll later enter on the TV (card,
+Google Pay, Apple Pay... whatever the payment page offers). Once paid,
+go back to the app, enter that email, and tap **"Verify subscription"**.
 
-Un mismo email puede vincularse hasta a **3 dispositivos** a la vez (por
-si tienes varios TVs en casa).
+The same email can be linked to up to **3 devices** at once (in case you
+have several TVs at home).
 
-## Cómo funciona
+## How it works
 
-El launcher de Google TV expone el título de cada recomendación al
-pulsarla. La app reconoce esa pulsación, busca el título en una base de
-datos pública de películas y series para identificar de qué contenido se
-trata, y abre directamente su ficha en Nuvio o Stremio (según cuál
-hayas elegido en los ajustes de la app).
+The Google TV launcher exposes the title of each recommendation when you
+select it. The app picks up on that click, looks up the title in a
+public movie/show database to identify the content, and opens its page
+directly in Nuvio or Stremio (whichever you've chosen in the app's
+settings).
 
-## Limitaciones conocidas
+## Known limitations
 
-- Ocasionalmente, un título puede coincidir con el de otra película o
-  serie homónima poco conocida y abrir la ficha equivocada.
+- Occasionally, a title may match a lesser-known movie or show with the
+  same name and open the wrong page.
 
-## Aviso legal
+## Legal notice
 
-TvRecommendationBridge es una herramienta independiente de navegación y automatización para dispositivos Android TV / Google TV.
+TvRecommendationBridge is an independent navigation and automation tool for Android TV / Google TV devices.
 
-La aplicación no aloja, almacena, distribuye ni proporciona películas, series, streams, torrents ni fuentes de contenido audiovisual.
+The app does not host, store, distribute, or provide movies, series, streams, torrents, or audiovisual content sources.
 
-Su función se limita a detectar determinadas recomendaciones mostradas por el launcher de Google TV, identificar el contenido seleccionado y facilitar la apertura de su ficha mediante aplicaciones de terceros instaladas y configuradas por el usuario.
+Its function is limited to detecting certain recommendations shown by the Google TV launcher, identifying the selected content, and facilitating the opening of its page through third-party apps installed and configured by the user.
 
-TvRecommendationBridge no proporciona ni controla las fuentes de contenido disponibles dentro de dichas aplicaciones.
+TvRecommendationBridge does not provide or control the content sources available within those apps.
 
-El usuario es responsable del uso que haga de las aplicaciones de terceros y de asegurarse de que dicho uso cumple la legislación aplicable y los términos de servicio correspondientes.
+The user is responsible for their use of third-party apps, and for making sure that use complies with applicable law and the corresponding terms of service.
 
-TvRecommendationBridge no está afiliada, patrocinada, autorizada ni respaldada por Google, Google TV, Nuvio o Stremio.
+TvRecommendationBridge is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, or Stremio.
 
-Google, Google TV, Android TV, Nuvio y Stremio son marcas o productos de sus respectivos propietarios.
+Google, Google TV, Android TV, Nuvio, and Stremio are trademarks or products of their respective owners.
 
-## Créditos
+## Credits
 
-TvRecommendationBridge utiliza la API de **The Movie Database (TMDB)** para identificar películas y series.
+TvRecommendationBridge uses the **The Movie Database (TMDB)** API to identify movies and shows.
 
-[TMDB](https://www.themoviedb.org/)
+<img src="https://www.themoviedb.org/assets/v4/logos/v2/blue_long_2-9665a76b1ae401a510ec1e0ca40ddcb3b0cfe45f1d51b77a308fea0845885648.svg" alt="TMDB" width="180">
 
 > This product uses the TMDB API but is not endorsed or certified by TMDB.
 
-The Movie Database (TMDB) y su logotipo son marcas de sus respectivos propietarios.
+The Movie Database (TMDB) and its logo are trademarks of their respective owners.
