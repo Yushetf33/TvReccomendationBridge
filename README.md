@@ -53,6 +53,25 @@ service's process after a few seconds. If the service shows as enabled
 in Settings but stops detecting clicks after a while, that's usually the
 reason.
 
+#### TCL devices: service stops working after a while, no visible setting to fix it
+
+On some TCL units, background auto-start permissions for third-party
+apps are locked down at the OS level with no toggle exposed anywhere in
+Settings. If the service shows as enabled but silently stops detecting
+clicks after some time, and you can't find any autostart/battery
+exception option for the app, this is likely why.
+
+The fix requires ADB access to the TV:
+
+```bash
+adb connect <tv-ip>:5555
+adb shell appops set com.tunombre.tvbridge APP_AUTO_START allow
+adb shell appops set com.tunombre.tvbridge APP_ASSOC_START allow
+```
+
+Note this may need to be repeated after reinstalling or updating the
+app, since reinstalling can reset these permissions.
+
 ## Subscription
 
 TvRecommendationBridge requires a paid subscription to work:
