@@ -87,6 +87,12 @@ second command **replaces** the whole list of enabled accessibility
 services — if you already use another one (like TalkBack), separate
 them with a colon (`:`) instead of overwriting it.
 
+If setting up ADB from a computer sounds like a hassle, **[atvTools](https://play.google.com/store/apps/details?id=dev.vodik7.atvtools)**
+(free, on Google Play) does the same thing from your phone — install it
+on the TV, enable Network debugging as above, connect from the atvTools
+app, and use it to manage the app's permissions directly, no computer
+needed.
+
 On some devices (especially Chinese-manufacturer Android TV boxes with
 aggressive battery managers) you may also need to exclude the app from
 any manufacturer "optimizer"/RAM cleaner, or the system will kill the
