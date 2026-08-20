@@ -51,21 +51,27 @@ you straight to the right screen). Enable it there.
 On Android 13 and newer, the system blocks any sideloaded app (anything
 not installed from Google Play — which includes this one) from enabling
 Accessibility by default, as a security measure. If the toggle turns
-itself back off right after you enable it, this is why. To fix it:
+itself back off right after you enable it (sometimes right away,
+sometimes a few seconds later, with no warning), this is why.
 
-**Settings → Apps → See all apps → TvRecommendationBridge → tap the
-3-dot menu (top right) → "Allow restricted setting"**.
+On some devices, you can lift this from **Settings → Apps →
+TvRecommendationBridge → app info screen**, look for an option along the
+lines of "Allow restricted setting" (its exact wording and location
+varies by device — Google TV's Settings UI isn't consistent about this
+across manufacturers). If you find it, enable it, then go back into
+Accessibility and enable the service again.
 
-Then go back into Accessibility and enable the service again — it
-should stick this time.
+**If you can't find any such option** (this is the case on the Google
+TV Streamer, for example — see below), you'll need the ADB workaround
+instead.
 
-#### Google TV Streamer: toggle appears to turn on, then silently turns itself off
+#### Google TV Streamer: no visible option to allow it
 
-On the Google TV Streamer, the app info screen doesn't expose the "Allow
-restricted setting" option shown above at all — there's no 3-dot menu or
-equivalent. You can accept the permission dialog and see the toggle turn
-on, but it flips back off shortly after, with no warning or notification.
-This is the same Restricted Settings protection, just with no way to
+On the Google TV Streamer specifically, the app info screen doesn't
+expose any "Allow restricted setting" option at all. You can accept the
+permission dialog and see the toggle turn on, but it flips back off
+shortly after, with no warning or notification. This is the same
+Restricted Settings protection, just with no way to
 lift it from the TV's own UI on this device.
 
 The workaround needs ADB access to the device:
