@@ -94,6 +94,31 @@ service's process after a few seconds. If the service shows as enabled
 in Settings but stops detecting clicks after a while, that's usually the
 reason.
 
+#### Service is enabled, but tapping a recommendation doesn't open Nuvio/Stremio
+
+If the accessibility service is confirmed enabled but nothing happens
+when you tap a recommendation, check whether Nuvio/Stremio is up to
+date. Outdated or unofficial builds (common since neither app is on
+Google Play) sometimes don't register their deep link scheme
+(`nuvio://`, `stremio://`) correctly, so the app opens the link but
+nothing responds to it. Updating Nuvio/Stremio to their latest version
+has resolved this in the past.
+
+To narrow it down (needs ADB access): test the deep link directly,
+bypassing this app entirely —
+
+```bash
+adb shell am start -a android.intent.action.VIEW -d "nuvio://movie/tt0371746"
+```
+
+If that doesn't open Nuvio on Iron Man's page, the issue is with your
+Nuvio build, not this app. If it works, the click likely isn't being
+detected at all — you can check for that with:
+
+```bash
+adb logcat -s TvRecService:D StremioLauncher:D TmdbClient:D
+```
+
 #### TCL devices: service stops working after a while, no visible setting to fix it
 
 On some TCL units, background auto-start permissions for third-party
