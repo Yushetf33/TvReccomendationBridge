@@ -46,6 +46,19 @@ Once installed, open the **TvRecommendationBridge** app from the TV's
 launcher and tap **"Enable the service in Accessibility"** (it will take
 you straight to the right screen). Enable it there.
 
+#### The toggle turns itself off immediately
+
+On Android 13 and newer, the system blocks any sideloaded app (anything
+not installed from Google Play — which includes this one) from enabling
+Accessibility by default, as a security measure. If the toggle turns
+itself back off right after you enable it, this is why. To fix it:
+
+**Settings → Apps → See all apps → TvRecommendationBridge → tap the
+3-dot menu (top right) → "Allow restricted setting"**.
+
+Then go back into Accessibility and enable the service again — it
+should stick this time.
+
 On some devices (especially Chinese-manufacturer Android TV boxes with
 aggressive battery managers) you may also need to exclude the app from
 any manufacturer "optimizer"/RAM cleaner, or the system will kill the
