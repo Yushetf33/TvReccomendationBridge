@@ -87,20 +87,26 @@ hayas elegido en los ajustes de la app).
 
 ## Aviso legal
 
-TvRecommendationBridge no aloja, almacena, distribuye ni proporciona
-enlaces a fuentes de películas, series, streams, torrents ni ningún otro
-contenido audiovisual. Es exclusivamente una herramienta de navegación
-que abre, dentro de aplicaciones de terceros ya instaladas por el usuario
-en su propio dispositivo, la ficha correspondiente a un título. El uso
-que cada usuario haga de Nuvio, Stremio o cualquier complemento instalado
-en ellas es responsabilidad exclusiva del usuario.
+TvRecommendationBridge es una herramienta independiente de navegación y automatización para dispositivos Android TV / Google TV.
+
+La aplicación no aloja, almacena, distribuye ni proporciona películas, series, streams, torrents ni fuentes de contenido audiovisual.
+
+Su función se limita a detectar determinadas recomendaciones mostradas por el launcher de Google TV, identificar el contenido seleccionado y facilitar la apertura de su ficha mediante aplicaciones de terceros instaladas y configuradas por el usuario.
+
+TvRecommendationBridge no proporciona ni controla las fuentes de contenido disponibles dentro de dichas aplicaciones.
+
+El usuario es responsable del uso que haga de las aplicaciones de terceros y de asegurarse de que dicho uso cumple la legislación aplicable y los términos de servicio correspondientes.
+
+TvRecommendationBridge no está afiliada, patrocinada, autorizada ni respaldada por Google, Google TV, Nuvio o Stremio.
+
+Google, Google TV, Android TV, Nuvio y Stremio son marcas o productos de sus respectivos propietarios.
 
 ## Créditos
 
-<img src="https://www.themoviedb.org/assets/v4/logos/v2/blue_long_2-9665a76b1ae401a510ec1e0ca40ddcb3b0cfe45f1d51b77a308fea0845885648.svg" alt="TMDB" width="180">
+TvRecommendationBridge utiliza la API de **The Movie Database (TMDB)** para identificar películas y series.
 
-Este producto usa la API de TMDB, pero no está respaldado ni certificado
-por TMDB.
+[TMDB](https://www.themoviedb.org/)
 
-*This product uses the TMDB API but is not endorsed or certified by
-TMDB.*
+> This product uses the TMDB API but is not endorsed or certified by TMDB.
+
+The Movie Database (TMDB) y su logotipo son marcas de sus respectivos propietarios.
