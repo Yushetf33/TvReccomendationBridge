@@ -193,5 +193,30 @@
             android:layout_height="wrap_content"
             android:text="@string/main_open_accessibility_settings" />
 
+        <!-- Créditos -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="12dp"
+            android:text="@string/main_credits_title"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_tmdb_logo"
+            android:contentDescription="@string/main_credits_title" />
+
+        <TextView
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/main_tmdb_attribution"
+            android:textColor="#888888"
+            android:textSize="12sp" />
+
     </LinearLayout>
 </ScrollView>

@@ -26,4 +26,7 @@
     <string name="main_nuvio_label">Nuvio</string>
     <string name="main_stremio_label">Stremio</string>
     <string name="main_open_accessibility_settings">Enable the service in Accessibility</string>
+
+    <string name="main_credits_title">Credits</string>
+    <string name="main_tmdb_attribution">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
 </resources>
