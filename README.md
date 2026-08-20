@@ -59,6 +59,34 @@ itself back off right after you enable it, this is why. To fix it:
 Then go back into Accessibility and enable the service again — it
 should stick this time.
 
+#### Google TV Streamer: toggle appears to turn on, then silently turns itself off
+
+On the Google TV Streamer, the app info screen doesn't expose the "Allow
+restricted setting" option shown above at all — there's no 3-dot menu or
+equivalent. You can accept the permission dialog and see the toggle turn
+on, but it flips back off shortly after, with no warning or notification.
+This is the same Restricted Settings protection, just with no way to
+lift it from the TV's own UI on this device.
+
+The workaround needs ADB access to the device:
+
+1. On the TV: **Settings → System → About → click the build number a
+   few times** to enable Developer options, then enable **Network
+   debugging**.
+2. From a computer with `adb` installed:
+
+```bash
+adb connect <tv-ip>:5555
+adb shell settings put secure enabled_accessibility_services com.tunombre.tvbridge/com.tunombre.tvbridge.TvRecommendationAccessibilityService
+adb shell settings put secure accessibility_enabled 1
+```
+
+This writes the setting directly at the system level, which isn't
+subject to the same restriction as the Settings app toggle. Note the
+second command **replaces** the whole list of enabled accessibility
+services — if you already use another one (like TalkBack), separate
+them with a colon (`:`) instead of overwriting it.
+
 On some devices (especially Chinese-manufacturer Android TV boxes with
 aggressive battery managers) you may also need to exclude the app from
 any manufacturer "optimizer"/RAM cleaner, or the system will kill the
