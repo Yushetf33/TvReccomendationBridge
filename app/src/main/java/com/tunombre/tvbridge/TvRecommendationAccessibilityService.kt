@@ -13,13 +13,16 @@ import java.util.concurrent.Executors
  * (com.google.android.apps.tv.launcherx).
  *
  * Comportamiento:
+ *  - No hace nada si no hay una suscripción verificada vigente (ver
+ *    [LicenseManager]).
  *  - Si el nodo pulsado es una tarjeta de película/serie recomendada
  *    (detectado por patrones típicos del content-desc, como "cuesta:" o
  *    "puntuación:"), extrae el título, lo resuelve a un IMDb ID vía TMDb,
- *    y abre Stremio directamente en la ficha de esa película.
+ *    y abre la app elegida (Nuvio o Stremio) directamente en la ficha de
+ *    esa película o serie.
  *  - Para cualquier otro clic (iconos de apps, fila "Tus aplicaciones",
- *    fila "Recomendaciones destacadas para ti", etc.) no hace absolutamente
- *    nada: el sistema procesa el clic con su comportamiento normal.
+ *    etc.) no hace absolutamente nada: el sistema procesa el clic con su
+ *    comportamiento normal.
  */
 class TvRecommendationAccessibilityService : AccessibilityService() {
 
@@ -52,10 +55,18 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             notificationTimeout = 100
             packageNames = arrayOf("com.google.android.apps.tv.launcherx")
         }
+
+        // Refresca la verificación de suscripción en segundo plano al
+        // arrancar el servicio, para que la caché (usada por isLikelyValid)
+        // no dependa solo de que el usuario abra MainActivity.
+        LicenseManager.getSavedEmail(this)?.let { email ->
+            backgroundExecutor.execute { LicenseManager.verifyNow(this, email) }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event?.eventType != AccessibilityEvent.TYPE_VIEW_CLICKED) return
+        if (!LicenseManager.isLikelyValid(this)) return
 
         // El content-desc de las tarjetas de recomendación del launcher viaja
         // en event.contentDescription, NO en event.source.contentDescription

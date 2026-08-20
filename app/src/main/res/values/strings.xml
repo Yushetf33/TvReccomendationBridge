@@ -3,6 +3,26 @@
     <string name="app_name">TvRecommendationBridge</string>
     <string name="accessibility_service_description">
         Detecta clics en recomendaciones de películas del launcher de Android TV
-        y abre directamente la ficha correspondiente en Stremio.
+        y abre directamente la ficha correspondiente en Nuvio o Stremio.
     </string>
+    <string name="main_subtitle">Pulsa una recomendación del launcher y ábrela directamente en tu app favorita</string>
+
+    <string name="main_subscription_title">Suscripción</string>
+    <string name="main_subscription_unknown">Introduce el email con el que pagaste y pulsa Verificar</string>
+    <string name="main_subscription_checking">Verificando…</string>
+    <string name="main_subscription_active">Suscripción activa (%1$s)</string>
+    <string name="main_subscription_not_subscribed">Ese email no tiene ninguna suscripción activa</string>
+    <string name="main_subscription_device_mismatch">Ese email ya está en uso en otro dispositivo. Podrás moverlo aquí en %1$d días</string>
+    <string name="main_subscription_error">No se pudo verificar (revisa tu conexión) e inténtalo de nuevo</string>
+    <string name="main_email_hint">tu@email.com</string>
+    <string name="main_verify_button">Verificar suscripción</string>
+    <string name="main_payment_hint">Escanea con el móvil y paga con este mismo email:</string>
+    <string name="main_monthly_label">2,50 €/mes</string>
+    <string name="main_semiannual_label">7,99 €/6 meses</string>
+    <string name="main_annual_label">12,99 €/año</string>
+
+    <string name="main_choose_app">Abrir siempre en:</string>
+    <string name="main_nuvio_label">Nuvio</string>
+    <string name="main_stremio_label">Stremio</string>
+    <string name="main_open_accessibility_settings">Activar el servicio en Accesibilidad</string>
 </resources>

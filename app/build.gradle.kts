@@ -34,6 +34,34 @@ android {
             "\"${localProperties.getProperty("TMDB_API_KEY", "")}\""
         )
 
+        // URL del backend de verificación de suscripción (ver carpeta
+        // TvRecommendationBridge-backend/), p.ej. https://tu-proyecto.vercel.app
+        buildConfigField(
+            "String",
+            "LICENSE_API_URL",
+            "\"${localProperties.getProperty("LICENSE_API_URL", "")}\""
+        )
+
+        // Payment Links de Stripe (Dashboard → Payment links) — uno por
+        // precio, ya que Stripe no permite mezclar intervalos distintos
+        // (mensual/semestral/anual) en un mismo Payment Link. El usuario
+        // paga desde el móvil/PC con el mismo email que verificará en el TV.
+        buildConfigField(
+            "String",
+            "MONTHLY_PAYMENT_URL",
+            "\"${localProperties.getProperty("MONTHLY_PAYMENT_URL", "")}\""
+        )
+        buildConfigField(
+            "String",
+            "SEMIANNUAL_PAYMENT_URL",
+            "\"${localProperties.getProperty("SEMIANNUAL_PAYMENT_URL", "")}\""
+        )
+        buildConfigField(
+            "String",
+            "ANNUAL_PAYMENT_URL",
+            "\"${localProperties.getProperty("ANNUAL_PAYMENT_URL", "")}\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,10 +69,29 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFilePath = localProperties.getProperty("RELEASE_STORE_FILE")
+            if (storeFilePath != null) {
+                storeFile = rootProject.file(storeFilePath)
+                storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
+                keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
+                keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             optimization {
                 enable = false
+            }
+            // Solo firma con la config de release si local.properties trae
+            // la keystore configurada; si no, deja el build sin firmar en
+            // vez de fallar (para que `assembleDebug` siga funcionando en
+            // checkouts nuevos sin keystore).
+            if (localProperties.getProperty("RELEASE_STORE_FILE") != null) {
+                signingConfig = signingConfigs.getByName("release")
             }
         }
     }
@@ -59,6 +106,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // Solo el "core" de ZXing (generar QR), no la librería completa de
+    // escaneo — no hace falta cámara para esto.
+    implementation("com.google.zxing:core:3.5.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

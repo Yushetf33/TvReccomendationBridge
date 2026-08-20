@@ -4,15 +4,26 @@
     <!-- Necesario porque TmdbClient hace peticiones HTTP a api.themoviedb.org -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- No hace falta mando táctil ni de verdad "leanback"; lo declaramos
+         igualmente como no-requerido para que Google Play (si algún día se
+         publica ahí) no descarte dispositivos TV. -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:banner="@drawable/tv_banner">
 
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <!-- Sin esta categoría, la app queda instalada pero
+                     invisible en la fila de apps del launcher de Android TV. -->
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
 

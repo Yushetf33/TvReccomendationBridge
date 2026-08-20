@@ -6,27 +6,31 @@ import android.net.Uri
 import android.util.Log
 
 /**
- * Lanza Nuvio (com.nuvio.app) en la ficha de detalle de una película o serie.
+ * Lanza la app de destino elegida por el usuario (ver [Preferences]) en la
+ * ficha de detalle de una película o serie.
  *
- * Películas: nuvio://movie/{imdbId}
- * Series: nuvio://detail/tv/{imdbId}
- * Ambos confirmados por ADB en el dispositivo de pruebas.
+ * Nuvio: nuvio://movie/{imdbId} (películas), nuvio://detail/tv/{imdbId} (series).
+ * Stremio: stremio:///detail/movie/{imdbId}, stremio:///detail/series/{imdbId}.
+ * Todos confirmados por ADB en dispositivo real.
  */
 object StremioLauncher {
 
     private const val TAG = "StremioLauncher"
 
-    // Confirmado por ADB en el dispositivo de pruebas:
-    //   adb shell pm list packages | findstr nuvio
-    private const val NUVIO_PACKAGE = "com.nuvio.app"
-
     fun open(service: AccessibilityService, match: TmdbMatch) {
-        val uri = if (match.type == MediaType.MOVIE) {
-            Uri.parse("nuvio://movie/${match.imdbId}")
-        } else {
-            Uri.parse("nuvio://detail/tv/${match.imdbId}")
+        val app = Preferences.getSelectedApp(service)
+        val uri = when (app) {
+            PlayerApp.NUVIO -> if (match.type == MediaType.MOVIE) {
+                Uri.parse("nuvio://movie/${match.imdbId}")
+            } else {
+                Uri.parse("nuvio://detail/tv/${match.imdbId}")
+            }
+            PlayerApp.STREMIO -> {
+                val stremioType = if (match.type == MediaType.SERIES) "series" else "movie"
+                Uri.parse("stremio:///detail/$stremioType/${match.imdbId}")
+            }
         }
-        openWithFallback(service, uri, NUVIO_PACKAGE, "Nuvio")
+        openWithFallback(service, uri, app.packageName, app.label)
     }
 
     private fun openWithFallback(service: AccessibilityService, uri: Uri, targetPackage: String, appLabel: String) {

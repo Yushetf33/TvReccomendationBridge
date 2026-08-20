@@ -53,7 +53,14 @@ object TmdbClient {
     private val TRAILING_PARENTHETICAL = Regex("\\s*\\([^)]*\\)\\s*$")
 
     fun findImdbId(title: String): TmdbMatch? {
-        val cleanedTitle = title.replace(TRAILING_PARENTHETICAL, "").trim()
+        // Quita TODOS los paréntesis finales, no solo uno: algunos títulos
+        // traen más de uno seguido, p.ej. "El Cuervo (The Crow) (The Crow)".
+        var cleanedTitle = title
+        while (true) {
+            val next = cleanedTitle.replace(TRAILING_PARENTHETICAL, "").trim()
+            if (next == cleanedTitle) break
+            cleanedTitle = next
+        }
         if (cleanedTitle.isNotBlank() && cleanedTitle != title) {
             resolveTitle(cleanedTitle)?.let { return it }
         }

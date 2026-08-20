@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Banner mínimo para que la app se vea en la fila de apps del launcher
+     de Android TV (320x180dp). Es solo un fondo de color + el icono —
+     sustitúyelo por un diseño propio cuando quieras algo más currado. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/tv_banner_background" />
+    <item
+        android:width="80dp"
+        android:height="80dp"
+        android:gravity="center"
+        android:drawable="@drawable/ic_launcher_foreground" />
+</layer-list>

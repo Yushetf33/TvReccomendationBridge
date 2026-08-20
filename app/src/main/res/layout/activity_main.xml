@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#101010">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/main_subtitle"
+            android:textColor="#AAAAAA"
+            android:textSize="16sp" />
+
+        <!-- Suscripción -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/main_subscription_title"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/subscription_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/main_subscription_unknown"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/email_input"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/main_email_hint"
+            android:inputType="textEmailAddress"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#777777"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/button_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/main_verify_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/main_payment_hint"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="32dp">
+
+            <!-- Mensual -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginEnd="24dp">
+
+                <ImageView
+                    android:id="@+id/monthly_qr"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:background="#FFFFFF"
+                    android:padding="6dp"
+                    android:contentDescription="@string/main_monthly_label" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/main_monthly_label"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Semestral -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginEnd="24dp">
+
+                <ImageView
+                    android:id="@+id/semiannual_qr"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:background="#FFFFFF"
+                    android:padding="6dp"
+                    android:contentDescription="@string/main_semiannual_label" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/main_semiannual_label"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Anual -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/annual_qr"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:background="#FFFFFF"
+                    android:padding="6dp"
+                    android:contentDescription="@string/main_annual_label" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/main_annual_label"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- App de destino -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/main_choose_app"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <RadioGroup
+            android:id="@+id/player_app_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp">
+
+            <RadioButton
+                android:id="@+id/radio_nuvio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_nuvio_label"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:padding="12dp" />
+
+            <RadioButton
+                android:id="@+id/radio_stremio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_stremio_label"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:padding="12dp" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/button_accessibility_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_open_accessibility_settings" />
+
+    </LinearLayout>
+</ScrollView>

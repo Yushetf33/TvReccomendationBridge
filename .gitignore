@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Keystore de firma de release — NUNCA se sube. Si la pierdes, no podrás
+# volver a firmar actualizaciones de la app con la misma identidad.
+/keystore
