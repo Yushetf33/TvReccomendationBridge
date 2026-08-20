@@ -2,27 +2,28 @@
 <resources>
     <string name="app_name">TvRecommendationBridge</string>
     <string name="accessibility_service_description">
-        Detecta clics en recomendaciones de películas del launcher de Android TV
-        y abre directamente la ficha correspondiente en Nuvio o Stremio.
+        Detects clicks on movie/show recommendation cards in the Android TV
+        launcher and opens the matching page directly in Nuvio or Stremio.
     </string>
-    <string name="main_subtitle">Pulsa una recomendación del launcher y ábrela directamente en tu app favorita</string>
+    <string name="main_subtitle">Click a recommendation in the launcher and open it straight in your favorite app</string>
 
-    <string name="main_subscription_title">Suscripción</string>
-    <string name="main_subscription_unknown">Introduce el email con el que pagaste y pulsa Verificar</string>
-    <string name="main_subscription_checking">Verificando…</string>
-    <string name="main_subscription_active">Suscripción activa (%1$s)</string>
-    <string name="main_subscription_not_subscribed">Ese email no tiene ninguna suscripción activa</string>
-    <string name="main_subscription_device_mismatch">Ese email ya está en uso en otro dispositivo. Podrás moverlo aquí en %1$d días</string>
-    <string name="main_subscription_error">No se pudo verificar (revisa tu conexión) e inténtalo de nuevo</string>
-    <string name="main_email_hint">tu@email.com</string>
-    <string name="main_verify_button">Verificar suscripción</string>
-    <string name="main_payment_hint">Escanea con el móvil y paga con este mismo email:</string>
-    <string name="main_monthly_label">2,50 €/mes</string>
-    <string name="main_semiannual_label">7,99 €/6 meses</string>
-    <string name="main_annual_label">12,99 €/año</string>
+    <string name="main_subscription_title">Subscription</string>
+    <string name="main_subscription_unknown">Enter the email you paid with and tap Verify</string>
+    <string name="main_subscription_checking">Verifying…</string>
+    <string name="main_subscription_active">Subscription active (%1$s)</string>
+    <string name="main_subscription_not_subscribed">That email doesn\'t have an active subscription</string>
+    <string name="main_subscription_device_mismatch">That email is already in use on another device. You can move it here in %1$d days</string>
+    <string name="main_subscription_error">Couldn\'t verify (check your connection) and try again</string>
+    <string name="main_email_hint">you@email.com</string>
+    <string name="main_verify_button">Verify subscription</string>
+    <string name="main_payment_hint">Scan with your phone and pay using this same email:</string>
+    <string name="main_monthly_label">€2.50/month</string>
+    <string name="main_semiannual_label">€7.99/6 months</string>
+    <string name="main_annual_label">€12.99/year</string>
+    <string name="main_not_configured">(not configured)</string>
 
-    <string name="main_choose_app">Abrir siempre en:</string>
+    <string name="main_choose_app">Always open in:</string>
     <string name="main_nuvio_label">Nuvio</string>
     <string name="main_stremio_label">Stremio</string>
-    <string name="main_open_accessibility_settings">Activar el servicio en Accesibilidad</string>
+    <string name="main_open_accessibility_settings">Enable the service in Accessibility</string>
 </resources>
