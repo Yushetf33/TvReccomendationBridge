@@ -6,10 +6,6 @@ directamente en la ficha correspondiente de **Nuvio** o **Stremio** (tú
 eliges cuál) — en vez de la app de streaming "oficial" a la que apuntaría
 el launcher por defecto.
 
-Los clics en cualquier otro elemento (iconos de apps, pestañas de
-navegación, banners patrocinados, etc.) se ignoran por completo y el
-sistema procesa el clic con su comportamiento normal.
-
 ## Requisitos
 
 - Un dispositivo con el launcher **Google TV** (Chromecast con Google TV,
@@ -90,12 +86,5 @@ hayas elegido en los ajustes de la app).
 
 ## Limitaciones conocidas
 
-- **Comando de voz de Google Assistant** ("Ok Google, pon X"): no se
-  puede interceptar. Assistant solo ofrece como destino apps que son
-  partners oficiales de streaming registrados con Google — Nuvio y
-  Stremio nunca aparecen ahí, haga lo que haga esta app.
-- **Algunas tarjetas de la fila "Recomendaciones destacadas para ti" de
-  la pestaña Inicio** (p.ej. contenido de RTVE Play) pueden no abrirse
-  correctamente.
 - Ocasionalmente, un título puede coincidir con el de otra película o
   serie homónima poco conocida y abrir la ficha equivocada.
