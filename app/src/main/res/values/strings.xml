@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TvRecommendationBridge</string>
+    <string name="accessibility_service_description">
+        Detecta clics en recomendaciones de películas del launcher de Android TV
+        y abre directamente la ficha correspondiente en Stremio.
+    </string>
+</resources>
