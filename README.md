@@ -87,10 +87,10 @@ hayas elegido en los ajustes de la app).
 
 ## Aviso legal
 
-TvRecommendationBridge no aloja, almacena, distribuye, enlaza ni facilita
-acceso a películas, series, streams, torrents ni ningún otro contenido
-audiovisual, ni de forma directa ni indirecta. Es exclusivamente una
-herramienta de navegación que redirige a fichas dentro de aplicaciones de
-terceros ya instaladas por el usuario en su propio dispositivo. El uso
+TvRecommendationBridge no aloja, almacena, distribuye ni proporciona
+enlaces a fuentes de películas, series, streams, torrents ni ningún otro
+contenido audiovisual. Es exclusivamente una herramienta de navegación
+que abre, dentro de aplicaciones de terceros ya instaladas por el usuario
+en su propio dispositivo, la ficha correspondiente a un título. El uso
 que cada usuario haga de Nuvio, Stremio o cualquier complemento instalado
 en ellas es responsabilidad exclusiva del usuario.
