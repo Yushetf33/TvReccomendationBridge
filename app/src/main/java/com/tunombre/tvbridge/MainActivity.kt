@@ -111,6 +111,7 @@ class MainActivity : Activity() {
                     R.string.main_subscription_device_mismatch,
                     result.retryInDays ?: 30
                 )
+                "trial_already_used" -> getString(R.string.main_subscription_trial_already_used)
                 else -> getString(R.string.main_subscription_not_subscribed)
             }
             is VerifyResult.NetworkError -> getString(R.string.main_subscription_error)

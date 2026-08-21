@@ -13,6 +13,7 @@
     <string name="main_subscription_active">Suscripción activa (%1$s)</string>
     <string name="main_subscription_not_subscribed">Ese email no tiene ninguna suscripción activa</string>
     <string name="main_subscription_device_mismatch">Ese email ya está en uso en otro dispositivo. Podrás moverlo aquí en %1$d días</string>
+    <string name="main_subscription_trial_already_used">Este dispositivo ya usó su prueba gratuita con otro email. Necesitas una suscripción activa para usarlo aquí</string>
     <string name="main_subscription_error">No se pudo verificar (revisa tu conexión) e inténtalo de nuevo</string>
     <string name="main_email_hint">tu@email.com</string>
     <string name="main_verify_button">Verificar suscripción</string>
