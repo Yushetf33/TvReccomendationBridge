@@ -159,6 +159,10 @@ TvRecommendationBridge requires a paid subscription to work:
 | Monthly | €2.50 / month |
 | Semiannual | €7.99 / 6 months |
 | Annual | €12.99 / year |
+| Lifetime | €19.99 one-time |
+
+The monthly plan includes a 2-day free trial (no card needed) if you
+haven't used it before on that device.
 
 Inside the app you'll see a QR code for each plan — scan it with your
 phone and pay using the same email you'll later enter on the TV (card,
