@@ -169,7 +169,7 @@ phone and pay using the same email you'll later enter on the TV (card,
 Google Pay, Apple Pay... whatever the payment page offers). Once paid,
 go back to the app, enter that email, and tap **"Verify subscription"**.
 
-The same email can be linked to up to **3 devices** at once (in case you
+The same email can be linked to up to **5 devices** at once (in case you
 have several TVs at home).
 
 ## How it works
