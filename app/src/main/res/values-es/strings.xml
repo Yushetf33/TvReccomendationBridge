@@ -19,6 +19,7 @@
     <string name="main_verify_button">Verificar suscripción</string>
     <string name="main_payment_hint">Escanea con el móvil y paga con este mismo email:</string>
     <string name="main_monthly_label">2,50 €/mes</string>
+    <string name="main_monthly_trial_note">Prueba gratis de 2 días si no la has usado ya — sin tarjeta</string>
     <string name="main_semiannual_label">7,99 €/6 meses</string>
     <string name="main_annual_label">12,99 €/año</string>
     <string name="main_not_configured">(sin configurar)</string>

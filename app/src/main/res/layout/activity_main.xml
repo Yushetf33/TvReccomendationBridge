@@ -101,6 +101,15 @@
                     android:text="@string/main_monthly_label"
                     android:textColor="#CCCCCC"
                     android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:text="@string/main_monthly_trial_note"
+                    android:textColor="#4CD964"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Semestral -->
