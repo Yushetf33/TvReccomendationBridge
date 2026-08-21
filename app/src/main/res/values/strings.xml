@@ -22,6 +22,7 @@
     <string name="main_monthly_trial_note">2-day free trial if not used before — no card needed</string>
     <string name="main_semiannual_label">€7.99/6 months</string>
     <string name="main_annual_label">€12.99/year</string>
+    <string name="main_lifetime_label">€19.99 one-time</string>
     <string name="main_not_configured">(not configured)</string>
 
     <string name="main_choose_app">Always open in:</string>

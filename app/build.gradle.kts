@@ -61,6 +61,11 @@ android {
             "ANNUAL_PAYMENT_URL",
             "\"${localProperties.getProperty("ANNUAL_PAYMENT_URL", "")}\""
         )
+        buildConfigField(
+            "String",
+            "LIFETIME_PAYMENT_URL",
+            "\"${localProperties.getProperty("LIFETIME_PAYMENT_URL", "")}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

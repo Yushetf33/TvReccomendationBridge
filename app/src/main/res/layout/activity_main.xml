@@ -142,7 +142,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginEnd="24dp">
 
                 <ImageView
                     android:id="@+id/annual_qr"
@@ -157,6 +158,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/main_annual_label"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Lifetime -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/lifetime_qr"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:background="#FFFFFF"
+                    android:padding="6dp"
+                    android:contentDescription="@string/main_lifetime_label" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/main_lifetime_label"
                     android:textColor="#CCCCCC"
                     android:textSize="13sp" />
             </LinearLayout>
