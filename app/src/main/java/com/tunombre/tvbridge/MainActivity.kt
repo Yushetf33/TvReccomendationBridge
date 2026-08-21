@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import java.util.concurrent.Executors
 
 /**
@@ -47,7 +48,20 @@ class MainActivity : Activity() {
         setupPlayerAppSelector()
 
         findViewById<Button>(R.id.button_accessibility_settings).setOnClickListener {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            // En algunos launchers de terceros (p.ej. Fire TV) el sistema
+            // bloquea este intent para apps que no tengan un permiso propio
+            // del fabricante, y lanza SecurityException en vez de abrir la
+            // pantalla. En ese caso, evitamos el crash y pedimos al usuario
+            // que navegue manualmente.
+            try {
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this,
+                    R.string.main_accessibility_settings_unavailable,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

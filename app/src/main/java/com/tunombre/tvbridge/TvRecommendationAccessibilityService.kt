@@ -6,11 +6,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import java.util.concurrent.Executors
 
 /**
- * Servicio de accesibilidad que escucha clics en el launcher de Android TV
- * (com.google.android.apps.tv.launcherx).
+ * Servicio de accesibilidad que escucha clics en el launcher de Google TV
+ * (com.google.android.apps.tv.launcherx) y en el de Fire TV
+ * (com.amazon.tv.launcher).
  *
  * Comportamiento:
  *  - No hace nada si no hay una suscripción verificada vigente (ver
@@ -38,6 +40,17 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // evita truncar títulos que ya traen coma de por sí, como
         // "Monstruos, S.A." (cortar por la primera coma daría solo "Monstruos").
         private val TITLE_MARKERS = listOf("cuesta:", "se necesita una suscripción a", "puntuación:")
+
+        private const val AMAZON_LAUNCHER_PACKAGE = "com.amazon.tv.launcher"
+        private const val GOOGLE_TV_LAUNCHER_PACKAGE = "com.google.android.apps.tv.launcherx"
+
+        // En las tarjetas de contenido del launcher de Fire TV, el título vive
+        // en el content-desc de este ImageView hijo, no en el nodo pulsado
+        // (que siempre tiene content-desc vacío). Los iconos de apps normales
+        // usan el mismo resource-id pero con content-desc vacío, lo que sirve
+        // para distinguir tarjetas de contenido real de iconos de apps sin
+        // necesitar una lista de apps conocidas.
+        private const val FIRE_TV_MAIN_IMAGE_ID = "com.amazon.tv.launcher:id/main_image"
     }
 
     override fun onServiceConnected() {
@@ -53,7 +66,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             notificationTimeout = 100
-            packageNames = arrayOf("com.google.android.apps.tv.launcherx")
+            packageNames = arrayOf(GOOGLE_TV_LAUNCHER_PACKAGE, AMAZON_LAUNCHER_PACKAGE)
         }
 
         // Refresca la verificación de suscripción en segundo plano al
@@ -67,6 +80,15 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event?.eventType != AccessibilityEvent.TYPE_VIEW_CLICKED) return
         if (!LicenseManager.isLikelyValid(this)) return
+
+        if (event.packageName == AMAZON_LAUNCHER_PACKAGE) {
+            val title = extractFireTvTitle(event)
+            if (!title.isNullOrBlank()) {
+                Log.d(TAG, "Película/serie detectada (Fire TV): $title")
+                handleMovieClick(title)
+            }
+            return
+        }
 
         // El content-desc de las tarjetas de recomendación del launcher viaja
         // en event.contentDescription, NO en event.source.contentDescription
@@ -111,6 +133,25 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                 }
             }
         }, 600)
+    }
+
+    private fun extractFireTvTitle(event: AccessibilityEvent): String? {
+        val source = event.source ?: return null
+        return findFireTvMainImageDescription(source)
+    }
+
+    private fun findFireTvMainImageDescription(node: AccessibilityNodeInfo): String? {
+        if (node.viewIdResourceName == FIRE_TV_MAIN_IMAGE_ID) {
+            val desc = node.contentDescription?.toString()
+            if (!desc.isNullOrBlank()) return desc
+        }
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val result = findFireTvMainImageDescription(child)
+            child.recycle()
+            if (result != null) return result
+        }
+        return null
     }
 
     private fun extractHeroTitle(event: AccessibilityEvent): String? {
