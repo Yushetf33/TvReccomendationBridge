@@ -51,7 +51,22 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // para distinguir tarjetas de contenido real de iconos de apps sin
         // necesitar una lista de apps conocidas.
         private const val FIRE_TV_MAIN_IMAGE_ID = "com.amazon.tv.launcher:id/main_image"
+
+        // Cuando se abre una ficha de detalle sin pasar por un clic nuestro
+        // (búsqueda por voz, búsqueda por texto, y algunos flujos internos
+        // del propio launcher), Google TV navega a esta pantalla dentro del
+        // mismo paquete del launcher. El título vive en este resource-id
+        // concreto y estable — confirmado en dispositivo real disparando una
+        // búsqueda por voz ("Ok Google, abre X").
+        private const val ENTITY_DETAILS_TITLE_ID =
+            "com.google.android.apps.tv.launcherx:id/entity_details_title_row"
     }
+
+    // Evita relanzar el mismo título repetidas veces mientras la ficha de
+    // detalle sigue en pantalla (TYPE_WINDOW_STATE_CHANGED puede dispararse
+    // más de una vez para la misma ventana). Se resetea en cuanto se navega
+    // a una pantalla sin esa ficha.
+    private var lastHandledEntityTitle: String? = null
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -63,10 +78,14 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // compilado en el APK era correcto). Configurarlo aquí evita
         // depender de ese parseo.
         serviceInfo = AccessibilityServiceInfo().apply {
-            eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED
+            eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             notificationTimeout = 100
             packageNames = arrayOf(GOOGLE_TV_LAUNCHER_PACKAGE, AMAZON_LAUNCHER_PACKAGE)
+            // Sin este flag, rootInActiveWindow() siempre devuelve null —
+            // necesario para leer el árbol de la ficha de detalle abierta
+            // por voz/búsqueda (handleEntityDetailsWindow).
+            flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
         }
 
         // Refresca la verificación de suscripción en segundo plano al
@@ -78,8 +97,29 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (event?.eventType != AccessibilityEvent.TYPE_VIEW_CLICKED) return
+        if (event == null) return
         if (!LicenseManager.isLikelyValid(this)) return
+
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            Log.d(
+                TAG,
+                "WINDOW_STATE_CHANGED pkg=${event.packageName} class=${event.className} " +
+                    "text=${event.text} contentDesc=${event.contentDescription} " +
+                    "sourceDesc=${event.source?.contentDescription} sourceText=${event.source?.text}"
+            )
+            if (event.packageName == GOOGLE_TV_LAUNCHER_PACKAGE) {
+                handleEntityDetailsWindow()
+            }
+            return
+        }
+
+        if (event.eventType != AccessibilityEvent.TYPE_VIEW_CLICKED) return
+
+        Log.d(
+            TAG,
+            "TYPE_VIEW_CLICKED pkg=${event.packageName} class=${event.className} " +
+                "text=${event.text} contentDesc=${event.contentDescription} source=${event.source != null}"
+        )
 
         if (event.packageName == AMAZON_LAUNCHER_PACKAGE) {
             val title = extractFireTvTitle(event)
@@ -117,6 +157,23 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             return
         }
 
+        // Botón de "ver en Netflix/Prime/etc." de la ficha de detalle
+        // (se llega aquí al abrir esa ficha por voz/búsqueda y pulsar el
+        // botón del servicio). El botón en sí no tiene texto ni
+        // content-desc propios — solo un logotipo — así que se sube por
+        // los nodos padre desde el pulsado hasta encontrar el título de
+        // la ficha (entity_details_title_row) como hermano. No requiere
+        // rootInActiveWindow: solo navega el subárbol del propio nodo del
+        // evento, que sí llega siempre con el clic.
+        if (event.text.isNullOrEmpty()) {
+            val entityTitle = event.source?.let { findEntityTitleFromClickedNode(it) }
+            if (entityTitle != null) {
+                Log.d(TAG, "Película/serie detectada (botón de ficha): $entityTitle")
+                handleMovieClick(entityTitle)
+                return
+            }
+        }
+
         // Algunas filas (p.ej. RTVE en "Recomendaciones destacadas" de
         // Inicio) rellenan el content-desc del nodo con retraso tras el
         // clic: en el momento del evento aún está vacío. Reintentamos una
@@ -133,6 +190,63 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                 }
             }
         }, 600)
+    }
+
+    private fun handleEntityDetailsWindow() {
+        val root = rootInActiveWindow
+        Log.d(TAG, "handleEntityDetailsWindow: root=${root != null}")
+        val title = root?.let { findEntityDetailsTitle(it) }
+        if (title != null) {
+            onEntityTitleFound(title)
+            return
+        }
+
+        // La ventana puede tardar en poblarse (igual que el retraso ya
+        // observado en algunas tarjetas de fila). Reintentamos una vez.
+        Handler(Looper.getMainLooper()).postDelayed({
+            val retryRoot = rootInActiveWindow
+            val retryTitle = retryRoot?.let { findEntityDetailsTitle(it) }
+            Log.d(TAG, "handleEntityDetailsWindow (retraso): root=${retryRoot != null} title=$retryTitle")
+            if (retryTitle != null) {
+                onEntityTitleFound(retryTitle)
+            } else {
+                lastHandledEntityTitle = null
+            }
+        }, 600)
+    }
+
+    private fun onEntityTitleFound(title: String) {
+        if (title == lastHandledEntityTitle) return
+        lastHandledEntityTitle = title
+        Log.d(TAG, "Ficha de detalle detectada (voz/búsqueda): $title")
+        handleMovieClick(title)
+    }
+
+    private fun findEntityTitleFromClickedNode(clicked: AccessibilityNodeInfo): String? {
+        var current: AccessibilityNodeInfo? = clicked
+        var level = 0
+        while (current != null && level < 8) {
+            val title = findEntityDetailsTitle(current)
+            if (title != null) return title
+            val parent = current.parent
+            Log.d(TAG, "findEntityTitleFromClickedNode: level=$level parent=${parent != null}")
+            current = parent
+            level++
+        }
+        return null
+    }
+
+    private fun findEntityDetailsTitle(node: AccessibilityNodeInfo): String? {
+        if (node.viewIdResourceName == ENTITY_DETAILS_TITLE_ID) {
+            return node.text?.toString()?.takeIf { it.isNotBlank() }
+        }
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            val result = findEntityDetailsTitle(child)
+            child.recycle()
+            if (result != null) return result
+        }
+        return null
     }
 
     private fun extractFireTvTitle(event: AccessibilityEvent): String? {

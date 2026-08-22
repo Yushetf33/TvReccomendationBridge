@@ -67,8 +67,6 @@ class MainActivity : Activity() {
 
     private fun setupPaymentLinks() {
         setQrFor(R.id.monthly_qr, BuildConfig.MONTHLY_PAYMENT_URL)
-        setQrFor(R.id.semiannual_qr, BuildConfig.SEMIANNUAL_PAYMENT_URL)
-        setQrFor(R.id.annual_qr, BuildConfig.ANNUAL_PAYMENT_URL)
         setQrFor(R.id.lifetime_qr, BuildConfig.LIFETIME_PAYMENT_URL)
     }
 

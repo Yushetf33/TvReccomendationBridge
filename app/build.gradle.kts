@@ -53,16 +53,6 @@ android {
         )
         buildConfigField(
             "String",
-            "SEMIANNUAL_PAYMENT_URL",
-            "\"${localProperties.getProperty("SEMIANNUAL_PAYMENT_URL", "")}\""
-        )
-        buildConfigField(
-            "String",
-            "ANNUAL_PAYMENT_URL",
-            "\"${localProperties.getProperty("ANNUAL_PAYMENT_URL", "")}\""
-        )
-        buildConfigField(
-            "String",
             "LIFETIME_PAYMENT_URL",
             "\"${localProperties.getProperty("LIFETIME_PAYMENT_URL", "")}\""
         )

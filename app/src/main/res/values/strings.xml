@@ -18,11 +18,9 @@
     <string name="main_email_hint">you@email.com</string>
     <string name="main_verify_button">Verify subscription</string>
     <string name="main_payment_hint">Scan with your phone and pay using this same email:</string>
-    <string name="main_monthly_label">€2.50/month</string>
-    <string name="main_monthly_trial_note">2-day free trial if not used before — no card needed</string>
-    <string name="main_semiannual_label">€7.99/6 months</string>
-    <string name="main_annual_label">€12.99/year</string>
-    <string name="main_lifetime_label">€19.99 one-time</string>
+    <string name="main_monthly_label">Free trial</string>
+    <string name="main_monthly_trial_note">2 days, no card needed (once per device)</string>
+    <string name="main_lifetime_label">€4.99 one-time</string>
     <string name="main_not_configured">(not configured)</string>
 
     <string name="main_choose_app">Always open in:</string>
