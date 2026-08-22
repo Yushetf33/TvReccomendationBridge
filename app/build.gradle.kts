@@ -79,7 +79,7 @@ android {
     buildTypes {
         release {
             optimization {
-                enable = false
+                enable = true
             }
             // Solo firma con la config de release si local.properties trae
             // la keystore configurada; si no, deja el build sin firmar en
