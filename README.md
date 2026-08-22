@@ -152,19 +152,15 @@ app, since reinstalling can reset these permissions.
 
 ## Subscription
 
-TvRecommendationBridge requires a paid subscription to work:
+TvRecommendationBridge requires a paid subscription to work, with a free
+trial to test it first:
 
 | Plan | Price |
 |---|---|
-| Monthly | €2.50 / month |
-| Semiannual | €7.99 / 6 months |
-| Annual | €12.99 / year |
-| Lifetime | €19.99 one-time |
+| Free trial | 2 days, no card needed (once per device) |
+| Lifetime | €4.99 one-time |
 
-The monthly plan includes a 2-day free trial (no card needed) if you
-haven't used it before on that device.
-
-Inside the app you'll see a QR code for each plan — scan it with your
+Inside the app you'll see a QR code for each — scan it with your
 phone and pay using the same email you'll later enter on the TV (card,
 Google Pay, Apple Pay... whatever the payment page offers). Once paid,
 go back to the app, enter that email, and tap **"Verify subscription"**.
