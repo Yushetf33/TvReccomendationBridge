@@ -41,6 +41,14 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // "Monstruos, S.A." (cortar por la primera coma daría solo "Monstruos").
         private val TITLE_MARKERS = listOf("cuesta:", "se necesita una suscripción a", "puntuación:")
 
+        // Marcador de las tarjetas de recomendación de YouTube: el launcher
+        // les añade "{Título}, Duración: X minutos Y segundos" al content-desc,
+        // en vez de precio/puntuación. Confirmado por ADB en dispositivo real.
+        // Se comprueba antes que TITLE_MARKERS porque, si no, isMovieOrShowCard
+        // las cuela igualmente como "{Título}, {resto}" y las manda a TMDb,
+        // donde nunca van a encontrarse (no son películas ni series).
+        private const val YOUTUBE_DURATION_MARKER = "Duración:"
+
         private const val AMAZON_LAUNCHER_PACKAGE = "com.amazon.tv.launcher"
         private const val GOOGLE_TV_LAUNCHER_PACKAGE = "com.google.android.apps.tv.launcherx"
 
@@ -136,6 +144,12 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // en dispositivo real.
         val desc = event.contentDescription?.toString()
         if (!desc.isNullOrBlank()) {
+            val youtubeTitle = extractYoutubeTitle(desc)
+            if (youtubeTitle != null) {
+                Log.d(TAG, "Vídeo de YouTube detectado: $youtubeTitle")
+                SmartTubeLauncher.openSearch(this, youtubeTitle)
+                return
+            }
             if (isMovieOrShowCard(event, desc)) {
                 val title = extractTitle(desc)
                 if (title.isNotBlank()) {
@@ -294,6 +308,12 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         val commaIndex = contentDesc.indexOf(',')
         if (commaIndex <= 0) return false
         return contentDesc.substring(commaIndex + 1).isNotBlank()
+    }
+
+    private fun extractYoutubeTitle(contentDesc: String): String? {
+        val markerIndex = contentDesc.indexOf(YOUTUBE_DURATION_MARKER)
+        if (markerIndex <= 0) return null
+        return contentDesc.substring(0, markerIndex).trim().trimEnd(',').trim().takeIf { it.isNotBlank() }
     }
 
     private fun extractTitle(contentDesc: String): String {
