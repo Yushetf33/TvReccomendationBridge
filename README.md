@@ -12,6 +12,7 @@ TvRecommendationBridge is an independent automation and redirection tool. **It d
 
 - A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.).
 - **Nuvio** and/or **Stremio** installed on the device.
+- **SmartTube** installed (optional) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
 - An active TvRecommendationBridge subscription (see [Subscription](#subscription) below).
 
 > **Note:** TvRecommendationBridge is designed specifically for devices using the Google TV launcher. It is not designed for Android TV devices using other launchers, nor for Fire TV.
@@ -178,10 +179,21 @@ public movie/show database to identify the content, and opens its page
 directly in Nuvio or Stremio (whichever you've chosen in the app's
 settings).
 
+YouTube recommendations work the same way, but redirect to
+**[SmartTube](https://github.com/yuliskov/SmartTube)** instead (either
+the stable or beta build — whichever you have installed) with a search
+for that same video's title, since the launcher doesn't expose the
+video ID directly.
+
 ## Known limitations
 
 - Occasionally, a title may match a lesser-known movie or show with the
   same name and open the wrong page.
+- The YouTube redirect only works for rows with their own YouTube
+  branding (e.g. "Recommended videos", "Tourist destinations"). Videos
+  that show up mixed into "Recommended for you" open the regular
+  YouTube app instead — YouTube's own app is already loaded in memory
+  by the time the click fires, so it wins the race to the foreground.
 
 ## Legal notice
 
