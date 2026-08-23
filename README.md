@@ -2,14 +2,14 @@
 
 App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
-When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, or **Plex**, depending on the app configured by the user.
+When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **Plex**, or **Jellyfin**, depending on the app configured by the user.
 
 TvRecommendationBridge is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
 
 ## Requirements
 
 - A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.).
-- **Nuvio**, **Stremio**, and/or **Plex** installed on the device — pick whichever you want recommendations to open in.
+- **Nuvio**, **Stremio**, **Plex**, and/or **Jellyfin** installed on the device — pick whichever you want recommendations to open in.
 - **SmartTube** installed (optional) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
 - An active TvRecommendationBridge subscription (see [Subscription](#subscription) below).
 
@@ -174,13 +174,21 @@ have several TVs at home).
 The Google TV launcher exposes the title of each recommendation when you
 select it. The app picks up on that click, looks up the title in a
 public movie/show database to identify the content, and opens its page
-directly in Nuvio, Stremio, or Plex (whichever you've chosen in the
-app's settings).
+directly in Nuvio, Stremio, Plex, or Jellyfin (whichever you've chosen
+in the app's settings).
 
 For Plex specifically, this only works for titles available in Plex's
 own free, ad-supported streaming catalog (the "Movies & Shows" section
 of the Plex app) — not a personal Plex Media Server library, since
 there's no universal ID to link to someone's private collection.
+
+Jellyfin works differently from the other three: since it's
+self-hosted, there's no universal ID or shared catalog to link to
+either — each user's server has its own library with its own internal
+IDs. Instead of opening straight to the title's page, TvRecommendationBridge
+opens the Jellyfin app with a **search** for that title already
+triggered, so you land on the search results instead of the exact
+page.
 
 YouTube recommendations work the same way, but redirect to
 **[SmartTube](https://github.com/yuliskov/SmartTube)** instead (either
@@ -194,6 +202,9 @@ video ID directly.
   same name and open the wrong page.
 - If you've chosen Plex and a title isn't in Plex's free catalog,
   nothing happens — there's no fallback to another app.
+- If you've chosen Jellyfin, you land on a search results page, not the
+  exact title — search accuracy depends on how closely your library's
+  naming matches the title TvRecommendationBridge found.
 - The YouTube redirect only works for rows with their own YouTube
   branding (e.g. "Recommended videos", "Tourist destinations"). Videos
   that show up mixed into "Recommended for you" open the regular

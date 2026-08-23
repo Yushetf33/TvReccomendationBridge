@@ -27,6 +27,7 @@
     <string name="main_nuvio_label">Nuvio</string>
     <string name="main_stremio_label">Stremio</string>
     <string name="main_plex_label">Plex (free catalog only)</string>
+    <string name="main_jellyfin_label">Jellyfin (opens with search)</string>
     <string name="main_open_accessibility_settings">Enable the service in Accessibility</string>
     <string name="main_accessibility_settings_unavailable">Couldn\'t open Accessibility settings automatically on this device — open Settings manually and look for TvRecommendationBridge under Accessibility.</string>
 

@@ -45,6 +45,12 @@ object StremioLauncher {
                 }
                 openWithFallback(service, Uri.parse(watchUrl), app.packageName, app.label)
             }
+            PlayerApp.JELLYFIN -> {
+                // Jellyfin es autoalojado: no hay un ID de contenido
+                // universal como el IMDb ID, así que se abre con una
+                // búsqueda del título en vez de ir directo a la ficha.
+                JellyfinLauncher.openSearch(service, match.title)
+            }
         }
     }
 

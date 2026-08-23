@@ -83,17 +83,20 @@ class MainActivity : Activity() {
         val radioNuvio = findViewById<RadioButton>(R.id.radio_nuvio)
         val radioStremio = findViewById<RadioButton>(R.id.radio_stremio)
         val radioPlex = findViewById<RadioButton>(R.id.radio_plex)
+        val radioJellyfin = findViewById<RadioButton>(R.id.radio_jellyfin)
 
         when (Preferences.getSelectedApp(this)) {
             PlayerApp.NUVIO -> radioNuvio.isChecked = true
             PlayerApp.STREMIO -> radioStremio.isChecked = true
             PlayerApp.PLEX -> radioPlex.isChecked = true
+            PlayerApp.JELLYFIN -> radioJellyfin.isChecked = true
         }
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selected = when (checkedId) {
                 R.id.radio_stremio -> PlayerApp.STREMIO
                 R.id.radio_plex -> PlayerApp.PLEX
+                R.id.radio_jellyfin -> PlayerApp.JELLYFIN
                 else -> PlayerApp.NUVIO
             }
             Preferences.setSelectedApp(this, selected)

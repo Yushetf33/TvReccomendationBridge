@@ -178,6 +178,15 @@
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:padding="12dp" />
+
+            <RadioButton
+                android:id="@+id/radio_jellyfin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_jellyfin_label"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:padding="12dp" />
         </RadioGroup>
 
         <Button

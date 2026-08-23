@@ -18,7 +18,7 @@ import java.net.URLEncoder
 /** Tipo de contenido resuelto en TMDb, usado para elegir el deep link correcto en Nuvio. */
 enum class MediaType { MOVIE, SERIES }
 
-data class TmdbMatch(val imdbId: String, val type: MediaType)
+data class TmdbMatch(val imdbId: String, val type: MediaType, val title: String)
 
 object TmdbClient {
 
@@ -68,13 +68,15 @@ object TmdbClient {
     }
 
     private fun resolveTitle(title: String): TmdbMatch? {
-        val (tmdbId, mediaPath) = searchId(title) ?: return null
+        val (tmdbId, mediaPath, resolvedTitle) = searchId(title) ?: return null
         val imdbId = fetchImdbId(tmdbId, mediaPath) ?: return null
         val type = if (mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
-        return TmdbMatch(imdbId, type)
+        return TmdbMatch(imdbId, type, resolvedTitle)
     }
 
-    private fun searchId(title: String): Pair<Int, String>? {
+    private data class SearchResult(val tmdbId: Int, val mediaPath: String, val title: String)
+
+    private fun searchId(title: String): SearchResult? {
         val encoded = URLEncoder.encode(title, "UTF-8")
         val url = "https://api.themoviedb.org/3/search/multi?query=$encoded&api_key=$TMDB_API_KEY&language=es-ES"
 
@@ -95,7 +97,9 @@ object TmdbClient {
                     val result = results.getJSONObject(i)
                     val mediaType = result.optString("media_type", "")
                     if (mediaType == "movie" || mediaType == "tv") {
-                        return result.getInt("id") to mediaType
+                        // Las películas traen "title", las series "name".
+                        val resolvedTitle = result.optString("title", result.optString("name", title))
+                        return SearchResult(result.getInt("id"), mediaType, resolvedTitle)
                     }
                 }
                 Log.d(TAG, "Sin resultados aprovechables en TMDb para: $title")
