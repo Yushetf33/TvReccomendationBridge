@@ -18,19 +18,34 @@ object StremioLauncher {
     private const val TAG = "StremioLauncher"
 
     fun open(service: AccessibilityService, match: TmdbMatch) {
-        val app = Preferences.getSelectedApp(service)
-        val uri = when (app) {
-            PlayerApp.NUVIO -> if (match.type == MediaType.MOVIE) {
-                Uri.parse("nuvio://movie/${match.imdbId}")
-            } else {
-                Uri.parse("nuvio://detail/tv/${match.imdbId}")
+        when (val app = Preferences.getSelectedApp(service)) {
+            PlayerApp.NUVIO -> {
+                val uri = if (match.type == MediaType.MOVIE) {
+                    Uri.parse("nuvio://movie/${match.imdbId}")
+                } else {
+                    Uri.parse("nuvio://detail/tv/${match.imdbId}")
+                }
+                openWithFallback(service, uri, app.packageName, app.label)
             }
             PlayerApp.STREMIO -> {
                 val stremioType = if (match.type == MediaType.SERIES) "series" else "movie"
-                Uri.parse("stremio:///detail/$stremioType/${match.imdbId}")
+                val uri = Uri.parse("stremio:///detail/$stremioType/${match.imdbId}")
+                openWithFallback(service, uri, app.packageName, app.label)
+            }
+            PlayerApp.PLEX -> {
+                // A diferencia de Nuvio/Stremio, Plex no tiene un esquema de
+                // deep link por IMDb ID directo — hay que resolver antes la
+                // URL de watch.plex.tv vía PlexClient (puede no encontrarse:
+                // el catálogo gratuito de Plex no tiene todo lo que hay en
+                // TMDb).
+                val watchUrl = PlexClient.findWatchUrl(match)
+                if (watchUrl == null) {
+                    Log.w(TAG, "No encontrado en el catálogo gratuito de Plex: ${match.imdbId}")
+                    return
+                }
+                openWithFallback(service, Uri.parse(watchUrl), app.packageName, app.label)
             }
         }
-        openWithFallback(service, uri, app.packageName, app.label)
     }
 
     private fun openWithFallback(service: AccessibilityService, uri: Uri, targetPackage: String, appLabel: String) {

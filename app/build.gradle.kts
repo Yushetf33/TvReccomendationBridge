@@ -34,6 +34,14 @@ android {
             "\"${localProperties.getProperty("TMDB_API_KEY", "")}\""
         )
 
+        // Token de Plex (ver comentario en local.properties) para resolver
+        // enlaces del catálogo gratuito de watch.plex.tv.
+        buildConfigField(
+            "String",
+            "PLEX_API_TOKEN",
+            "\"${localProperties.getProperty("PLEX_API_TOKEN", "")}\""
+        )
+
         // URL del backend de verificación de suscripción (ver carpeta
         // TvRecommendationBridge-backend/), p.ej. https://tu-proyecto.vercel.app
         buildConfigField(

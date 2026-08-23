@@ -5,7 +5,8 @@ import android.content.Context
 /** App de destino donde se abre la ficha de la película/serie detectada. */
 enum class PlayerApp(val packageName: String, val label: String) {
     NUVIO("com.nuvio.app", "Nuvio"),
-    STREMIO("com.stremio.one", "Stremio")
+    STREMIO("com.stremio.one", "Stremio"),
+    PLEX("com.plexapp.android", "Plex")
 }
 
 /**
