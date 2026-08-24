@@ -63,4 +63,10 @@
     <string name="firetv_confirm_message">Open \"%1$s\" in %2$s?</string>
     <string name="firetv_confirm_button">Open</string>
     <string name="main_firetv_usage_access_needed">Fire TV mode also needs "Usage access" — find TvRecommendationBridge in this list and enable it, then come back and press the button again</string>
+    <string name="main_voice_search_button">Enable voice search (experimental)</string>
+    <string name="main_voice_search_explainer">Optional. Helps recommendations opened by voice search work on devices where they otherwise wouldn\'t. Keeps a screen recording notification visible at all times while enabled.</string>
+    <string name="main_voice_search_enabled">Voice search support enabled</string>
+    <string name="main_voice_search_denied">Screen recording permission denied — voice search support needs it to work</string>
+    <string name="voice_search_notification_channel_name">Voice search support</string>
+    <string name="voice_search_notification_title">TvRecommendationBridge is ready to catch voice search results</string>
 </resources>

@@ -88,6 +88,13 @@
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
 
+        <!-- Red de seguridad opcional para búsqueda por voz en Google TV
+             (ver VoiceSearchCaptureService/TvRecommendationAccessibilityService). -->
+        <service
+            android:name=".VoiceSearchCaptureService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
         <service
             android:name=".TvRecommendationAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"

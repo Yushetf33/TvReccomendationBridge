@@ -190,6 +190,30 @@ asked for two permissions, once:
 - The screen-recording notification is unavoidable; it's an Android
   requirement, not something this app adds.
 
+## Voice search (Google TV)
+
+By default, recommendations opened through voice search (either by
+holding the remote's mic button or saying "Ok Google, open \<title\>")
+aren't picked up automatically the way a regular click is — this is an
+**optional, opt-in** feature you can turn on separately.
+
+### Activating it
+
+Open the app and tap **"Enable voice search (experimental)"** (only
+shown on Google TV, not Fire TV — Fire TV already covers this as part
+of its own mode). You'll be asked for a **screen recording** permission
+(the standard Android system dialog). While active, Android shows a
+persistent notification for it — that's expected and can't be hidden,
+which is why this is opt-in rather than always on.
+
+### Known limitations
+
+- Keeps the screen-recording notification visible the whole time it's
+  enabled.
+- Only helps when a voice search lands you on a movie/show detail page —
+  it doesn't add voice search itself, just makes recommendations opened
+  that way work the same as a regular click.
+
 ## Subscription
 
 TvRecommendationBridge requires a paid subscription to work, with a free
@@ -219,6 +243,9 @@ page directly in Nuvio, Stremio, Plex, or Jellyfin (whichever you've
 chosen in the app's settings).
 
 On **Fire TV** it works a bit differently — see the [Fire TV](#fire-tv) section above for the details.
+
+Recommendations opened via voice search on Google TV need a separate,
+optional feature to be turned on first — see [Voice search](#voice-search-google-tv) above.
 
 For Plex specifically, this only works for titles available in Plex's
 own free, ad-supported streaming catalog (the "Movies & Shows" section

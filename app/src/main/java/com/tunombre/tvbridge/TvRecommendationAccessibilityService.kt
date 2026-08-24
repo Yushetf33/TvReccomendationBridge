@@ -148,7 +148,16 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                     "text=${event.text} contentDesc=${event.contentDescription} " +
                     "sourceDesc=${event.source?.contentDescription} sourceText=${event.source?.text}"
             )
-            if (event.packageName == GOOGLE_TV_LAUNCHER_PACKAGE) {
+            // La ficha de detalle abierta por búsqueda de voz (o por texto)
+            // navega a esta Activity concreta dentro del launcher —
+            // confirmado en dispositivo real disparando una búsqueda por voz
+            // ("Ok Google, abre X"). Es la única señal fiable en este
+            // dispositivo, donde rootInActiveWindow() falla siempre: sin
+            // este filtro, cualquier otro cambio de ventana del launcher
+            // (volver a Inicio, etc.) también intentaría procesarse.
+            if (event.packageName == GOOGLE_TV_LAUNCHER_PACKAGE &&
+                event.className?.toString()?.endsWith(".entity.EntityActivity") == true
+            ) {
                 handleEntityDetailsWindow()
             }
             return
@@ -257,9 +266,63 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             if (retryTitle != null) {
                 onEntityTitleFound(retryTitle)
             } else {
-                lastHandledEntityTitle = null
+                tryOcrFallbackForEntityDetails()
             }
         }, 600)
+    }
+
+    /** Red de seguridad opcional (ver [VoiceSearchCaptureService]): si el
+     * árbol de accesibilidad no trae el título (algunos dispositivos, p.ej.
+     * TCL, bloquean esto específicamente para esta pantalla) y el usuario ha
+     * activado la captura de pantalla para búsqueda por voz, intenta leer el
+     * título con OCR en su lugar. Si no está activada, no hace nada — sigue
+     * siendo un límite conocido, no un fallo silencioso.
+     *
+     * Reintenta una vez con más margen: confirmado en dispositivo real que
+     * al abrir la ficha con el botón del micro del mando el primer intento
+     * ya encuentra el título, pero al abrirla diciendo "Ok Google" (hotword
+     * del televisor) el primer intento sale en blanco — probablemente por el
+     * paso extra de red/reconocimiento de ese camino, que retrasa cuándo
+     * termina de pintarse el título. */
+    private fun tryOcrFallbackForEntityDetails(attempt: Int = 1) {
+        val captureService = VoiceSearchCaptureService.instance
+        if (captureService == null) {
+            lastHandledEntityTitle = null
+            return
+        }
+        captureService.captureFrame { bitmap ->
+            backgroundExecutor.execute {
+                val title = bitmap?.let {
+                    try {
+                        TitleOcr.recognizeFirstLine(cropEntityDetailsTitleRegion(it))?.trim()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error en OCR de ficha de detalle", e)
+                        null
+                    }
+                }
+                Log.d(TAG, "OCR de ficha de detalle (búsqueda por voz, intento $attempt): \"$title\"")
+                if (!title.isNullOrBlank()) {
+                    onEntityTitleFound(title)
+                } else if (attempt < 3) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        tryOcrFallbackForEntityDetails(attempt + 1)
+                    }, 700)
+                } else {
+                    lastHandledEntityTitle = null
+                }
+            }
+        }
+    }
+
+    /** Franja donde está el título en la ficha de detalle del launcher de
+     * Google TV — medido sobre una captura real en dispositivo (búsqueda
+     * por voz de "La casa de papel"), igual que se hizo para Fire TV. */
+    private fun cropEntityDetailsTitleRegion(bitmap: android.graphics.Bitmap): android.graphics.Bitmap {
+        val left = (bitmap.width * 0.04).toInt()
+        val top = (bitmap.height * 0.32).toInt()
+        val right = (bitmap.width * 0.75).toInt().coerceAtMost(bitmap.width)
+        val bottom = (bitmap.height * 0.52).toInt()
+        return android.graphics.Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top)
     }
 
     private fun onEntityTitleFound(title: String) {

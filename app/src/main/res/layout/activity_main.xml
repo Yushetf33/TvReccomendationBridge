@@ -213,6 +213,25 @@
             android:textSize="12sp"
             android:visibility="gone" />
 
+        <Button
+            android:id="@+id/button_voice_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/main_voice_search_button"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/voice_search_explainer"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/main_voice_search_explainer"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
         <!-- Créditos -->
         <TextView
             android:layout_width="wrap_content"

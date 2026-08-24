@@ -110,6 +110,21 @@ class MainActivity : Activity() {
                     ).show()
                 }
             }
+            setupVoiceSearchButton()
+        }
+    }
+
+    /** Solo en Google TV (Fire TV ya captura pantalla siempre como parte de
+     * su propio modo). Opcional porque implica dejar la notificación de
+     * grabación de pantalla siempre visible — ver el explicador en pantalla. */
+    private fun setupVoiceSearchButton() {
+        val button = findViewById<Button>(R.id.button_voice_search)
+        val explainer = findViewById<TextView>(R.id.voice_search_explainer)
+        button.visibility = TextView.VISIBLE
+        explainer.visibility = TextView.VISIBLE
+        button.setOnClickListener {
+            val projectionManager = getSystemService(MediaProjectionManager::class.java)
+            startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_CODE_VOICE_SEARCH_CAPTURE)
         }
     }
 
@@ -132,17 +147,32 @@ class MainActivity : Activity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_CODE_SCREEN_CAPTURE) return
-        if (resultCode != RESULT_OK || data == null) {
-            Toast.makeText(this, R.string.main_firetv_mode_denied, Toast.LENGTH_LONG).show()
-            return
+        when (requestCode) {
+            REQUEST_CODE_SCREEN_CAPTURE -> {
+                if (resultCode != RESULT_OK || data == null) {
+                    Toast.makeText(this, R.string.main_firetv_mode_denied, Toast.LENGTH_LONG).show()
+                    return
+                }
+                val serviceIntent = Intent(this, FireTvCaptureService::class.java).apply {
+                    putExtra(FireTvCaptureService.EXTRA_RESULT_CODE, resultCode)
+                    putExtra(FireTvCaptureService.EXTRA_DATA, data)
+                }
+                ContextCompat.startForegroundService(this, serviceIntent)
+                Toast.makeText(this, R.string.main_firetv_mode_enabled, Toast.LENGTH_LONG).show()
+            }
+            REQUEST_CODE_VOICE_SEARCH_CAPTURE -> {
+                if (resultCode != RESULT_OK || data == null) {
+                    Toast.makeText(this, R.string.main_voice_search_denied, Toast.LENGTH_LONG).show()
+                    return
+                }
+                val serviceIntent = Intent(this, VoiceSearchCaptureService::class.java).apply {
+                    putExtra(VoiceSearchCaptureService.EXTRA_RESULT_CODE, resultCode)
+                    putExtra(VoiceSearchCaptureService.EXTRA_DATA, data)
+                }
+                ContextCompat.startForegroundService(this, serviceIntent)
+                Toast.makeText(this, R.string.main_voice_search_enabled, Toast.LENGTH_LONG).show()
+            }
         }
-        val serviceIntent = Intent(this, FireTvCaptureService::class.java).apply {
-            putExtra(FireTvCaptureService.EXTRA_RESULT_CODE, resultCode)
-            putExtra(FireTvCaptureService.EXTRA_DATA, data)
-        }
-        ContextCompat.startForegroundService(this, serviceIntent)
-        Toast.makeText(this, R.string.main_firetv_mode_enabled, Toast.LENGTH_LONG).show()
     }
 
     /** Sin este permiso (Android 13+) la notificación de "actualización
@@ -230,5 +260,6 @@ class MainActivity : Activity() {
 
     companion object {
         private const val REQUEST_CODE_SCREEN_CAPTURE = 100
+        private const val REQUEST_CODE_VOICE_SEARCH_CAPTURE = 101
     }
 }
