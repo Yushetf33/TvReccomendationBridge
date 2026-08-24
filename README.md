@@ -161,32 +161,34 @@ app, since reinstalling can reset these permissions.
 
 ## Fire TV
 
-Fire OS actively blocks sideloaded apps from using Android's Accessibility service — the mechanism this app relies on for Google TV — no matter how you try to enable it (confirmed through extensive testing: it doesn't work via the Settings app, via ADB, nor by writing the setting from the app's own code; the setting itself can get saved, but the service never actually binds). This isn't a bug in this app, it's a deliberate platform restriction.
-
-To work around it, on Fire TV the app uses a completely different mechanism: **screen capture + on-device text recognition (OCR)**, instead of Accessibility. Practically, this means:
+Fire TV works a bit differently from Google TV: instead of opening
+automatically the moment you select a recommendation, you need to
+**hold still on it for a couple of seconds**, then a prompt appears —
+**"Open '\<title\>' in \<your chosen app\>?"** — and you confirm by
+pressing **OK** on the remote. Not instant like on Google TV, but still
+much faster than typing the title in yourself. If you don't respond,
+the prompt disappears on its own after a few seconds and nothing opens.
 
 ### Activating it
 
-Open the app and tap the single activation button (it detects it's running on Fire TV automatically and shows the right option). You'll be asked for two permissions, once:
+Open the app and tap the single activation button (it detects it's
+running on Fire TV automatically and shows the right option). You'll be
+asked for two permissions, once:
 
-1. A **screen recording** permission (the standard Android system dialog — same one screen recorder apps use). While active, Android shows a persistent notification and a small recording indicator — that's expected and can't be hidden, it's how Android informs you *any* app is capturing the screen.
-2. **Usage access** (Settings → Apps → Special app access → Usage access → TvRecommendationBridge → enable it). This lets the app tell when you're actually on the home screen versus inside another app (Stremio, Netflix, etc.), so it doesn't try to read recommendation titles off of something that isn't a recommendation.
-
-### How selecting something works
-
-Since Fire OS's block also means there's no way to detect an actual remote click on a recommendation card (this was tested thoroughly too — no `InputManager`, `MediaSession`, or Fire TV-specific API exposes that to a regular app either), the flow here is necessarily a bit different from Google TV's fully automatic "click it and it opens":
-
-1. Move to a recommendation and **hold still on it for a couple of seconds** — the app is reading the title off-screen in the background.
-2. A confirmation prompt appears: **"Open '\<title\>' in \<your chosen app\>?"**
-3. Press **OK** on the remote to open it. If you don't respond, the prompt disappears on its own after a few seconds and nothing opens — same if you press Back.
-
-This extra confirmation step only exists on Fire TV, and only because there is no way to distinguish "the user paused here on purpose to select it" from "the user is just browsing past it" without seeing the actual click — so this is the only way to guarantee nothing opens unless you actually mean it to.
+1. A **screen recording** permission (the standard Android system
+   dialog). While active, Android shows a persistent notification —
+   that's expected and can't be hidden.
+2. **Usage access**: Settings → Apps → Special app access → Usage
+   access → TvRecommendationBridge → enable it.
 
 ### Known Fire TV limitations
 
-- Only works while you're on the actual home screen — inside another app, nothing is read or processed.
-- Needs the extra couple of seconds of holding still, plus the OK confirmation — it's not instant like on Google TV.
-- The screen-recording indicator/notification is unavoidable; it's an Android platform requirement, not something this app adds.
+- Only works while you're on the actual home screen — inside another
+  app, nothing happens.
+- Needs the extra couple of seconds of holding still, plus the OK
+  confirmation — it's not instant like on Google TV.
+- The screen-recording notification is unavoidable; it's an Android
+  requirement, not something this app adds.
 
 ## Subscription
 
@@ -216,10 +218,7 @@ in a public movie/show database to identify the content, and opens its
 page directly in Nuvio, Stremio, Plex, or Jellyfin (whichever you've
 chosen in the app's settings).
 
-On **Fire TV**, there's no such click event available to sideloaded apps
-(see [Fire TV](#fire-tv) above for why) — instead, the app reads the
-title directly off the screen using on-device text recognition, and asks
-you to confirm before opening anything.
+On **Fire TV** it works a bit differently — see the [Fire TV](#fire-tv) section above for the details.
 
 For Plex specifically, this only works for titles available in Plex's
 own free, ad-supported streaming catalog (the "Movies & Shows" section
