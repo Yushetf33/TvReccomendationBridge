@@ -60,8 +60,15 @@
             android:id="@+id/button_verify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="12dp"
             android:text="@string/main_verify_button" />
+
+        <Button
+            android:id="@+id/button_manage_devices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/main_manage_devices_button" />
 
         <TextView
             android:layout_width="wrap_content"

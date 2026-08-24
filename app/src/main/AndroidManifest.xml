@@ -27,6 +27,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".DeviceManagerActivity" android:exported="false" />
+
         <service
             android:name=".TvRecommendationAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"

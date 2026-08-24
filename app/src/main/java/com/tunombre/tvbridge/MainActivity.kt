@@ -44,6 +44,14 @@ class MainActivity : Activity() {
             verifyEmail(email)
         }
 
+        findViewById<Button>(R.id.button_manage_devices).setOnClickListener {
+            if (LicenseManager.getSavedEmail(this) == null) {
+                Toast.makeText(this, R.string.main_manage_devices_needs_verification, Toast.LENGTH_SHORT).show()
+            } else {
+                startActivity(Intent(this, DeviceManagerActivity::class.java))
+            }
+        }
+
         setupPaymentLinks()
         setupPlayerAppSelector()
 

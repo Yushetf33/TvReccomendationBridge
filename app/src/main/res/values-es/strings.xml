@@ -17,6 +17,8 @@
     <string name="main_subscription_error">No se pudo verificar (revisa tu conexión) e inténtalo de nuevo</string>
     <string name="main_email_hint">tu@email.com</string>
     <string name="main_verify_button">Verificar suscripción</string>
+    <string name="main_manage_devices_button">Gestionar dispositivos</string>
+    <string name="main_manage_devices_needs_verification">Primero verifica tu suscripción</string>
     <string name="main_payment_hint">Escanea con el móvil y paga con este mismo email:</string>
     <string name="main_monthly_label">Prueba gratis</string>
     <string name="main_monthly_trial_note">2 días, sin tarjeta (una vez por dispositivo)</string>
@@ -33,4 +35,17 @@
 
     <string name="main_credits_title">Créditos</string>
     <string name="main_tmdb_attribution">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
+
+    <string name="devices_title">Gestionar dispositivos</string>
+    <string name="devices_subtitle">Dispositivos vinculados al email de tu suscripción</string>
+    <string name="devices_loading">Cargando…</string>
+    <string name="devices_empty">No se encontraron dispositivos</string>
+    <string name="devices_error">No se pudieron cargar los dispositivos (revisa tu conexión)</string>
+    <string name="devices_unknown_name">Dispositivo desconocido</string>
+    <string name="devices_row">%1$s — vinculado el %2$s</string>
+    <string name="devices_row_this_device">%1$s — vinculado el %2$s (este dispositivo)</string>
+    <string name="devices_remove_button">Eliminar</string>
+    <string name="devices_confirm_remove">¿Eliminar \"%1$s\"? Si sigue en uso, tendrá que verificar la suscripción de nuevo.</string>
+    <string name="devices_removed">Dispositivo eliminado</string>
+    <string name="devices_removed_self">Este dispositivo se ha eliminado. Verifica de nuevo para seguir usándolo.</string>
 </resources>

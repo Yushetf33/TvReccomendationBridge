@@ -17,6 +17,8 @@
     <string name="main_subscription_error">Couldn\'t verify (check your connection) and try again</string>
     <string name="main_email_hint">you@email.com</string>
     <string name="main_verify_button">Verify subscription</string>
+    <string name="main_manage_devices_button">Manage devices</string>
+    <string name="main_manage_devices_needs_verification">Verify your subscription first</string>
     <string name="main_payment_hint">Scan with your phone and pay using this same email:</string>
     <string name="main_monthly_label">Free trial</string>
     <string name="main_monthly_trial_note">2 days, no card needed (once per device)</string>
@@ -33,4 +35,17 @@
 
     <string name="main_credits_title">Credits</string>
     <string name="main_tmdb_attribution">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
+
+    <string name="devices_title">Manage devices</string>
+    <string name="devices_subtitle">Devices linked to your subscription email</string>
+    <string name="devices_loading">Loading…</string>
+    <string name="devices_empty">No devices found</string>
+    <string name="devices_error">Couldn\'t load devices (check your connection)</string>
+    <string name="devices_unknown_name">Unknown device</string>
+    <string name="devices_row">%1$s — linked %2$s</string>
+    <string name="devices_row_this_device">%1$s — linked %2$s (this device)</string>
+    <string name="devices_remove_button">Remove</string>
+    <string name="devices_confirm_remove">Remove \"%1$s\"? If it\'s still in use, it will need to verify the subscription again.</string>
+    <string name="devices_removed">Device removed</string>
+    <string name="devices_removed_self">This device was removed. Verify again to keep using it.</string>
 </resources>

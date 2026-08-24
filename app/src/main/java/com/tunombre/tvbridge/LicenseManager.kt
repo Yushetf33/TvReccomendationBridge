@@ -1,6 +1,7 @@
 package com.tunombre.tvbridge
 
 import android.content.Context
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import okhttp3.MediaType.Companion.toMediaType
@@ -45,6 +46,17 @@ object LicenseManager {
     fun getDeviceId(context: Context): String =
         Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown-device"
 
+    /** Nombre legible del dispositivo (fabricante + modelo), para que el
+     * usuario pueda identificarlo en la pantalla "Gestionar dispositivos". */
+    fun getDeviceName(): String = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
+
+    /** Borra el email guardado y el estado de verificación de este
+     * dispositivo (p.ej. tras eliminarlo a sí mismo en "Gestionar
+     * dispositivos"), forzando a verificar de nuevo antes de seguir usándolo. */
+    fun clear(context: Context) {
+        prefs(context).edit().clear().apply()
+    }
+
     /** true si la última verificación con éxito sigue dentro del periodo de gracia. */
     fun isLikelyValid(context: Context): Boolean {
         val prefs = prefs(context)
@@ -69,6 +81,7 @@ object LicenseManager {
         val body = JSONObject().apply {
             put("email", email)
             put("deviceId", deviceId)
+            put("deviceName", getDeviceName())
         }.toString().toRequestBody(jsonMediaType)
 
         val request = Request.Builder()
