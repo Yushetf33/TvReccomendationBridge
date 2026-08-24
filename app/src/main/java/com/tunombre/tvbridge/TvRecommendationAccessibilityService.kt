@@ -2,6 +2,10 @@ package com.tunombre.tvbridge
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -76,6 +80,18 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     // a una pantalla sin esa ficha.
     private var lastHandledEntityTitle: String? = null
 
+    // ACTION_SCREEN_ON no se puede declarar en el manifest (broadcast
+    // implícito restringido desde Android 8), así que se registra aquí en
+    // caliente, ya que este servicio vive todo el tiempo que la TV está en
+    // uso. Sirve para comprobar actualizaciones cada vez que se enciende la
+    // TV, ya que en la mayoría de casos eso es solo salir de standby, no un
+    // reinicio real de Android (BOOT_COMPLETED no llegaría a dispararse).
+    private val screenOnReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            backgroundExecutor.execute { UpdateChecker.checkAndDownloadIfNewer(applicationContext) }
+        }
+    }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
 
@@ -101,6 +117,23 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // no dependa solo de que el usuario abra MainActivity.
         LicenseManager.getSavedEmail(this)?.let { email ->
             backgroundExecutor.execute { LicenseManager.verifyNow(this, email) }
+        }
+
+        // No debe poder tumbar el servicio de accesibilidad si algo va mal
+        // aquí (p.ej. una ROM que trate distinto el registro de un receiver
+        // dinámico) — lo esencial (detectar clics) no debe depender de esto.
+        try {
+            registerReceiver(screenOnReceiver, IntentFilter(Intent.ACTION_SCREEN_ON))
+            Log.d(TAG, "screenOnReceiver registrado")
+            // También al arrancar el servicio (p.ej. tras un reinicio real, o
+            // la primera vez que se activa), por si la TV no llega a apagar
+            // nunca la pantalla entre medias.
+            backgroundExecutor.execute {
+                Log.d(TAG, "Comprobando actualizaciones al arrancar el servicio")
+                UpdateChecker.checkAndDownloadIfNewer(applicationContext)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error preparando el comprobador de actualizaciones", e)
         }
     }
 
@@ -348,6 +381,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterReceiver(screenOnReceiver)
         backgroundExecutor.shutdown()
     }
 }

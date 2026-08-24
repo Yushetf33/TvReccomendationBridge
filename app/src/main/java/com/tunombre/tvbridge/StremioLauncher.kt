@@ -1,6 +1,6 @@
 package com.tunombre.tvbridge
 
-import android.accessibilityservice.AccessibilityService
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -17,7 +17,7 @@ object StremioLauncher {
 
     private const val TAG = "StremioLauncher"
 
-    fun open(service: AccessibilityService, match: TmdbMatch) {
+    fun open(service: Context, match: TmdbMatch) {
         when (val app = Preferences.getSelectedApp(service)) {
             PlayerApp.NUVIO -> {
                 val uri = if (match.type == MediaType.MOVIE) {
@@ -54,7 +54,7 @@ object StremioLauncher {
         }
     }
 
-    private fun openWithFallback(service: AccessibilityService, uri: Uri, targetPackage: String, appLabel: String) {
+    private fun openWithFallback(service: Context, uri: Uri, targetPackage: String, appLabel: String) {
         // FLAG_ACTIVITY_CLEAR_TASK + NEW_TASK: tanto Nuvio como Stremio
         // declaran su Activity como launchMode="singleTask". Sin CLEAR_TASK,
         // si la app ya estaba abierta en segundo plano, Android a veces solo

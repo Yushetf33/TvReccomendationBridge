@@ -1,8 +1,14 @@
 package com.tunombre.tvbridge
 
+import android.Manifest
 import android.app.Activity
+import android.app.AppOpsManager
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +17,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
 
 /**
@@ -54,23 +62,97 @@ class MainActivity : Activity() {
 
         setupPaymentLinks()
         setupPlayerAppSelector()
+        requestNotificationPermissionIfNeeded()
+        UpdateChecker.schedulePeriodicCheck(this)
 
-        findViewById<Button>(R.id.button_accessibility_settings).setOnClickListener {
-            // En algunos launchers de terceros (p.ej. Fire TV) el sistema
-            // bloquea este intent para apps que no tengan un permiso propio
-            // del fabricante, y lanza SecurityException en vez de abrir la
-            // pantalla. En ese caso, evitamos el crash y pedimos al usuario
-            // que navegue manualmente.
-            try {
-                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this,
-                    R.string.main_accessibility_settings_unavailable,
-                    Toast.LENGTH_LONG
-                ).show()
+        setupActivateServiceButton()
+    }
+
+    /** Un único botón que hace lo correcto según el dispositivo: en Fire TV
+     * (donde Fire OS bloquea AccessibilityService para apps sideloaded —
+     * comprobado a fondo) activa el modo de captura de pantalla + OCR; en
+     * cualquier otro Android TV, abre los ajustes de Accesibilidad de
+     * siempre. */
+    private fun setupActivateServiceButton() {
+        val button = findViewById<Button>(R.id.button_activate_service)
+        val explainer = findViewById<TextView>(R.id.activate_service_explainer)
+
+        if (isFireTv()) {
+            button.setText(R.string.main_firetv_mode_button)
+            explainer.visibility = TextView.VISIBLE
+            button.setOnClickListener {
+                if (!hasUsageAccess()) {
+                    Toast.makeText(this, R.string.main_firetv_usage_access_needed, Toast.LENGTH_LONG).show()
+                    try {
+                        startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                    } catch (e: Exception) {
+                        Toast.makeText(this, R.string.main_accessibility_settings_unavailable, Toast.LENGTH_LONG).show()
+                    }
+                    return@setOnClickListener
+                }
+                val projectionManager = getSystemService(MediaProjectionManager::class.java)
+                startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_CODE_SCREEN_CAPTURE)
+            }
+        } else {
+            button.setOnClickListener {
+                // En algunos launchers de terceros el sistema bloquea este
+                // intent para apps que no tengan un permiso propio del
+                // fabricante, y lanza SecurityException en vez de abrir la
+                // pantalla. En ese caso, evitamos el crash y pedimos al
+                // usuario que navegue manualmente.
+                try {
+                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this,
+                        R.string.main_accessibility_settings_unavailable,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
+    }
+
+    private fun isFireTv(): Boolean = Build.MANUFACTURER.equals("Amazon", ignoreCase = true)
+
+    /** "Acceso a datos de uso" — permiso especial (no aparece como diálogo
+     * normal) que el modo Fire TV necesita para saber qué app está en
+     * primer plano y no procesar OCR de otras apps (ver
+     * FireTvCaptureService.isLauncherForeground). */
+    private fun hasUsageAccess(): Boolean {
+        val appOps = getSystemService(AppOpsManager::class.java)
+        // checkOpNoThrow (no unsafeCheckOpNoThrow, que no existe todavía en
+        // Android 7.1 / Fire OS 6) — mismo resultado, disponible desde API 19.
+        @Suppress("DEPRECATION")
+        val mode = appOps.checkOpNoThrow(
+            AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName
+        )
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_CODE_SCREEN_CAPTURE) return
+        if (resultCode != RESULT_OK || data == null) {
+            Toast.makeText(this, R.string.main_firetv_mode_denied, Toast.LENGTH_LONG).show()
+            return
+        }
+        val serviceIntent = Intent(this, FireTvCaptureService::class.java).apply {
+            putExtra(FireTvCaptureService.EXTRA_RESULT_CODE, resultCode)
+            putExtra(FireTvCaptureService.EXTRA_DATA, data)
+        }
+        ContextCompat.startForegroundService(this, serviceIntent)
+        Toast.makeText(this, R.string.main_firetv_mode_enabled, Toast.LENGTH_LONG).show()
+    }
+
+    /** Sin este permiso (Android 13+) la notificación de "actualización
+     * lista para instalar" de UpdateChecker no se mostraría. */
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            == PackageManager.PERMISSION_GRANTED
+        ) return
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
     }
 
     private fun setupPaymentLinks() {
@@ -144,5 +226,9 @@ class MainActivity : Activity() {
     override fun onDestroy() {
         super.onDestroy()
         backgroundExecutor.shutdown()
+    }
+
+    companion object {
+        private const val REQUEST_CODE_SCREEN_CAPTURE = 100
     }
 }

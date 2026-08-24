@@ -23,8 +23,12 @@ android {
         applicationId = "com.tunombre.tvbridge"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        // IMPORTANTE: sube versionCode y versionName en cada release (deben
+        // coincidir con el tag_name de GitHub, p.ej. v1.0.8 -> "1.0.8") o el
+        // comprobador de actualizaciones (UpdateChecker) nunca detectará la
+        // versión nueva como más reciente que la instalada.
+        versionCode = 8
+        versionName = "1.0.8"
 
         // Se lee de local.properties (no versionado). Consigue la tuya
         // gratis en https://www.themoviedb.org/settings/api
@@ -112,6 +116,14 @@ dependencies {
     // Solo el "core" de ZXing (generar QR), no la librería completa de
     // escaneo — no hace falta cámara para esto.
     implementation("com.google.zxing:core:3.5.3")
+    // Para el chequeo periódico de actualizaciones en segundo plano.
+    implementation(libs.androidx.work.runtime.ktx)
+    // OCR on-device para el "modo Fire TV" (MediaProjection + lectura de
+    // pantalla), ya que allí el AccessibilityService está bloqueado por la
+    // plataforma. Variante "bundled" (com.google.mlkit, no
+    // com.google.android.gms): el modelo va dentro del APK y NO depende de
+    // Google Play Services, que Fire TV no tiene.
+    implementation("com.google.mlkit:text-recognition:16.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

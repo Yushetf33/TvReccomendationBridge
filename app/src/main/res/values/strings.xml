@@ -48,4 +48,19 @@
     <string name="devices_confirm_remove">Remove \"%1$s\"? If it\'s still in use, it will need to verify the subscription again.</string>
     <string name="devices_removed">Device removed</string>
     <string name="devices_removed_self">This device was removed. Verify again to keep using it.</string>
+
+    <string name="update_notification_channel_name">Updates</string>
+    <string name="update_notification_downloading_title">Downloading TvRecommendationBridge update</string>
+    <string name="update_notification_ready_title">Update ready</string>
+    <string name="update_notification_ready_text">Version %1$s is downloaded — tap to install</string>
+
+    <string name="firetv_notification_channel_name">Fire TV mode</string>
+    <string name="firetv_notification_title">TvRecommendationBridge is watching the screen (Fire TV mode)</string>
+    <string name="main_firetv_mode_button">Enable Fire TV mode (screen reading)</string>
+    <string name="main_firetv_mode_explainer">Only needed on Fire TV, where Android\'s standard method doesn\'t work. Requires accepting a one-time screen recording permission.</string>
+    <string name="main_firetv_mode_enabled">Fire TV mode active — watching the screen</string>
+    <string name="main_firetv_mode_denied">Screen recording permission denied — Fire TV mode needs it to work</string>
+    <string name="firetv_confirm_message">Open \"%1$s\" in %2$s?</string>
+    <string name="firetv_confirm_button">Open</string>
+    <string name="main_firetv_usage_access_needed">Fire TV mode also needs "Usage access" — find TvRecommendationBridge in this list and enable it, then come back and press the button again</string>
 </resources>

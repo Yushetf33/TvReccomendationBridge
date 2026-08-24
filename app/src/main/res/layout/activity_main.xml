@@ -197,10 +197,21 @@
         </RadioGroup>
 
         <Button
-            android:id="@+id/button_accessibility_settings"
+            android:id="@+id/button_activate_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/main_open_accessibility_settings" />
+
+        <TextView
+            android:id="@+id/activate_service_explainer"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/main_firetv_mode_explainer"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <!-- Créditos -->
         <TextView

@@ -1,6 +1,6 @@
 package com.tunombre.tvbridge
 
-import android.accessibilityservice.AccessibilityService
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -33,12 +33,12 @@ object SmartTubeLauncher {
     private const val TAG = "SmartTubeLauncher"
     private val SMARTTUBE_PACKAGES = listOf("org.smarttube.stable", "org.smarttube.beta")
 
-    fun openSearch(service: AccessibilityService, title: String) {
+    fun openSearch(service: Context, title: String) {
         val uri = Uri.parse("https://www.youtube.com/results?search_query=${Uri.encode(title)}")
         launch(service, uri)
     }
 
-    private fun launch(service: AccessibilityService, uri: Uri): Boolean {
+    private fun launch(service: Context, uri: Uri): Boolean {
         for (targetPackage in SMARTTUBE_PACKAGES) {
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = uri

@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Necesario porque TmdbClient hace peticiones HTTP a api.themoviedb.org -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Para poder ofrecer instalar la APK de actualización descargada
+         (UpdateChecker) sin pasar por Play Store. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Para poder avisar con una notificación de que la actualización ya
+         se descargó y está lista para instalar (Android 13+). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Para el "modo Fire TV" (ver FireTvCaptureService): captura de
+         pantalla + OCR como alternativa cuando el AccessibilityService está
+         bloqueado por la plataforma (comprobado que ocurre en Fire OS). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- Para saber qué app está en primer plano (y no procesar OCR de
+         pantallas de otras apps, solo del launcher) sin AccessibilityService.
+         Es un permiso especial: no aparece como diálogo normal, hay que
+         concederlo a mano en Ajustes → Acceso especial → Acceso a datos de
+         uso (ver MainActivity/FireTvCaptureService). -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <!-- No hace falta mando táctil ni de verdad "leanback"; lo declaramos
          igualmente como no-requerido para que Google Play (si algún día se
@@ -29,10 +50,48 @@
 
         <activity android:name=".DeviceManagerActivity" android:exported="false" />
 
+        <!-- Diálogo de confirmación del modo Fire TV (ver
+             FireTvCaptureService/ConfirmOpenActivity): necesita ser una
+             Activity real (no un overlay) para poder recibir el pulso de OK
+             genuino del mando. -->
+        <activity
+            android:name=".ConfirmOpenActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+
+        <!-- Recibe el aviso de DownloadManager cuando termina de bajar la
+             APK de una actualización, para lanzar la notificación de
+             "toca para instalar" (ver UpdateChecker/UpdateDownloadReceiver). -->
+        <receiver
+            android:name=".UpdateDownloadReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Expone la APK descargada (carpeta privada de la app) al
+             instalador del sistema mediante un content:// URI, ya que un
+             file:// directo está bloqueado desde Android 7. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <service
+            android:name=".FireTvCaptureService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
         <service
             android:name=".TvRecommendationAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

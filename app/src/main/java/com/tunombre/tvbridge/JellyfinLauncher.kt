@@ -1,7 +1,7 @@
 package com.tunombre.tvbridge
 
-import android.accessibilityservice.AccessibilityService
 import android.app.SearchManager
+import android.content.Context
 import android.content.ComponentName
 import android.content.Intent
 import android.util.Log
@@ -26,7 +26,7 @@ object JellyfinLauncher {
     private const val JELLYFIN_PACKAGE = "org.jellyfin.androidtv"
     private const val STARTUP_ACTIVITY = "org.jellyfin.androidtv.ui.startup.StartupActivity"
 
-    fun openSearch(service: AccessibilityService, title: String) {
+    fun openSearch(service: Context, title: String) {
         val intent = Intent(Intent.ACTION_SEARCH).apply {
             putExtra(SearchManager.QUERY, title)
             component = ComponentName(JELLYFIN_PACKAGE, STARTUP_ACTIVITY)

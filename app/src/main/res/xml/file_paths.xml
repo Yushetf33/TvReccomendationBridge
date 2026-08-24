@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- DownloadManager guarda la APK de actualización aquí (ver
+         UpdateChecker.startDownload). -->
+    <external-files-path name="downloads" path="Downloads/" />
+</paths>

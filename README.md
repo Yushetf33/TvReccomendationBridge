@@ -8,12 +8,12 @@ TvRecommendationBridge is an independent automation and redirection tool. **It d
 
 ## Requirements
 
-- A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.).
+- A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.), **or a Fire TV device** (Fire TV Stick, Fire TV Cube, etc.) — Fire TV works differently under the hood, see [Fire TV](#fire-tv) below.
 - **Nuvio**, **Stremio**, **Plex**, and/or **Jellyfin** installed on the device — pick whichever you want recommendations to open in.
-- **SmartTube** installed (optional) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
+- **SmartTube** installed (optional, Google TV only) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
 - An active TvRecommendationBridge subscription (see [Subscription](#subscription) below).
 
-> **Note:** TvRecommendationBridge is designed specifically for devices using the Google TV launcher. It is not designed for Android TV devices using other launchers, nor for Fire TV.
+> **Note:** support for Android TV launchers other than Google TV's and Amazon's own Fire TV launcher is not planned.
 
 ## Installation
 
@@ -40,6 +40,14 @@ TvRecommendationBridge is not currently distributed through Google Play. The app
 adb connect <tv-ip>:5555
 adb install app-release.apk
 ```
+
+### Updates
+
+The app checks for new versions periodically in the background (roughly
+whenever the TV wakes up, at most once every few hours) and downloads
+them automatically — you'll get a notification once a new version is
+ready, and just need to tap it to install (Android always requires that
+last confirmation for anything installed outside Google Play).
 
 ### Activating the service
 
@@ -151,6 +159,35 @@ adb shell appops set com.tunombre.tvbridge APP_ASSOC_START allow
 Note this may need to be repeated after reinstalling or updating the
 app, since reinstalling can reset these permissions.
 
+## Fire TV
+
+Fire OS actively blocks sideloaded apps from using Android's Accessibility service — the mechanism this app relies on for Google TV — no matter how you try to enable it (confirmed through extensive testing: it doesn't work via the Settings app, via ADB, nor by writing the setting from the app's own code; the setting itself can get saved, but the service never actually binds). This isn't a bug in this app, it's a deliberate platform restriction.
+
+To work around it, on Fire TV the app uses a completely different mechanism: **screen capture + on-device text recognition (OCR)**, instead of Accessibility. Practically, this means:
+
+### Activating it
+
+Open the app and tap the single activation button (it detects it's running on Fire TV automatically and shows the right option). You'll be asked for two permissions, once:
+
+1. A **screen recording** permission (the standard Android system dialog — same one screen recorder apps use). While active, Android shows a persistent notification and a small recording indicator — that's expected and can't be hidden, it's how Android informs you *any* app is capturing the screen.
+2. **Usage access** (Settings → Apps → Special app access → Usage access → TvRecommendationBridge → enable it). This lets the app tell when you're actually on the home screen versus inside another app (Stremio, Netflix, etc.), so it doesn't try to read recommendation titles off of something that isn't a recommendation.
+
+### How selecting something works
+
+Since Fire OS's block also means there's no way to detect an actual remote click on a recommendation card (this was tested thoroughly too — no `InputManager`, `MediaSession`, or Fire TV-specific API exposes that to a regular app either), the flow here is necessarily a bit different from Google TV's fully automatic "click it and it opens":
+
+1. Move to a recommendation and **hold still on it for a couple of seconds** — the app is reading the title off-screen in the background.
+2. A confirmation prompt appears: **"Open '\<title\>' in \<your chosen app\>?"**
+3. Press **OK** on the remote to open it. If you don't respond, the prompt disappears on its own after a few seconds and nothing opens — same if you press Back.
+
+This extra confirmation step only exists on Fire TV, and only because there is no way to distinguish "the user paused here on purpose to select it" from "the user is just browsing past it" without seeing the actual click — so this is the only way to guarantee nothing opens unless you actually mean it to.
+
+### Known Fire TV limitations
+
+- Only works while you're on the actual home screen — inside another app, nothing is read or processed.
+- Needs the extra couple of seconds of holding still, plus the OK confirmation — it's not instant like on Google TV.
+- The screen-recording indicator/notification is unavoidable; it's an Android platform requirement, not something this app adds.
+
 ## Subscription
 
 TvRecommendationBridge requires a paid subscription to work, with a free
@@ -173,11 +210,16 @@ no need to wait 30 days or contact support to free up a slot.
 
 ## How it works
 
-The Google TV launcher exposes the title of each recommendation when you
-select it. The app picks up on that click, looks up the title in a
-public movie/show database to identify the content, and opens its page
-directly in Nuvio, Stremio, Plex, or Jellyfin (whichever you've chosen
-in the app's settings).
+On **Google TV**, the launcher exposes the title of each recommendation
+when you select it. The app picks up on that click, looks up the title
+in a public movie/show database to identify the content, and opens its
+page directly in Nuvio, Stremio, Plex, or Jellyfin (whichever you've
+chosen in the app's settings).
+
+On **Fire TV**, there's no such click event available to sideloaded apps
+(see [Fire TV](#fire-tv) above for why) — instead, the app reads the
+title directly off the screen using on-device text recognition, and asks
+you to confirm before opening anything.
 
 For Plex specifically, this only works for titles available in Plex's
 own free, ad-supported streaming catalog (the "Movies & Shows" section

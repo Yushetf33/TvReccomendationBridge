@@ -48,4 +48,19 @@
     <string name="devices_confirm_remove">¿Eliminar \"%1$s\"? Si sigue en uso, tendrá que verificar la suscripción de nuevo.</string>
     <string name="devices_removed">Dispositivo eliminado</string>
     <string name="devices_removed_self">Este dispositivo se ha eliminado. Verifica de nuevo para seguir usándolo.</string>
+
+    <string name="update_notification_channel_name">Actualizaciones</string>
+    <string name="update_notification_downloading_title">Descargando actualización de TvRecommendationBridge</string>
+    <string name="update_notification_ready_title">Actualización lista</string>
+    <string name="update_notification_ready_text">La versión %1$s ya está descargada — toca para instalar</string>
+
+    <string name="firetv_notification_channel_name">Modo Fire TV</string>
+    <string name="firetv_notification_title">TvRecommendationBridge está observando la pantalla (modo Fire TV)</string>
+    <string name="main_firetv_mode_button">Activar modo Fire TV (lectura de pantalla)</string>
+    <string name="main_firetv_mode_explainer">Solo hace falta en Fire TV, donde el método estándar de Android no funciona. Requiere aceptar un permiso de grabación de pantalla una sola vez.</string>
+    <string name="main_firetv_mode_enabled">Modo Fire TV activo — observando la pantalla</string>
+    <string name="main_firetv_mode_denied">Permiso de grabación de pantalla denegado — el modo Fire TV lo necesita para funcionar</string>
+    <string name="firetv_confirm_message">¿Abrir \"%1$s\" en %2$s?</string>
+    <string name="firetv_confirm_button">Abrir</string>
+    <string name="main_firetv_usage_access_needed">El modo Fire TV también necesita "Acceso a datos de uso" — busca TvRecommendationBridge en la lista y actívalo, luego vuelve y pulsa el botón otra vez</string>
 </resources>
