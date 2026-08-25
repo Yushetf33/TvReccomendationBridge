@@ -68,15 +68,35 @@ object TmdbClient {
     }
 
     private fun resolveTitle(title: String): TmdbMatch? {
-        val (tmdbId, mediaPath, resolvedTitle) = searchId(title) ?: return null
-        val imdbId = fetchImdbId(tmdbId, mediaPath) ?: return null
-        val type = if (mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
-        return TmdbMatch(imdbId, type, resolvedTitle)
+        val results = searchAll(title) ?: return null
+        if (results.isEmpty()) return null
+
+        // Preferimos un resultado con el título EXACTO buscado sobre el más
+        // popular de TMDb: para títulos de una franquicia con una entrega
+        // reciente muy popular (p.ej. "Dune"), TMDb pone esa entrega primero
+        // aunque el título exacto pedido sea otro ("Dune: Parte Dos" (2024)
+        // por delante de "Dune" (2021)).
+        val normalizedQuery = normalizeTitle(title)
+        val exactMatches = results.filter { normalizeTitle(it.title) == normalizedQuery }
+
+        // A veces TMDb trae más de una entrada con el título exacto (p.ej.
+        // duplicados basura sin datos completos) — probamos cada una hasta
+        // encontrar una con imdb_id real en vez de fallar con la primera
+        // que no lo tenga.
+        val candidatesInOrder = exactMatches.ifEmpty { results.take(1) }
+        for (candidate in candidatesInOrder) {
+            val imdbId = fetchImdbId(candidate.tmdbId, candidate.mediaPath) ?: continue
+            val type = if (candidate.mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
+            return TmdbMatch(imdbId, type, candidate.title)
+        }
+        return null
     }
 
-    private data class SearchResult(val tmdbId: Int, val mediaPath: String, val title: String)
+    private fun normalizeTitle(title: String) = title.trim().lowercase()
 
-    private fun searchId(title: String): SearchResult? {
+    private data class SearchResult(val tmdbId: Int, val mediaPath: String, val title: String, val year: String?)
+
+    private fun searchAll(title: String): List<SearchResult>? {
         val encoded = URLEncoder.encode(title, "UTF-8")
         val url = "https://api.themoviedb.org/3/search/multi?query=$encoded&api_key=$TMDB_API_KEY&language=es-ES"
 
@@ -92,18 +112,24 @@ object TmdbClient {
                 val json = JSONObject(body)
                 val results = json.getJSONArray("results")
                 // TMDb ya ordena por relevancia/popularidad; nos quedamos con
-                // el primer resultado que sea película o serie.
+                // los que sean película o serie (se ignoran los de "person").
+                val matches = mutableListOf<SearchResult>()
                 for (i in 0 until results.length()) {
                     val result = results.getJSONObject(i)
                     val mediaType = result.optString("media_type", "")
                     if (mediaType == "movie" || mediaType == "tv") {
-                        // Las películas traen "title", las series "name".
+                        // Las películas traen "title"/"release_date", las
+                        // series "name"/"first_air_date".
                         val resolvedTitle = result.optString("title", result.optString("name", title))
-                        return SearchResult(result.getInt("id"), mediaType, resolvedTitle)
+                        val date = result.optString("release_date", result.optString("first_air_date", ""))
+                        val year = date.take(4).takeIf { it.length == 4 }
+                        matches.add(SearchResult(result.getInt("id"), mediaType, resolvedTitle, year))
                     }
                 }
-                Log.d(TAG, "Sin resultados aprovechables en TMDb para: $title")
-                null
+                if (matches.isEmpty()) {
+                    Log.d(TAG, "Sin resultados aprovechables en TMDb para: $title")
+                }
+                matches
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error buscando en TMDb", e)

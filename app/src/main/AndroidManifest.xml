@@ -4,6 +4,10 @@
 
     <!-- Necesario porque TmdbClient hace peticiones HTTP a api.themoviedb.org -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Fuerza un arranque en frío de Nuvio/Stremio antes de cada apertura
+         (ver StremioLauncher.openWithFallback) — sin esto, a veces se
+         quedan en la última ficha abierta en vez de navegar a la nueva. -->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <!-- Para poder ofrecer instalar la APK de actualización descargada
          (UpdateChecker) sin pasar por Play Store. -->

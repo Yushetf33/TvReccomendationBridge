@@ -159,6 +159,12 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                 event.className?.toString()?.endsWith(".entity.EntityActivity") == true
             ) {
                 handleEntityDetailsWindow()
+            } else {
+                // Al salir de la ficha de detalle (Inicio, otra app...) se
+                // libera el título ya procesado, para poder volver a buscar
+                // por voz ese mismo título más tarde sin que el filtro
+                // anti-doble-disparo de arriba lo bloquee para siempre.
+                lastHandledEntityTitle = null
             }
             return
         }

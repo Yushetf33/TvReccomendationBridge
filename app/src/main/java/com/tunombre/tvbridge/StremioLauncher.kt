@@ -1,5 +1,6 @@
 package com.tunombre.tvbridge
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -59,29 +60,46 @@ object StremioLauncher {
         // declaran su Activity como launchMode="singleTask". Sin CLEAR_TASK,
         // si la app ya estaba abierta en segundo plano, Android a veces solo
         // trae su task existente al frente sin volver a procesar el nuevo
-        // deep link (se queda en el último título abierto). CLEAR_TASK fuerza
-        // un arranque limpio de la Activity en cada apertura.
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = uri
-            setPackage(targetPackage)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
-
-        try {
-            service.startActivity(intent)
-            Log.d(TAG, "Abriendo $appLabel: $uri")
-        } catch (e: Exception) {
-            Log.e(TAG, "No se pudo abrir $appLabel con $targetPackage, reintentando sin package", e)
-            // Fallback: deja que Android elija la app que resuelva el esquema.
+        // deep link (se queda en el último título abierto).
+        //
+        // CLEAR_TASK por sí solo no basta — confirmado en dispositivo real
+        // (Nuvio) reproduciendo el mismo deep link por ADB con las mismas
+        // flags: se quedaba en la ficha anterior sin más. Matar el proceso
+        // en segundo plano antes de lanzar fuerza un arranque en frío real,
+        // a costa de un pequeño parpadeo al abrir. En un hilo aparte porque
+        // este método se llama a veces desde el hilo principal (p.ej. el
+        // botón de ConfirmOpenActivity) y no debe bloquearlo.
+        Thread {
+            val activityManager = service.getSystemService(ActivityManager::class.java)
             try {
-                val fallbackIntent = Intent(Intent.ACTION_VIEW).apply {
-                    data = uri
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                }
-                service.startActivity(fallbackIntent)
-            } catch (e2: Exception) {
-                Log.e(TAG, "Tampoco funcionó el fallback. ¿$appLabel está instalado?", e2)
+                activityManager.killBackgroundProcesses(targetPackage)
+                Thread.sleep(200)
+            } catch (e: Exception) {
+                Log.w(TAG, "No se pudo matar el proceso en segundo plano de $targetPackage", e)
             }
-        }
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = uri
+                setPackage(targetPackage)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+
+            try {
+                service.startActivity(intent)
+                Log.d(TAG, "Abriendo $appLabel: $uri")
+            } catch (e: Exception) {
+                Log.e(TAG, "No se pudo abrir $appLabel con $targetPackage, reintentando sin package", e)
+                // Fallback: deja que Android elija la app que resuelva el esquema.
+                try {
+                    val fallbackIntent = Intent(Intent.ACTION_VIEW).apply {
+                        data = uri
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    }
+                    service.startActivity(fallbackIntent)
+                } catch (e2: Exception) {
+                    Log.e(TAG, "Tampoco funcionó el fallback. ¿$appLabel está instalado?", e2)
+                }
+            }
+        }.start()
     }
 }
