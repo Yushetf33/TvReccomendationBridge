@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.net.URLEncoder
+import java.util.Locale
 
 /**
  * Cliente mínimo para TMDb: busca una película o serie por título y
@@ -98,7 +99,14 @@ object TmdbClient {
 
     private fun searchAll(title: String): List<SearchResult>? {
         val encoded = URLEncoder.encode(title, "UTF-8")
-        val url = "https://api.themoviedb.org/3/search/multi?query=$encoded&api_key=$TMDB_API_KEY&language=es-ES"
+        // El idioma del dispositivo, no fijo a español: el título que TMDb
+        // devuelve depende de este parámetro, y la comparación de título
+        // exacto (ver resolveTitle) necesita que venga en el mismo idioma
+        // que la consulta o nunca puede coincidir — con "es-ES" fijo, esa
+        // comprobación no se activaba nunca para usuarios con el launcher
+        // en otro idioma (la mayoría de la comunidad de Reddit, en inglés).
+        val language = Locale.getDefault().toLanguageTag()
+        val url = "https://api.themoviedb.org/3/search/multi?query=$encoded&api_key=$TMDB_API_KEY&language=$language"
 
         val request = Request.Builder().url(url).build()
 
