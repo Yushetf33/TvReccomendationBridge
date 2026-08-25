@@ -7,7 +7,8 @@ enum class PlayerApp(val packageName: String, val label: String) {
     NUVIO("com.nuvio.app", "Nuvio"),
     STREMIO("com.stremio.one", "Stremio"),
     PLEX("com.plexapp.android", "Plex"),
-    JELLYFIN("org.jellyfin.androidtv", "Jellyfin")
+    JELLYFIN("org.jellyfin.androidtv", "Jellyfin"),
+    WUPLAY("app.wuplay.androidtv", "WuPlay")
 }
 
 /**

@@ -30,6 +30,7 @@
     <string name="main_stremio_label">Stremio</string>
     <string name="main_plex_label">Plex (solo catálogo gratis)</string>
     <string name="main_jellyfin_label">Jellyfin (abre con búsqueda)</string>
+    <string name="main_wuplay_label">WuPlay</string>
     <string name="main_open_accessibility_settings">Activar el servicio en Accesibilidad</string>
     <string name="main_accessibility_settings_unavailable">No se pudo abrir Ajustes de Accesibilidad automáticamente en este dispositivo — abre Ajustes manualmente y busca TvRecommendationBridge dentro de Accesibilidad.</string>
 

@@ -2,14 +2,14 @@
 
 App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
-When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **Plex**, or **Jellyfin**, depending on the app configured by the user.
+When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, or **Jellyfin**, depending on the app configured by the user.
 
 TvRecommendationBridge is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
 
 ## Requirements
 
 - A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.), **or a Fire TV device** (Fire TV Stick, Fire TV Cube, etc.) — Fire TV works differently under the hood, see [Fire TV](#fire-tv) below.
-- **Nuvio**, **Stremio**, **Plex**, and/or **Jellyfin** installed on the device — pick whichever you want recommendations to open in.
+- **Nuvio**, **Stremio**, **WuPlay**, **Plex**, and/or **Jellyfin** installed on the device — pick whichever you want recommendations to open in.
 - **SmartTube** installed (optional, Google TV only) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
 - An active TvRecommendationBridge subscription (see [Subscription](#subscription) below).
 
@@ -239,8 +239,8 @@ no need to wait 30 days or contact support to free up a slot.
 On **Google TV**, the launcher exposes the title of each recommendation
 when you select it. The app picks up on that click, looks up the title
 in a public movie/show database to identify the content, and opens its
-page directly in Nuvio, Stremio, Plex, or Jellyfin (whichever you've
-chosen in the app's settings).
+page directly in Nuvio, Stremio, WuPlay, Plex, or Jellyfin (whichever
+you've chosen in the app's settings).
 
 On **Fire TV** it works a bit differently — see the [Fire TV](#fire-tv) section above for the details.
 
@@ -252,7 +252,7 @@ own free, ad-supported streaming catalog (the "Movies & Shows" section
 of the Plex app) — not a personal Plex Media Server library, since
 there's no universal ID to link to someone's private collection.
 
-Jellyfin works differently from the other three: since it's
+Jellyfin works differently from the other four: since it's
 self-hosted, there's no universal ID or shared catalog to link to
 either — each user's server has its own library with its own internal
 IDs. Instead of opening straight to the title's page, TvRecommendationBridge
@@ -293,9 +293,9 @@ TvRecommendationBridge does not provide or control the content sources available
 
 The user is responsible for their use of third-party apps, and for making sure that use complies with applicable law and the corresponding terms of service.
 
-TvRecommendationBridge is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, or Stremio.
+TvRecommendationBridge is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, Stremio, or WuPlay.
 
-Google, Google TV, Android TV, Nuvio, and Stremio are trademarks or products of their respective owners.
+Google, Google TV, Android TV, Nuvio, Stremio, and WuPlay are trademarks or products of their respective owners.
 
 ## Credits
 

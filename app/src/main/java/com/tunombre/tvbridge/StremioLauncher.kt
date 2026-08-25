@@ -12,6 +12,7 @@ import android.util.Log
  *
  * Nuvio: nuvio://movie/{imdbId} (películas), nuvio://detail/tv/{imdbId} (series).
  * Stremio: stremio:///detail/movie/{imdbId}, stremio:///detail/series/{imdbId}.
+ * WuPlay: wuplay://movie/{imdbId}, wuplay://series/{imdbId}.
  * Todos confirmados por ADB en dispositivo real.
  */
 object StremioLauncher {
@@ -51,6 +52,11 @@ object StremioLauncher {
                 // universal como el IMDb ID, así que se abre con una
                 // búsqueda del título en vez de ir directo a la ficha.
                 JellyfinLauncher.openSearch(service, match.title)
+            }
+            PlayerApp.WUPLAY -> {
+                val wuplayType = if (match.type == MediaType.SERIES) "series" else "movie"
+                val uri = Uri.parse("wuplay://$wuplayType/${match.imdbId}")
+                openWithFallback(service, uri, app.packageName, app.label)
             }
         }
     }
