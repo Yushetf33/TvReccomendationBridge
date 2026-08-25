@@ -1,0 +1,644 @@
+<title>Install TvRecommendationBridge</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --surface-2: #ecf0f3;
+    --text: #16202b;
+    --text-muted: #57687a;
+    --accent: #c97a12;
+    --accent-strong: #a8630a;
+    --accent-ink: #ffffff;
+    --border: #dce3e9;
+    --success: #1a9a5c;
+    --code-bg: #eef2f5;
+    --shadow: 0 1px 2px rgba(16, 24, 32, 0.06), 0 8px 24px -12px rgba(16, 24, 32, 0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1720;
+      --surface: #172436;
+      --surface-2: #1e3247;
+      --text: #e8edf2;
+      --text-muted: #8fa1b3;
+      --accent: #ffb13c;
+      --accent-strong: #ffc266;
+      --accent-ink: #241704;
+      --border: #2a3b4e;
+      --success: #4ade80;
+      --code-bg: #101b28;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px -16px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0f1720;
+    --surface: #172436;
+    --surface-2: #1e3247;
+    --text: #e8edf2;
+    --text-muted: #8fa1b3;
+    --accent: #ffb13c;
+    --accent-strong: #ffc266;
+    --accent-ink: #241704;
+    --border: #2a3b4e;
+    --success: #4ade80;
+    --code-bg: #101b28;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px -16px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', system-ui, sans-serif;
+    line-height: 1.55;
+    margin: 0;
+    padding: 4rem 1.5rem 6rem;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Sora', system-ui, sans-serif;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  header.hero {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-bottom: 3rem;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .lede {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 56ch;
+  }
+
+  .lede strong { color: var(--text); font-weight: 700; }
+
+  /* --- Method picker --- */
+
+  section.picker {
+    margin-bottom: 3.5rem;
+  }
+
+  .picker h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.9rem;
+  }
+
+  @media (max-width: 860px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.15rem 1.15rem 1.3rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+
+  .card .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 15%, transparent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-bottom: 0.65rem;
+  }
+
+  .card .tag.neutral {
+    color: var(--text-muted);
+    background: var(--surface-2);
+  }
+
+  .card h3 {
+    font-size: 1.02rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+
+  /* --- Method sections --- */
+
+  section.method {
+    margin-bottom: 3.25rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .method-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .method-head .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent-strong);
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .method-head h2 {
+    font-size: 1.3rem;
+  }
+
+  .method-head .sub {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  ol.steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  ol.steps > li {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    gap: 0.85rem;
+  }
+
+  ol.steps > li::before {
+    counter-increment: step;
+    content: counter(step);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding-top: 0.1rem;
+  }
+
+  ol.steps { counter-reset: step; }
+
+  .step-body p { margin: 0 0 0.5rem; }
+  .step-body p:last-child { margin-bottom: 0; }
+
+  code.inline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.12em 0.4em;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    margin: 0.5rem 0 0;
+    line-height: 1.6;
+  }
+
+  .code-line { display: block; }
+  .code-line + .code-line { margin-top: 0.15rem; }
+
+  .callout {
+    display: flex;
+    gap: 0.6rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+  }
+
+  .callout strong { color: var(--text); }
+
+  .code-download {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-top: 0.4rem;
+  }
+
+  .code-download .digits {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.35rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent-strong);
+  }
+
+  .code-download .label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  /* --- Activation + troubleshooting --- */
+
+  section.activate ol.steps > li::before { color: var(--success); }
+
+  .trouble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+  }
+
+  .trouble h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .trouble > p.intro {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 1.1rem;
+  }
+
+  .qa {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .qa .q {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .qa .a {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  footer a { color: var(--accent-strong); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  a.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <span class="eyebrow">Install guide</span>
+    <h1>Install TvRecommendationBridge</h1>
+    <p class="lede">
+      Click a recommendation on your Google TV, Fire TV, or Android TV
+      launcher and it opens straight in <strong>Nuvio</strong>,
+      <strong>Stremio</strong>, <strong>WuPlay</strong>, <strong>Plex</strong>,
+      or <strong>Jellyfin</strong>. It's not on Google Play, so it's
+      installed manually — pick whichever option below fits you best.
+    </p>
+  </header>
+
+  <section class="picker">
+    <h2>Which one should I use?</h2>
+    <div class="cards">
+      <a class="card" href="#downloader">
+        <span class="tag">Easiest</span>
+        <h3>TV only</h3>
+        <p>No phone or computer needed. A six-digit code.</p>
+      </a>
+      <a class="card" href="#phone">
+        <span class="tag neutral">With your phone</span>
+        <h3>Send Files to TV</h3>
+        <p>Send the APK from your phone's browser.</p>
+      </a>
+      <a class="card" href="#atvtools">
+        <span class="tag neutral">Phone, advanced</span>
+        <h3>atvTools</h3>
+        <p>ADB-level control, no computer needed.</p>
+      </a>
+      <a class="card" href="#adb">
+        <span class="tag neutral">Advanced</span>
+        <h3>Via ADB</h3>
+        <p>From a computer, using the command line.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="method" id="downloader">
+    <div class="method-head">
+      <span class="num">1</span>
+      <h2>Using Downloader</h2>
+      <span class="sub">TV only</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <p>On the TV, install <strong>Downloader</strong> from Google
+          Play (the app is called "Downloader by AFTVnews").</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>Open it and, in the URL field, type this code:</p>
+          <div class="code-download">
+            <span class="digits">4414843</span>
+            <span class="label">always points to the latest version</span>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>It downloads the APK and offers to install it right away.</p>
+          <div class="callout">
+            If Android TV warns that installing from an unknown source is
+            blocked, you'll need to allow it for Downloader the first
+            time — the warning itself has a button to do that.
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="method" id="phone">
+    <div class="method-head">
+      <span class="num">2</span>
+      <h2>With your phone</h2>
+      <span class="sub">Send Files to TV</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <p>On the TV, install <strong>Send Files to TV</strong> from
+          Google Play and open it — it'll show an address or a QR code.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>From your phone's browser, go to that address (or scan the
+          QR code) and download the
+          <code class="inline">app-release.apk</code> file from the
+          <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest">releases page</a>.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>Once the transfer finishes, the TV will let you install it
+          directly.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="method" id="atvtools">
+    <div class="method-head">
+      <span class="num">3</span>
+      <h2>Using atvTools</h2>
+      <span class="sub">phone, no computer</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <p>On the TV: <strong>Settings → Device Preferences → About →
+          tap "Build" 7 times</strong> to enable Developer options, then
+          go into Developer options and turn on <strong>Network
+          debugging</strong>. Note the IP address and port it shows.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>On your <strong>phone</strong> (not the TV), install
+          <strong>atvTools</strong> from Google Play and open it. Make
+          sure the phone is on the same Wi-Fi network as the TV.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>In atvTools, add the TV as a device using the IP address
+          from step 1 to pair with it.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>Once paired, use atvTools' <strong>install APK</strong>
+          option to browse to the downloaded
+          <code class="inline">app-release.apk</code> and install it —
+          or its <strong>app permissions</strong> section to find
+          TvRecommendationBridge in the list and grant it a permission
+          directly, the same thing ADB's <code class="inline">pm grant</code>
+          does.</p>
+          <div class="callout">
+            This is the easiest way to grant the
+            <code class="inline">WRITE_SECURE_SETTINGS</code> permission
+            mentioned below, if the "Allow restricted setting" toggle
+            isn't showing up for you — no computer needed for that either.
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="method" id="adb">
+    <div class="method-head">
+      <span class="num">4</span>
+      <h2>Via ADB</h2>
+      <span class="sub">from a computer</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <p>Download <code class="inline">app-release.apk</code> from the
+          <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest">releases page</a>.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>On the TV: <strong>Settings → Device Preferences → About →
+          tap "Build" 7 times</strong> to enable Developer options, then
+          turn on <strong>USB debugging</strong> or
+          <strong>Network debugging</strong>.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>From your computer, with <code class="inline">adb</code>
+          installed:</p>
+          <pre><span class="code-line">adb connect &lt;tv-ip&gt;:5555</span><span class="code-line">adb install app-release.apk</span></pre>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="method activate" id="activate">
+    <div class="method-head">
+      <span class="num">✓</span>
+      <h2>Activate the service</h2>
+      <span class="sub">once installed</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <p>Open <strong>TvRecommendationBridge</strong> from the TV's
+          launcher.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>Tap <strong>"Enable the service in Accessibility"</strong> —
+          it takes you straight to the right screen. Enable it there.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>Verify your subscription with the email you paid with (or
+          start the 2-day free trial, no card needed) — that's it, click
+          any recommendation on the launcher to try it out.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="trouble">
+    <h2>The toggle turns itself off</h2>
+    <p class="intro">
+      The most common thing people hit when activating the service. Here's
+      why it happens and how to fix it.
+    </p>
+    <div class="qa">
+      <div>
+        <p class="q">Why does this happen?</p>
+        <p class="a">
+          Since Android 13, the system blocks any app installed outside
+          Google Play from enabling Accessibility by default — it's an
+          Android protection ("Restricted Settings"), not a bug in the
+          app.
+        </p>
+      </div>
+      <div>
+        <p class="q">How do I unblock it?</p>
+        <p class="a">
+          Go to <strong>Settings → Apps → TvRecommendationBridge</strong>
+          and look for an option along the lines of "Allow restricted
+          setting" (usually under a three-dot menu). Enable it, then try
+          Accessibility again.
+        </p>
+      </div>
+      <div>
+        <p class="q">What if that option isn't there? (e.g. Google TV Streamer)</p>
+        <p class="a">
+          ADB is needed once — running
+          <code class="inline">adb shell pm grant com.tunombre.tvbridge android.permission.WRITE_SECURE_SETTINGS</code>
+          lets the app enable itself from then on, no more ADB needed
+          after that.
+        </p>
+        <p class="a">
+          <strong>No computer?</strong> Do it from your phone with
+          <a href="#atvtools">atvTools</a> instead: enable Network
+          debugging on the TV (see the atvTools section above), pair
+          with it from the atvTools app on your phone, find
+          TvRecommendationBridge in its app/permissions list, and grant
+          it the <code class="inline">WRITE_SECURE_SETTINGS</code>
+          permission from there — same result as the ADB command, no
+          typing required.
+        </p>
+        <p class="a">
+          Full details are in the
+          <a href="https://github.com/Yushetf33/TvReccomendationBridge#google-tv-streamer-no-visible-option-to-allow-it">README</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>TvRecommendationBridge · 2-day free trial, then €4.99 one-time</span>
+    <a href="https://github.com/Yushetf33/TvReccomendationBridge">GitHub repository →</a>
+  </footer>
+
+</div>
