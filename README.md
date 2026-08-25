@@ -262,6 +262,9 @@ On **Fire TV** it works a bit differently — see the [Fire TV](#fire-tv) sectio
 Recommendations opened via voice search on Google TV need a separate,
 optional feature to be turned on first — see [Voice search](#voice-search-google-tv) above.
 
+If the app you've chosen isn't installed, TvRecommendationBridge takes
+you straight to its Play Store listing instead of doing nothing.
+
 For Plex specifically, this only works for titles available in Plex's
 own free, ad-supported streaming catalog (the "Movies & Shows" section
 of the Plex app) — not a personal Plex Media Server library, since
