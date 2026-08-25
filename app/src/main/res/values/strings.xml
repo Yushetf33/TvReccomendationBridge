@@ -34,6 +34,7 @@
     <string name="main_open_accessibility_settings">Enable the service in Accessibility</string>
     <string name="main_accessibility_settings_unavailable">Couldn\'t open Accessibility settings automatically on this device — open Settings manually and look for TvRecommendationBridge under Accessibility.</string>
     <string name="main_accessibility_enabled_directly">Service enabled</string>
+    <string name="target_app_not_installed">%1$s isn\'t installed — opening its Play Store page</string>
 
     <string name="main_credits_title">Credits</string>
     <string name="main_tmdb_attribution">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>

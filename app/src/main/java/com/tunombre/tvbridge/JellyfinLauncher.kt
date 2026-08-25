@@ -27,6 +27,11 @@ object JellyfinLauncher {
     private const val STARTUP_ACTIVITY = "org.jellyfin.androidtv.ui.startup.StartupActivity"
 
     fun openSearch(service: Context, title: String) {
+        if (!StremioLauncher.isPackageInstalled(service, JELLYFIN_PACKAGE)) {
+            Log.w(TAG, "Jellyfin no está instalado — abriendo su ficha en la Play Store")
+            StremioLauncher.openPlayStoreListing(service, JELLYFIN_PACKAGE, "Jellyfin")
+            return
+        }
         val intent = Intent(Intent.ACTION_SEARCH).apply {
             putExtra(SearchManager.QUERY, title)
             component = ComponentName(JELLYFIN_PACKAGE, STARTUP_ACTIVITY)
@@ -36,7 +41,8 @@ object JellyfinLauncher {
             service.startActivity(intent)
             Log.d(TAG, "Abriendo Jellyfin con búsqueda: $title")
         } catch (e: Exception) {
-            Log.e(TAG, "No se pudo abrir Jellyfin. ¿Está instalado?", e)
+            Log.e(TAG, "No se pudo abrir Jellyfin, ¿está instalado de verdad?", e)
+            StremioLauncher.openPlayStoreListing(service, JELLYFIN_PACKAGE, "Jellyfin")
         }
     }
 }

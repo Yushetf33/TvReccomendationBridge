@@ -40,6 +40,22 @@
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Sin esto, PackageManager.getPackageInfo() de cualquiera de estos
+         paquetes puede devolver "no encontrado" aunque SÍ estén instalados
+         — confirmado en dispositivo real con WuPlay (Android 11+ oculta la
+         visibilidad de otras apps por defecto salvo que se declaren aquí).
+         Necesario para StremioLauncher.isPackageInstalled (el aviso de
+         "abrir en la Play Store" cuando la app de destino no está
+         instalada) y para poder matar su proceso en segundo plano. -->
+    <queries>
+        <package android:name="com.nuvio.app" />
+        <package android:name="com.stremio.one" />
+        <package android:name="com.plexapp.android" />
+        <package android:name="org.jellyfin.androidtv" />
+        <package android:name="app.wuplay.androidtv" />
+        <package android:name="com.android.vending" />
+    </queries>
+
     <!-- No hace falta mando táctil ni de verdad "leanback"; lo declaramos
          igualmente como no-requerido para que Google Play (si algún día se
          publica ahí) no descarte dispositivos TV. -->

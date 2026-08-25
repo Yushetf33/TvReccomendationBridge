@@ -3,8 +3,12 @@ package com.tunombre.tvbridge
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 
 /**
  * Lanza la app de destino elegida por el usuario (ver [Preferences]) en la
@@ -76,6 +80,12 @@ object StremioLauncher {
         // este método se llama a veces desde el hilo principal (p.ej. el
         // botón de ConfirmOpenActivity) y no debe bloquearlo.
         Thread {
+            if (!isPackageInstalled(service, targetPackage)) {
+                Log.w(TAG, "$appLabel ($targetPackage) no está instalado — abriendo su ficha en la Play Store")
+                openPlayStoreListing(service, targetPackage, appLabel)
+                return@Thread
+            }
+
             val activityManager = service.getSystemService(ActivityManager::class.java)
             try {
                 activityManager.killBackgroundProcesses(targetPackage)
@@ -104,8 +114,57 @@ object StremioLauncher {
                     service.startActivity(fallbackIntent)
                 } catch (e2: Exception) {
                     Log.e(TAG, "Tampoco funcionó el fallback. ¿$appLabel está instalado?", e2)
+                    openPlayStoreListing(service, targetPackage, appLabel)
                 }
             }
         }.start()
     }
+
+    fun isPackageInstalled(service: Context, targetPackage: String): Boolean {
+        return try {
+            service.packageManager.getPackageInfo(targetPackage, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    /** $targetPackage no está instalado (comprobado de antemano, o los dos
+     * intentos de abrir el deep link fallaron) — en vez de quedarse en
+     * silencio como antes, llevamos al usuario directamente a la ficha de
+     * la Play Store de esa app. */
+    fun openPlayStoreListing(service: Context, targetPackage: String, appLabel: String) {
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(
+                service,
+                service.getString(R.string.target_app_not_installed, appLabel),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+        // Mismo problema que con Nuvio/Stremio/WuPlay (ver openWithFallback):
+        // confirmado en dispositivo real que si la Play Store ya estaba en
+        // segundo plano, se queda con una ventana colgada de tamaño cero y
+        // no se ve nada, aunque Android la dé por "resumida". Matar su
+        // proceso antes de abrirla lo arregla.
+        try {
+            val activityManager = service.getSystemService(ActivityManager::class.java)
+            activityManager.killBackgroundProcesses(PLAY_STORE_PACKAGE)
+            Thread.sleep(200)
+        } catch (e: Exception) {
+            Log.w(TAG, "No se pudo matar el proceso en segundo plano de la Play Store", e)
+        }
+        try {
+            val storeIntent = Intent(
+                Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$targetPackage")
+            ).apply {
+                setPackage(PLAY_STORE_PACKAGE)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            service.startActivity(storeIntent)
+        } catch (e: Exception) {
+            Log.e(TAG, "No se pudo abrir la Play Store para $targetPackage", e)
+        }
+    }
+
+    private const val PLAY_STORE_PACKAGE = "com.android.vending"
 }
