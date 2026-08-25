@@ -19,7 +19,16 @@ TvRecommendationBridge is an independent automation and redirection tool. **It d
 
 TvRecommendationBridge is not currently distributed through Google Play. The app is installed manually ("sideloaded") using the APK file available in this repository's releases section.
 
-### Option A: from your phone, using Send Files to TV
+### Option A: using Downloader (easiest, no phone or computer needed)
+
+1. On the TV, install **[Downloader](https://play.google.com/store/apps/details?id=com.esaba.downloader)** from Google Play (the "by AFTVnews" one).
+2. Open Downloader and enter this code: **4414843**
+3. It'll download the APK and offer to install it straight away.
+4. If Android TV shows a warning about installing from an unknown source, you'll need to temporarily allow installation from that source.
+
+This code always points to the latest version — no need to look up a new one for future updates.
+
+### Option B: from your phone, using Send Files to TV
 
 1. On the TV, install **[Send Files to TV](https://play.google.com/store/apps/details?id=com.jstenpal.sendfilestotv)** from Google Play.
 2. Open the app on the TV. It will show an address or a QR code to connect from your phone.
@@ -28,7 +37,7 @@ TvRecommendationBridge is not currently distributed through Google Play. The app
 4. Once the file has transferred, the TV will let you start the installation.
 5. If Android TV shows a warning about installing from an unknown source, you'll need to temporarily allow installation from that source.
 
-### Option B: via ADB
+### Option C: via ADB
 
 1. Download the APK from the releases section.
 2. Enable developer options on the TV:
