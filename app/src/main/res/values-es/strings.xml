@@ -33,6 +33,7 @@
     <string name="main_wuplay_label">WuPlay</string>
     <string name="main_open_accessibility_settings">Activar el servicio en Accesibilidad</string>
     <string name="main_accessibility_settings_unavailable">No se pudo abrir Ajustes de Accesibilidad automáticamente en este dispositivo — abre Ajustes manualmente y busca TvRecommendationBridge dentro de Accesibilidad.</string>
+    <string name="main_accessibility_enabled_directly">Servicio activado</string>
 
     <string name="main_credits_title">Créditos</string>
     <string name="main_tmdb_attribution">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>

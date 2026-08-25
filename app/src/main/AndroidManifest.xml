@@ -29,6 +29,17 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Para activar el servicio de accesibilidad directamente por código en
+         dispositivos donde "Restricted Settings" bloquea el toggle de
+         Ajustes sin ninguna opción visible para desbloquearlo (p.ej. Google
+         TV Streamer) — ver MainActivity.tryEnableAccessibilityDirectly.
+         Igual que PACKAGE_USAGE_STATS, es un permiso especial: Android no
+         lo concede nunca solo, hace falta `adb shell pm grant` una vez
+         (documentado en el README). Sin ese permiso concedido, la app
+         simplemente no lo tiene y cae al método normal (abrir Ajustes). -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
     <!-- No hace falta mando táctil ni de verdad "leanback"; lo declaramos
          igualmente como no-requerido para que Google Play (si algún día se
          publica ahí) no descarte dispositivos TV. -->

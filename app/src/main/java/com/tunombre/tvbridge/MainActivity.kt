@@ -3,6 +3,7 @@ package com.tunombre.tvbridge
 import android.Manifest
 import android.app.Activity
 import android.app.AppOpsManager
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.projection.MediaProjectionManager
@@ -95,6 +96,10 @@ class MainActivity : Activity() {
             }
         } else {
             button.setOnClickListener {
+                if (tryEnableAccessibilityDirectly()) {
+                    Toast.makeText(this, R.string.main_accessibility_enabled_directly, Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
                 // En algunos launchers de terceros el sistema bloquea este
                 // intent para apps que no tengan un permiso propio del
                 // fabricante, y lanza SecurityException en vez de abrir la
@@ -111,6 +116,41 @@ class MainActivity : Activity() {
                 }
             }
             setupVoiceSearchButton()
+        }
+    }
+
+    /** Si el usuario ya nos ha concedido WRITE_SECURE_SETTINGS por ADB (una
+     * vez, ver README) activamos el servicio directamente sin pasar por la
+     * pantalla de Ajustes — hace falta sobre todo en dispositivos como el
+     * Google TV Streamer, donde "Restricted Settings" bloquea el toggle de
+     * Ajustes para cualquier app sideloaded y no hay ninguna opción visible
+     * para desbloquearlo desde la propia TV.
+     *
+     * Se añade el servicio a la lista existente en vez de sobrescribirla —
+     * a diferencia del comando manual `settings put` de toda la vida, esto
+     * no se carga otros servicios de accesibilidad que el usuario ya tenga
+     * activos (p.ej. TalkBack). Devuelve false si no tenemos el permiso,
+     * para que el llamador recurra al método normal (abrir Ajustes). */
+    private fun tryEnableAccessibilityDirectly(): Boolean {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
+        return try {
+            val component = ComponentName(this, TvRecommendationAccessibilityService::class.java).flattenToString()
+            val resolver = contentResolver
+            val current = Settings.Secure.getString(resolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+            val services = current?.split(':')?.filter { it.isNotBlank() }?.toMutableSet() ?: mutableSetOf()
+            if (services.add(component)) {
+                Settings.Secure.putString(
+                    resolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, services.joinToString(":")
+                )
+            }
+            Settings.Secure.putInt(resolver, Settings.Secure.ACCESSIBILITY_ENABLED, 1)
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 
