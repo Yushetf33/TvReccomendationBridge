@@ -19,6 +19,8 @@ TvRecommendationBridge is an independent automation and redirection tool. **It d
 
 TvRecommendationBridge is not currently distributed through Google Play. The app is installed manually ("sideloaded") using the APK file available in this repository's releases section.
 
+👉 **[Visual step-by-step install guide](https://yushetf33.github.io/TvReccomendationBridge/install.html)** — the same steps below, laid out more clearly.
+
 ### Option A: using Downloader (easiest, no phone or computer needed)
 
 1. On the TV, install **[Downloader](https://play.google.com/store/apps/details?id=com.esaba.downloader)** from Google Play (the "by AFTVnews" one).
