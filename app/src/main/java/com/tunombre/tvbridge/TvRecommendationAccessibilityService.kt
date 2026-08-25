@@ -195,7 +195,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             val youtubeTitle = extractYoutubeTitle(desc)
             if (youtubeTitle != null) {
                 Log.d(TAG, "Vídeo de YouTube detectado: $youtubeTitle")
-                SmartTubeLauncher.openSearch(this, youtubeTitle)
+                YoutubeLauncher.openSearch(this, youtubeTitle)
                 return
             }
             if (isMovieOrShowCard(event, desc)) {

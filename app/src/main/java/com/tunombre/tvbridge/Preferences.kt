@@ -11,6 +11,14 @@ enum class PlayerApp(val packageName: String, val label: String) {
     WUPLAY("app.wuplay.androidtv", "WuPlay")
 }
 
+/** App de destino donde se abre la búsqueda de un vídeo de YouTube
+ * recomendado (ver [YoutubeLauncher]) — independiente de [PlayerApp], ya
+ * que no todo el mundo usa la misma app para YouTube que para películas. */
+enum class YoutubeApp {
+    SMARTTUBE,
+    TIZENTUBE_COBALT
+}
+
 /**
  * Guarda la preferencia del usuario (Nuvio o Stremio) en SharedPreferences,
  * compartida entre MainActivity (donde se elige) y el Accessibility Service
@@ -34,6 +42,25 @@ object Preferences {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putString(KEY_PLAYER_APP, app.name)
+            .apply()
+    }
+
+    private const val KEY_YOUTUBE_APP = "youtube_app"
+
+    fun getSelectedYoutubeApp(context: Context): YoutubeApp {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val stored = prefs.getString(KEY_YOUTUBE_APP, null) ?: return YoutubeApp.SMARTTUBE
+        return try {
+            YoutubeApp.valueOf(stored)
+        } catch (e: IllegalArgumentException) {
+            YoutubeApp.SMARTTUBE
+        }
+    }
+
+    fun setSelectedYoutubeApp(context: Context, app: YoutubeApp) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_YOUTUBE_APP, app.name)
             .apply()
     }
 }

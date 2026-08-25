@@ -264,6 +264,27 @@ class MainActivity : Activity() {
             }
             Preferences.setSelectedApp(this, selected)
         }
+
+        setupYoutubeAppSelector()
+    }
+
+    private fun setupYoutubeAppSelector() {
+        val radioGroup = findViewById<RadioGroup>(R.id.youtube_app_group)
+        val radioSmarttube = findViewById<RadioButton>(R.id.radio_smarttube)
+        val radioTizentube = findViewById<RadioButton>(R.id.radio_tizentube)
+
+        when (Preferences.getSelectedYoutubeApp(this)) {
+            YoutubeApp.SMARTTUBE -> radioSmarttube.isChecked = true
+            YoutubeApp.TIZENTUBE_COBALT -> radioTizentube.isChecked = true
+        }
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val selected = when (checkedId) {
+                R.id.radio_tizentube -> YoutubeApp.TIZENTUBE_COBALT
+                else -> YoutubeApp.SMARTTUBE
+            }
+            Preferences.setSelectedYoutubeApp(this, selected)
+        }
     }
 
     private fun verifyEmail(email: String) {
