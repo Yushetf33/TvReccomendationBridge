@@ -509,16 +509,21 @@
         <div class="step-body">
           <p>Once paired, use atvTools' <strong>install APK</strong>
           option to browse to the downloaded
-          <code class="inline">app-release.apk</code> and install it —
-          or its <strong>app permissions</strong> section to find
-          TvRecommendationBridge in the list and grant it a permission
-          directly, the same thing ADB's <code class="inline">pm grant</code>
-          does.</p>
+          <code class="inline">app-release.apk</code> and install it.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p>To grant the special permission mentioned below: tap into
+          <strong>TvRecommendationBridge</strong> in atvTools' app list,
+          open the <strong>Permisos</strong> tab, scroll down to
+          <code class="inline">android.permission.WRITE_SECURE_SETTINGS</code>,
+          and flip its toggle on.</p>
           <div class="callout">
-            This is the easiest way to grant the
-            <code class="inline">WRITE_SECURE_SETTINGS</code> permission
-            mentioned below, if the "Allow restricted setting" toggle
-            isn't showing up for you — no computer needed for that either.
+            This is the easiest way to unlock the app on devices like the
+            Google TV Streamer, where the "Allow restricted setting"
+            toggle isn't shown anywhere — no computer needed for that
+            either.
           </div>
         </div>
       </li>
@@ -620,13 +625,12 @@
         </p>
         <p class="a">
           <strong>No computer?</strong> Do it from your phone with
-          <a href="#atvtools">atvTools</a> instead: enable Network
-          debugging on the TV (see the atvTools section above), pair
-          with it from the atvTools app on your phone, find
-          TvRecommendationBridge in its app/permissions list, and grant
-          it the <code class="inline">WRITE_SECURE_SETTINGS</code>
-          permission from there — same result as the ADB command, no
-          typing required.
+          <a href="#atvtools">atvTools</a> instead: pair with the TV
+          (see the atvTools section above), tap into
+          TvRecommendationBridge in its app list, open the
+          <strong>Permisos</strong> tab, and flip on
+          <code class="inline">android.permission.WRITE_SECURE_SETTINGS</code>
+          — same result as the ADB command, no typing required.
         </p>
         <p class="a">
           Full details are in the
