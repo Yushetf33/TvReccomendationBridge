@@ -281,10 +281,18 @@ triggered, so you land on the search results instead of the exact
 page.
 
 YouTube recommendations work the same way, but redirect to
-**[SmartTube](https://github.com/yuliskov/SmartTube)** instead (either
-the stable or beta build — whichever you have installed) with a search
-for that same video's title, since the launcher doesn't expose the
-video ID directly.
+**[SmartTube](https://github.com/yuliskov/SmartTube)** or
+**[TizenTube Cobalt](https://github.com/reisxd/TizenTubeCobalt)**
+(whichever you've picked in the app's settings, independent of the
+movie/show app above) with a search for that same video's title,
+since the launcher doesn't expose the video ID directly.
+
+TizenTube Cobalt needs an extra piece to receive that search —
+**[TizenTube Bridge](https://github.com/TobiPeterG/tizentube-bridge)**
+— which takes the place of the official YouTube TV app on your device
+(they can't be installed at the same time; some devices won't let you
+remove YouTube TV completely, in which case this option won't work
+there).
 
 ## Known limitations
 
