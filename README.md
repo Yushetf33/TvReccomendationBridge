@@ -11,7 +11,7 @@ TvRecommendationBridge is an independent automation and redirection tool. **It d
 - A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.), **or a Fire TV device** (Fire TV Stick, Fire TV Cube, etc.) — Fire TV works differently under the hood, see [Fire TV](#fire-tv) below.
 - **Nuvio**, **Stremio**, **WuPlay**, **Plex**, and/or **Jellyfin** installed on the device — pick whichever you want recommendations to open in.
 - **SmartTube** installed (optional, Google TV only) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
-- An active TvRecommendationBridge subscription (see [Subscription](#subscription) below).
+- An active TvRecommendationBridge license (see [Pricing](#pricing) below).
 
 > **Note:** support for Android TV launchers other than Google TV's and Amazon's own Fire TV launcher is not planned.
 
@@ -231,10 +231,11 @@ which is why this is opt-in rather than always on.
   it doesn't add voice search itself, just makes recommendations opened
   that way work the same as a regular click.
 
-## Subscription
+## Pricing
 
-TvRecommendationBridge requires a paid subscription to work, with a free
-trial to test it first:
+TvRecommendationBridge requires a one-time payment to work — not a
+subscription, you pay once and it's yours — with a free trial to test
+it first:
 
 | Plan | Price |
 |---|---|
