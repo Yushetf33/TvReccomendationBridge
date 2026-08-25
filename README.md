@@ -92,7 +92,9 @@ shortly after, with no warning or notification. This is the same
 Restricted Settings protection, just with no way to
 lift it from the TV's own UI on this device.
 
-The workaround needs ADB access to the device:
+The workaround needs ADB access to the device, but it's a **one-time**
+step — after this, the app enables itself directly, no need to ever
+touch ADB or Settings again (even after reinstalling):
 
 1. On the TV: **Settings → System → About → click the build number a
    few times** to enable Developer options, then enable **Network
@@ -101,15 +103,19 @@ The workaround needs ADB access to the device:
 
 ```bash
 adb connect <tv-ip>:5555
-adb shell settings put secure enabled_accessibility_services com.tunombre.tvbridge/com.tunombre.tvbridge.TvRecommendationAccessibilityService
-adb shell settings put secure accessibility_enabled 1
+adb shell pm grant com.tunombre.tvbridge android.permission.WRITE_SECURE_SETTINGS
 ```
 
-This writes the setting directly at the system level, which isn't
-subject to the same restriction as the Settings app toggle. Note the
-second command **replaces** the whole list of enabled accessibility
-services — if you already use another one (like TalkBack), separate
-them with a colon (`:`) instead of overwriting it.
+3. Go back into the app and tap **"Enable the service in
+   Accessibility"** again — this time it enables directly, without
+   opening Settings at all.
+
+This grants the app permission to write that setting directly at the
+system level, which isn't subject to the same restriction as the
+Settings app toggle — and unlike writing the setting by hand, the app
+adds itself to the list instead of replacing it, so it won't wipe out
+another accessibility service (like TalkBack) you might already have
+enabled.
 
 If setting up ADB from a computer sounds like a hassle, **[atvTools](https://play.google.com/store/apps/details?id=dev.vodik7.atvtools)**
 (free, on Google Play) does the same thing from your phone — install it
