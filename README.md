@@ -281,6 +281,26 @@ opens the Jellyfin app with a **search** for that title already
 triggered, so you land on the search results instead of the exact
 page.
 
+### Check my Jellyfin first (optional)
+
+Independent of whichever app you've picked above as your main
+destination, you can optionally have TvRecommendationBridge check your
+own Jellyfin server **first** — if a recommendation is already in your
+personal library, it opens straight to that title's page in Jellyfin
+(no search needed) instead of going to Nuvio/Stremio/WuPlay/Plex; if
+it's not there, it falls back to your normal destination app as usual.
+This works for every trigger (click, voice search, Fire TV), since
+they all funnel through the same check.
+
+To enable it, go to Settings → **"Check my Jellyfin first"**, turn it
+on, and fill in:
+- **Server URL** (e.g. `http://192.168.1.10:8096`) — the same address
+  you use in the Jellyfin app itself.
+- **API key** — generate one from your server's admin dashboard
+  (Dashboard → API Keys → **+**), not your username/password.
+
+Leave it off if you don't run your own Jellyfin server.
+
 YouTube recommendations work the same way, but redirect to
 **[SmartTube](https://github.com/yuliskov/SmartTube)** or
 **[TizenTube Cobalt](https://github.com/reisxd/TizenTubeCobalt)**

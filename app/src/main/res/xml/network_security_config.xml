@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android bloquea HTTP en texto plano por defecto desde Android 9 (API 28).
+    Necesario porque JellyfinApiClient/JellyfinLauncher hablan con la URL de
+    servidor que el propio usuario introduce en Ajustes (ver
+    Preferences.getJellyfinServerUrl) — casi siempre una IP de su red local
+    tipo http://192.168.x.x:8096, sin certificado TLS, como la gran mayoría
+    de instalaciones caseras de Jellyfin. No se puede restringir por dominio
+    (domain-config) porque ese host es dinámico, distinto para cada usuario.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
