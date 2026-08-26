@@ -442,13 +442,26 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
     private fun handleMovieClick(title: String) {
         backgroundExecutor.execute {
-            val match = TmdbClient.findImdbId(title)
-            if (match == null) {
-                Log.w(TAG, "No se pudo resolver IMDb ID para: $title")
-                return@execute
+            when (val resolution = TmdbClient.resolve(title)) {
+                is TmdbResolution.Resolved -> {
+                    Log.d(TAG, "IMDb ID resuelto: $title -> ${resolution.match.imdbId} (${resolution.match.type})")
+                    StremioLauncher.open(this, resolution.match)
+                }
+                is TmdbResolution.Ambiguous -> {
+                    if (Preferences.isAskWhenAmbiguousEnabled(this)) {
+                        Log.d(TAG, "Match ambiguo para \"$title\" (${resolution.candidates.size} candidatos) — preguntando al usuario")
+                        MatchPickerActivity.launch(this, resolution)
+                    } else {
+                        val match = TmdbClient.resolveCandidate(resolution.candidates.first())
+                        if (match == null) {
+                            Log.w(TAG, "No se pudo resolver el primer candidato ambiguo para: $title")
+                        } else {
+                            StremioLauncher.open(this, match)
+                        }
+                    }
+                }
+                null -> Log.w(TAG, "No se pudo resolver IMDb ID para: $title")
             }
-            Log.d(TAG, "IMDb ID resuelto: $title -> ${match.imdbId} (${match.type})")
-            StremioLauncher.open(this, match)
         }
     }
 

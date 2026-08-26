@@ -45,6 +45,28 @@
     <string name="main_jellyfin_check_saved">Guardado</string>
     <string name="main_jellyfin_check_missing_fields">Introduce la URL del servidor y la API key</string>
 
+    <string name="main_help_button">¿Tienes problemas? Obtén ayuda</string>
+    <string name="main_ask_when_ambiguous">Preguntar cuando una coincidencia sea ambigua</string>
+    <string name="match_picker_title">¿Cuál de estos es \"%1$s\"?</string>
+
+    <string name="help_title">Solución de problemas</string>
+    <string name="help_restricted_title">El interruptor de Accesibilidad se desactiva solo</string>
+    <string name="help_restricted_body">Con diferencia, el problema más habitual. En Android 13+, el sistema bloquea que las apps instaladas por sideload activen Accesibilidad desde el interruptor normal, como medida de seguridad — si se apaga justo después de activarlo, es por esto, no es un fallo.\n\nSolución: abre la ficha de la app de abajo, toca el menú de tres puntos (o busca la opción directamente) y activa \"Permitir ajuste restringido\". Luego vuelve a probar el interruptor de Accesibilidad.\n\nSi tu dispositivo no muestra esa opción en absoluto, hace falta un comando ADB (una sola vez) desde un ordenador o el móvil (app atvTools) — mira la guía visual de instalación de abajo para los pasos exactos.</string>
+    <string name="help_open_app_info_button">Abrir la ficha de esta app</string>
+    <string name="help_open_accessibility_button">Abrir ajustes de Accesibilidad</string>
+    <string name="help_nothing_happens_title">No pasa nada al pulsar una recomendación</string>
+    <string name="help_nothing_happens_body">Comprueba, en orden: 1) Que el interruptor de Accesibilidad esté realmente activado — vuelve a Accesibilidad y confirma que no se apagó solo (ver arriba). 2) Que la app de destino elegida (Nuvio, Stremio, Plex, Jellyfin, WuPlay…) esté instalada y actualizada. 3) No todas las tarjetas de recomendación exponen un título — los banners pequeños y anuncios se ignoran a propósito, eso es normal.</string>
+    <string name="help_voice_title">La búsqueda por voz no funciona</string>
+    <string name="help_voice_body">La búsqueda por voz es un interruptor aparte y opcional, distinto del servicio de Accesibilidad principal. Vuelve a la pantalla principal y asegúrate de haber tocado también \"Activar búsqueda por voz\" y concedido el permiso de grabación de pantalla que pide una sola vez — con solo el servicio principal activado no basta.</string>
+    <string name="help_firetv_title">En Fire TV no parece funcionar nada</string>
+    <string name="help_firetv_body">Fire OS bloquea por completo el método estándar de Accesibilidad para apps instaladas por sideload — ningún ajuste lo arregla. En Fire TV hace falta el \"modo Fire TV\" (el botón de la pantalla principal cambia solo al detectar Fire TV). Antes necesita que concedas \"Acceso a datos de uso\" — usa el botón de abajo — y luego un permiso de grabación de pantalla, una sola vez.</string>
+    <string name="help_open_usage_access_button">Abrir ajustes de Acceso a datos de uso</string>
+    <string name="help_still_stuck_title">¿Sigue sin funcionar?</string>
+    <string name="help_still_stuck_body">La guía visual completa de instalación tiene capturas de pantalla de cada paso de arriba, incluyendo los comandos exactos de ADB/atvTools para el ajuste restringido.</string>
+    <string name="help_open_guide_button">Abrir la guía visual de instalación</string>
+    <string name="help_guide_url">https://yushetf33.github.io/TvReccomendationBridge/install.html</string>
+    <string name="help_back_button">Volver</string>
+
     <string name="main_open_accessibility_settings">Activar el servicio en Accesibilidad</string>
     <string name="main_accessibility_settings_unavailable">No se pudo abrir Ajustes de Accesibilidad automáticamente en este dispositivo — abre Ajustes manualmente y busca TvRecommendationBridge dentro de Accesibilidad.</string>
     <string name="main_accessibility_enabled_directly">Servicio activado</string>

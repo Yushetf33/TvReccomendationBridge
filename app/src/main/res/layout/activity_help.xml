@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#101010">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_title"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Problema #1: toggle de Accesibilidad que se autodesactiva -->
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_restricted_title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_restricted_body"
+            android:textColor="#AAAAAA"
+            android:textSize="15sp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/button_help_open_app_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_open_app_info_button"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/button_help_open_accessibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_open_accessibility_button"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Problema #2: no pasa nada al pulsar una recomendación -->
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_nothing_happens_title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_nothing_happens_body"
+            android:textColor="#AAAAAA"
+            android:textSize="15sp"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Problema #3: busqueda por voz -->
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_voice_title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_voice_body"
+            android:textColor="#AAAAAA"
+            android:textSize="15sp"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Problema #4: Fire TV -->
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_firetv_title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_firetv_body"
+            android:textColor="#AAAAAA"
+            android:textSize="15sp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/button_help_open_usage_access"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_open_usage_access_button"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Sigue sin funcionar -->
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_still_stuck_title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_still_stuck_body"
+            android:textColor="#AAAAAA"
+            android:textSize="15sp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/button_help_open_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_open_guide_button"
+            android:layout_marginBottom="40dp" />
+
+        <Button
+            android:id="@+id/button_help_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_back_button" />
+
+    </LinearLayout>
+</ScrollView>

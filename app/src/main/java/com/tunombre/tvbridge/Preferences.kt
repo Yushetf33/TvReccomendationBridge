@@ -99,4 +99,22 @@ object Preferences {
             .putString(KEY_JELLYFIN_API_KEY, apiKey)
             .apply()
     }
+
+    // Si hay dos o más títulos EXACTOS con años distintos (ver
+    // TmdbClient.TmdbResolution.Ambiguous), preguntar cuál es en vez de
+    // coger el primero a ciegas. Activado por defecto — es la opción más
+    // segura; un usuario que prefiera velocidad sobre precisión puede
+    // desactivarlo en Ajustes.
+    private const val KEY_ASK_WHEN_AMBIGUOUS = "ask_when_ambiguous"
+
+    fun isAskWhenAmbiguousEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_ASK_WHEN_AMBIGUOUS, true)
+
+    fun setAskWhenAmbiguousEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_ASK_WHEN_AMBIGUOUS, enabled)
+            .apply()
+    }
 }

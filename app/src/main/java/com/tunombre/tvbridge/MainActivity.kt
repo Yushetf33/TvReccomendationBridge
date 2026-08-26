@@ -54,6 +54,10 @@ class MainActivity : Activity() {
             verifyEmail(email)
         }
 
+        findViewById<Button>(R.id.button_help).setOnClickListener {
+            startActivity(Intent(this, HelpActivity::class.java))
+        }
+
         findViewById<Button>(R.id.button_manage_devices).setOnClickListener {
             if (LicenseManager.getSavedEmail(this) == null) {
                 Toast.makeText(this, R.string.main_manage_devices_needs_verification, Toast.LENGTH_SHORT).show()
@@ -265,6 +269,12 @@ class MainActivity : Activity() {
                 else -> PlayerApp.NUVIO
             }
             Preferences.setSelectedApp(this, selected)
+        }
+
+        val askWhenAmbiguousCheckbox = findViewById<CheckBox>(R.id.checkbox_ask_when_ambiguous)
+        askWhenAmbiguousCheckbox.isChecked = Preferences.isAskWhenAmbiguousEnabled(this)
+        askWhenAmbiguousCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            Preferences.setAskWhenAmbiguousEnabled(this, isChecked)
         }
 
         setupYoutubeAppSelector()

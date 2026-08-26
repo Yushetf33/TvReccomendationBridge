@@ -21,6 +21,22 @@ enum class MediaType { MOVIE, SERIES }
 
 data class TmdbMatch(val imdbId: String, val type: MediaType, val title: String)
 
+/** Un resultado de TMDb todavía sin resolver a IMDb ID — solo lo que hace
+ * falta para mostrárselo al usuario en [MatchPickerActivity] cuando hay
+ * ambigüedad (ver [TmdbResolution.Ambiguous]). */
+data class TmdbCandidate(val tmdbId: Int, val mediaPath: String, val title: String, val year: String?) {
+    val type: MediaType get() = if (mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
+}
+
+/** Resultado de [TmdbClient.resolve]: o bien se resolvió directamente a un
+ * único [TmdbMatch], o bien hay varios títulos EXACTOS con años distintos
+ * (p.ej. un remake) y hace falta que el usuario elija cuál — ver
+ * [MatchPickerActivity]. */
+sealed class TmdbResolution {
+    data class Resolved(val match: TmdbMatch) : TmdbResolution()
+    data class Ambiguous(val query: String, val candidates: List<TmdbCandidate>) : TmdbResolution()
+}
+
 object TmdbClient {
 
     private val TMDB_API_KEY = BuildConfig.TMDB_API_KEY
@@ -54,6 +70,25 @@ object TmdbClient {
     private val TRAILING_PARENTHETICAL = Regex("\\s*\\([^)]*\\)\\s*$")
 
     fun findImdbId(title: String): TmdbMatch? {
+        // Wrapper de compatibilidad para llamadores que no soportan el
+        // selector de ambigüedad (ver FireTvCaptureService, que ya tiene su
+        // propio diálogo de confirmación y no necesita uno segundo encima):
+        // si resolve() devuelve Ambiguous, coge el primer candidato — mismo
+        // comportamiento que tenía esta función antes de existir el picker.
+        return when (val resolution = resolve(title)) {
+            is TmdbResolution.Resolved -> resolution.match
+            is TmdbResolution.Ambiguous -> resolveCandidate(resolution.candidates.first())
+            null -> null
+        }
+    }
+
+    /**
+     * Igual que [findImdbId], pero sin colapsar automáticamente el caso
+     * ambiguo — para llamadores que sí quieren ofrecerle el selector al
+     * usuario (ver TvRecommendationAccessibilityService.handleMovieClick y
+     * MatchPickerActivity).
+     */
+    fun resolve(title: String): TmdbResolution? {
         // Quita TODOS los paréntesis finales, no solo uno: algunos títulos
         // traen más de uno seguido, p.ej. "El Cuervo (The Crow) (The Crow)".
         var cleanedTitle = title
@@ -68,7 +103,15 @@ object TmdbClient {
         return resolveTitle(title)
     }
 
-    private fun resolveTitle(title: String): TmdbMatch? {
+    /** Segunda llamada (external_ids) para el candidato que el usuario ha
+     * elegido en [MatchPickerActivity], o para el primero cuando se
+     * colapsa un [TmdbResolution.Ambiguous] automáticamente. */
+    fun resolveCandidate(candidate: TmdbCandidate): TmdbMatch? {
+        val imdbId = fetchImdbId(candidate.tmdbId, candidate.mediaPath) ?: return null
+        return TmdbMatch(imdbId, candidate.type, candidate.title)
+    }
+
+    private fun resolveTitle(title: String): TmdbResolution? {
         val results = searchAll(title) ?: return null
         if (results.isEmpty()) return null
 
@@ -81,14 +124,26 @@ object TmdbClient {
         val exactMatches = results.filter { normalizeTitle(it.title) == normalizedQuery }
 
         // A veces TMDb trae más de una entrada con el título exacto (p.ej.
-        // duplicados basura sin datos completos) — probamos cada una hasta
-        // encontrar una con imdb_id real en vez de fallar con la primera
-        // que no lo tenga.
+        // duplicados basura sin datos completos, mismo año) — eso NO cuenta
+        // como ambigüedad real, solo probamos cada una hasta encontrar una
+        // con imdb_id real. Ambigüedad real es cuando hay dos o más títulos
+        // EXACTOS con AÑOS DISTINTOS (p.ej. un remake) — ahí sí puede ser
+        // contenido genuinamente distinto y no hay forma de adivinar cuál
+        // quería el usuario (confirmado por quejas reales de "abre la
+        // película equivocada" en apps similares).
+        val distinctYears = exactMatches.mapNotNull { it.year }.toSet()
+        if (exactMatches.size > 1 && distinctYears.size > 1) {
+            return TmdbResolution.Ambiguous(
+                query = title,
+                candidates = exactMatches.map { TmdbCandidate(it.tmdbId, it.mediaPath, it.title, it.year) }
+            )
+        }
+
         val candidatesInOrder = exactMatches.ifEmpty { results.take(1) }
         for (candidate in candidatesInOrder) {
             val imdbId = fetchImdbId(candidate.tmdbId, candidate.mediaPath) ?: continue
             val type = if (candidate.mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
-            return TmdbMatch(imdbId, type, candidate.title)
+            return TmdbResolution.Resolved(TmdbMatch(imdbId, type, candidate.title))
         }
         return null
     }

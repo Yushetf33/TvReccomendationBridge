@@ -23,10 +23,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/main_subtitle"
             android:textColor="#AAAAAA"
             android:textSize="16sp" />
+
+        <!-- Botón de ayuda arriba del todo, visible sin hacer scroll: es lo
+             que más se pide (ver HelpActivity) — no debería requerir bajar
+             por toda la pantalla de ajustes para encontrarlo. -->
+        <Button
+            android:id="@+id/button_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/main_help_button" />
 
         <!-- Suscripción -->
         <TextView
@@ -204,6 +214,15 @@
                 android:textSize="18sp"
                 android:padding="12dp" />
         </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/checkbox_ask_when_ambiguous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/main_ask_when_ambiguous"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
 
         <!-- App de destino para YouTube (independiente de la de arriba) -->
         <TextView
