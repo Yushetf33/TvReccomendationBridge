@@ -27,8 +27,8 @@ android {
         // coincidir con el tag_name de GitHub, p.ej. v1.0.8 -> "1.0.8") o el
         // comprobador de actualizaciones (UpdateChecker) nunca detectará la
         // versión nueva como más reciente que la instalada.
-        versionCode = 19
-        versionName = "1.0.19"
+        versionCode = 20
+        versionName = "1.0.20"
 
         // Se lee de local.properties (no versionado). Consigue la tuya
         // gratis en https://www.themoviedb.org/settings/api

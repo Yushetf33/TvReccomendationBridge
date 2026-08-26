@@ -88,6 +88,17 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     // a una pantalla sin esa ficha.
     private var lastHandledEntityTitle: String? = null
 
+    // Cierto mientras la ficha de detalle (EntityActivity) sigue en primer
+    // plano — los reintentos de OCR de tryOcrFallbackForEntityDetails() se
+    // programan con postDelayed y no se cancelan solos al volver a Inicio;
+    // sin esta bandera, un reintento tardío podía leer por OCR cualquier
+    // texto que hubiera en la pantalla de Inicio (p.ej. el título de OTRA
+    // tarjeta de recomendación) y tratarlo como si fuera un resultado de
+    // búsqueda por voz — confirmado en dispositivo real: al volver rápido a
+    // Inicio tras abrir "Toy Story 5", un reintento OCR tardío leyó "Scary
+    // Movie" de una tarjeta distinta y abrió eso en su lugar.
+    private var isOnEntityDetailsWindow = false
+
     // ACTION_SCREEN_ON no se puede declarar en el manifest (broadcast
     // implícito restringido desde Android 8), así que se registra aquí en
     // caliente, ya que este servicio vive todo el tiempo que la TV está en
@@ -166,12 +177,16 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             if (event.packageName == GOOGLE_TV_LAUNCHER_PACKAGE &&
                 event.className?.toString()?.endsWith(".entity.EntityActivity") == true
             ) {
+                isOnEntityDetailsWindow = true
                 handleEntityDetailsWindow()
             } else {
                 // Al salir de la ficha de detalle (Inicio, otra app...) se
                 // libera el título ya procesado, para poder volver a buscar
                 // por voz ese mismo título más tarde sin que el filtro
-                // anti-doble-disparo de arriba lo bloquee para siempre.
+                // anti-doble-disparo de arriba lo bloquee para siempre. Y se
+                // corta cualquier reintento de OCR pendiente (ver
+                // isOnEntityDetailsWindow más arriba).
+                isOnEntityDetailsWindow = false
                 lastHandledEntityTitle = null
             }
             return
@@ -274,6 +289,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // La ventana puede tardar en poblarse (igual que el retraso ya
         // observado en algunas tarjetas de fila). Reintentamos una vez.
         Handler(Looper.getMainLooper()).postDelayed({
+            if (!isOnEntityDetailsWindow) return@postDelayed
             val retryRoot = rootInActiveWindow
             val retryTitle = retryRoot?.let { findEntityDetailsTitle(it) }
             Log.d(TAG, "handleEntityDetailsWindow (retraso): root=${retryRoot != null} title=$retryTitle")
@@ -299,6 +315,12 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
      * paso extra de red/reconocimiento de ese camino, que retrasa cuándo
      * termina de pintarse el título. */
     private fun tryOcrFallbackForEntityDetails(attempt: Int = 1) {
+        if (!isOnEntityDetailsWindow) {
+            // Ya no estamos en la ficha de detalle (el usuario volvió a
+            // Inicio, p.ej.) — abortar en vez de hacer OCR a ciegas de lo
+            // que sea que haya en pantalla ahora.
+            return
+        }
         val captureService = VoiceSearchCaptureService.instance
         if (captureService == null) {
             lastHandledEntityTitle = null
@@ -306,6 +328,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         }
         captureService.captureFrame { bitmap ->
             backgroundExecutor.execute {
+                if (!isOnEntityDetailsWindow) return@execute
                 val title = bitmap?.let {
                     try {
                         TitleOcr.recognizeFirstLine(cropEntityDetailsTitleRegion(it))?.trim()
@@ -315,6 +338,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                     }
                 }
                 Log.d(TAG, "OCR de ficha de detalle (búsqueda por voz, intento $attempt): \"$title\"")
+                if (!isOnEntityDetailsWindow) return@execute
                 if (!title.isNullOrBlank()) {
                     onEntityTitleFound(title)
                 } else if (attempt < 3) {
