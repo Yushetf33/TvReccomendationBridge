@@ -66,6 +66,11 @@ Once installed, open the **TvRecommendationBridge** app from the TV's
 launcher and tap **"Enable the service in Accessibility"** (it will take
 you straight to the right screen). Enable it there.
 
+> Stuck on any of this? The app has a built-in **"Having trouble? Get
+> help"** button right at the top of Settings, with the same
+> troubleshooting steps below and direct shortcuts to the right system
+> screens — no need to leave the TV to read this file.
+
 #### The toggle turns itself off immediately
 
 On Android 13 and newer, the system blocks any sideloaded app (anything
@@ -301,6 +306,25 @@ on, and fill in:
 
 Leave it off if you don't run your own Jellyfin server.
 
+### Confirm before opening (optional)
+
+By default, a recommendation opens straight away as soon as it's
+identified. If you'd rather double-check first, Settings →
+**"Confirm before opening (Watch now)"** shows a **"Watch now in
+{App}"** button instead of opening immediately. Dismissing it with
+Back only hides it — it reappears a few seconds later and keeps doing
+so until you either confirm it or navigate away (back to the launcher's
+home screen, open something else, etc.), so a stray Back press doesn't
+lose it for good. Off by default.
+
+### Ambiguous matches
+
+When a search turns up two or more titles with the **exact same name**
+but different years (a remake, for example), TvRecommendationBridge
+now asks which one you meant instead of guessing — Settings →
+**"Ask when a match is ambiguous"** (on by default, turn it off if
+you'd rather it always pick automatically).
+
 YouTube recommendations work the same way, but redirect to
 **[SmartTube](https://github.com/yuliskov/SmartTube)** or
 **[TizenTube Cobalt](https://github.com/reisxd/TizenTubeCobalt)**
@@ -318,7 +342,10 @@ there).
 ## Known limitations
 
 - Occasionally, a title may match a lesser-known movie or show with the
-  same name and open the wrong page.
+  same name and open the wrong page — this is caught when the two
+  candidates have different release years (see
+  [Ambiguous matches](#ambiguous-matches) above), but not when they
+  share both name and year.
 - If you've chosen Plex and a title isn't in Plex's free catalog,
   nothing happens — there's no fallback to another app.
 - If you've chosen Jellyfin, you land on a search results page, not the
