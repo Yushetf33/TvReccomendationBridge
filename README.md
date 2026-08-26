@@ -187,9 +187,17 @@ Fire TV works a bit differently from Google TV: instead of opening
 automatically the moment you select a recommendation, you need to
 **hold still on it for a couple of seconds**, then a prompt appears —
 **"Open '\<title\>' in \<your chosen app\>?"** — and you confirm by
-pressing **OK** on the remote. Not instant like on Google TV, but still
-much faster than typing the title in yourself. If you don't respond,
+pressing **OK** on the remote, or dismiss it with the on-screen
+**"Back"** button next to it (use that instead of the remote's physical
+Back button — on some Fire TV units, the physical button can also send
+an extra Back action to whatever's underneath). If you don't respond,
 the prompt disappears on its own after a few seconds and nothing opens.
+
+If the Fire TV goes into standby (screen off), Fire TV mode is still
+active when it wakes back up. A real power loss or reboot clears it,
+though — screen capture consent doesn't survive that, and there's no
+automatic re-activation on boot, so you'll need to open the app and
+tap **"Activate Fire TV mode"** again in that case.
 
 ### Activating it
 
