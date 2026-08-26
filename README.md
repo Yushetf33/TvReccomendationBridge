@@ -1,5 +1,7 @@
 # TvRecommendationBridge
 
+🌐 **[Official site](https://yushetf33.github.io/TvReccomendationBridge/)** — a friendlier overview than this README, if that's more your speed.
+
 App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
 When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, or **Wholphin**, depending on the app configured by the user.
