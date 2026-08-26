@@ -2,14 +2,14 @@
 
 App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
-When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, or **Jellyfin**, depending on the app configured by the user.
+When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, or **Wholphin**, depending on the app configured by the user.
 
 TvRecommendationBridge is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
 
 ## Requirements
 
 - A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.), **or a Fire TV device** (Fire TV Stick, Fire TV Cube, etc.) — Fire TV works differently under the hood, see [Fire TV](#fire-tv) below.
-- **Nuvio**, **Stremio**, **WuPlay**, **Plex**, and/or **Jellyfin** installed on the device — pick whichever you want recommendations to open in.
+- **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, and/or **[Wholphin](https://github.com/damontecres/Wholphin)** installed on the device — pick whichever you want recommendations to open in.
 - **SmartTube** installed (optional, Google TV only) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
 - An active TvRecommendationBridge license (see [Pricing](#pricing) below).
 
@@ -270,8 +270,8 @@ no need to wait 30 days or contact support to free up a slot.
 On **Google TV**, the launcher exposes the title of each recommendation
 when you select it. The app picks up on that click, looks up the title
 in a public movie/show database to identify the content, and opens its
-page directly in Nuvio, Stremio, WuPlay, Plex, or Jellyfin (whichever
-you've chosen in the app's settings).
+page directly in Nuvio, Stremio, WuPlay, Plex, Jellyfin, or Wholphin
+(whichever you've chosen in the app's settings).
 
 On **Fire TV** it works a bit differently — see the [Fire TV](#fire-tv) section above for the details.
 
@@ -286,24 +286,27 @@ own free, ad-supported streaming catalog (the "Movies & Shows" section
 of the Plex app) — not a personal Plex Media Server library, since
 there's no universal ID to link to someone's private collection.
 
-Jellyfin works differently from the other four: since it's
-self-hosted, there's no universal ID or shared catalog to link to
-either — each user's server has its own library with its own internal
-IDs. Instead of opening straight to the title's page, TvRecommendationBridge
-opens the Jellyfin app with a **search** for that title already
-triggered, so you land on the search results instead of the exact
-page.
+Jellyfin and **[Wholphin](https://github.com/damontecres/Wholphin)**
+(an alternative open-source Jellyfin client) work differently from the
+other three: since Jellyfin is self-hosted, there's no universal ID or
+shared catalog to link to either — each user's server has its own
+library with its own internal IDs. Instead of opening straight to the
+title's page, TvRecommendationBridge opens whichever of the two you've
+picked with a **search** for that title already triggered, so you land
+on the search results instead of the exact page.
 
 ### Check my Jellyfin first (optional)
 
 Independent of whichever app you've picked above as your main
 destination, you can optionally have TvRecommendationBridge check your
 own Jellyfin server **first** — if a recommendation is already in your
-personal library, it opens straight to that title's page in Jellyfin
-(no search needed) instead of going to Nuvio/Stremio/WuPlay/Plex; if
-it's not there, it falls back to your normal destination app as usual.
-This works for every trigger (click, voice search, Fire TV), since
-they all funnel through the same check.
+personal library, it opens straight to that title's page (no search
+needed) instead of going to Nuvio/Stremio/WuPlay/Plex; if it's not
+there, it falls back to your normal destination app as usual. This
+works for every trigger (click, voice search, Fire TV), since they all
+funnel through the same check. It opens the exact page in **Wholphin**
+if that's the app you've picked as your main destination, or in the
+official Jellyfin app otherwise.
 
 To enable it, go to Settings → **"Check my Jellyfin first"**, turn it
 on, and fill in:
@@ -377,9 +380,9 @@ TvRecommendationBridge does not provide or control the content sources available
 
 The user is responsible for their use of third-party apps, and for making sure that use complies with applicable law and the corresponding terms of service.
 
-TvRecommendationBridge is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, Stremio, or WuPlay.
+TvRecommendationBridge is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, Stremio, WuPlay, or Wholphin.
 
-Google, Google TV, Android TV, Nuvio, Stremio, and WuPlay are trademarks or products of their respective owners.
+Google, Google TV, Android TV, Nuvio, Stremio, WuPlay, and Wholphin are trademarks or products of their respective owners.
 
 ## Credits
 
