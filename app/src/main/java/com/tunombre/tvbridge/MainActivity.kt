@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RadioButton
@@ -63,6 +64,7 @@ class MainActivity : Activity() {
 
         setupPaymentLinks()
         setupPlayerAppSelector()
+        setupJellyfinCheckConfig()
         requestNotificationPermissionIfNeeded()
         UpdateChecker.schedulePeriodicCheck(this)
 
@@ -284,6 +286,38 @@ class MainActivity : Activity() {
                 else -> YoutubeApp.SMARTTUBE
             }
             Preferences.setSelectedYoutubeApp(this, selected)
+        }
+    }
+
+    /** Rellena los campos con lo ya guardado (si lo hay) y engancha el
+     * checkbox + botón "Guardar" — ver Preferences.isJellyfinCheckEnabled y
+     * StremioLauncher.tryOpenInPersonalJellyfin. Guardar con el checkbox
+     * marcado pero campos vacíos avisa en vez de guardar en silencio, para
+     * que el usuario no acabe con la comprobación "activada" sin datos. */
+    private fun setupJellyfinCheckConfig() {
+        val checkbox = findViewById<CheckBox>(R.id.checkbox_jellyfin_check)
+        val serverUrlInput = findViewById<EditText>(R.id.jellyfin_server_url_input)
+        val apiKeyInput = findViewById<EditText>(R.id.jellyfin_api_key_input)
+        val statusLabel = findViewById<TextView>(R.id.jellyfin_check_status)
+
+        checkbox.isChecked = Preferences.isJellyfinCheckEnabled(this)
+        Preferences.getJellyfinServerUrl(this)?.let { serverUrlInput.setText(it) }
+        Preferences.getJellyfinApiKey(this)?.let { apiKeyInput.setText(it) }
+
+        findViewById<Button>(R.id.button_save_jellyfin_config).setOnClickListener {
+            val serverUrl = serverUrlInput.text.toString().trim()
+            val apiKey = apiKeyInput.text.toString().trim()
+
+            if (checkbox.isChecked && (serverUrl.isBlank() || apiKey.isBlank())) {
+                statusLabel.text = getString(R.string.main_jellyfin_check_missing_fields)
+                return@setOnClickListener
+            }
+
+            if (serverUrl.isNotBlank() && apiKey.isNotBlank()) {
+                Preferences.setJellyfinServerConfig(this, serverUrl, apiKey)
+            }
+            Preferences.setJellyfinCheckEnabled(this, checkbox.isChecked)
+            statusLabel.text = getString(R.string.main_jellyfin_check_saved)
         }
     }
 

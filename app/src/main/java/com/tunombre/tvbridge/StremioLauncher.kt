@@ -24,6 +24,7 @@ object StremioLauncher {
     private const val TAG = "StremioLauncher"
 
     fun open(service: Context, match: TmdbMatch) {
+        if (tryOpenInPersonalJellyfin(service, match)) return
         when (val app = Preferences.getSelectedApp(service)) {
             PlayerApp.NUVIO -> {
                 val uri = if (match.type == MediaType.MOVIE) {
@@ -63,6 +64,27 @@ object StremioLauncher {
                 openWithFallback(service, uri, app.packageName, app.label)
             }
         }
+    }
+
+    /**
+     * Comprobación opcional, independiente de qué [PlayerApp] tenga elegida
+     * el usuario: si ha configurado su propio servidor Jellyfin en Ajustes
+     * (ver Preferences.isJellyfinCheckEnabled), consulta primero si el
+     * título ya está en su biblioteca personal y, si es así, abre esa ficha
+     * directamente en vez del flujo normal — útil incluso para quien usa
+     * Nuvio/Stremio/etc. como destino principal, o para búsqueda por voz,
+     * ya que ambos pasan por [open]. Si no está configurado, o el título no
+     * está en su biblioteca, devuelve false y el llamador sigue con el
+     * flujo normal de abajo.
+     */
+    private fun tryOpenInPersonalJellyfin(service: Context, match: TmdbMatch): Boolean {
+        if (!Preferences.isJellyfinCheckEnabled(service)) return false
+        val serverUrl = Preferences.getJellyfinServerUrl(service)
+        val apiKey = Preferences.getJellyfinApiKey(service)
+        if (serverUrl.isNullOrBlank() || apiKey.isNullOrBlank()) return false
+
+        val itemId = JellyfinApiClient.findExactItemId(serverUrl, apiKey, match.title) ?: return false
+        return JellyfinLauncher.openItem(service, itemId)
     }
 
     private fun openWithFallback(service: Context, uri: Uri, targetPackage: String, appLabel: String) {

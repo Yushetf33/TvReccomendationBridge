@@ -239,6 +239,69 @@
                 android:padding="12dp" />
         </RadioGroup>
 
+        <!-- Comprobación opcional contra el servidor Jellyfin personal del
+             usuario, independiente de la app de destino elegida arriba. -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/main_jellyfin_check_title"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:text="@string/main_jellyfin_check_explainer"
+            android:textColor="#888888"
+            android:textSize="12sp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_jellyfin_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/main_jellyfin_check_enable"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/jellyfin_server_url_input"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/main_jellyfin_server_url_hint"
+            android:inputType="textUri"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#777777"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/jellyfin_api_key_input"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/main_jellyfin_api_key_hint"
+            android:inputType="textPassword"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#777777"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/button_save_jellyfin_config"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/main_jellyfin_check_save" />
+
+        <TextView
+            android:id="@+id/jellyfin_check_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:textColor="#4CD964"
+            android:textSize="13sp" />
+
         <Button
             android:id="@+id/button_activate_service"
             android:layout_width="wrap_content"

@@ -26,6 +26,14 @@ object JellyfinLauncher {
     private const val JELLYFIN_PACKAGE = "org.jellyfin.androidtv"
     private const val STARTUP_ACTIVITY = "org.jellyfin.androidtv.ui.startup.StartupActivity"
 
+    // Nombre del extra que StartupActivity.openNextActivity() lee para ir
+    // directo a la ficha de un ítem (Destinations.itemDetails), en vez de a
+    // una búsqueda — confirmado contra el código fuente de
+    // jellyfin-androidtv (StartupActivity.EXTRA_ITEM_ID). Solo se usa
+    // cuando ya sabemos el Id exacto vía JellyfinApiClient (biblioteca
+    // personal del usuario, no el catálogo de búsqueda a ciegas de abajo).
+    private const val EXTRA_ITEM_ID = "ItemId"
+
     fun openSearch(service: Context, title: String) {
         if (!StremioLauncher.isPackageInstalled(service, JELLYFIN_PACKAGE)) {
             Log.w(TAG, "Jellyfin no está instalado — abriendo su ficha en la Play Store")
@@ -43,6 +51,33 @@ object JellyfinLauncher {
         } catch (e: Exception) {
             Log.e(TAG, "No se pudo abrir Jellyfin, ¿está instalado de verdad?", e)
             StremioLauncher.openPlayStoreListing(service, JELLYFIN_PACKAGE, "Jellyfin")
+        }
+    }
+
+    /**
+     * Abre Jellyfin directo en la ficha de [itemId] (ya confirmado presente
+     * en la biblioteca del usuario vía JellyfinApiClient.findExactItemId) —
+     * a diferencia de [openSearch], no hace falta que el usuario elija
+     * entre resultados. Devuelve false si Jellyfin no está instalado o el
+     * intent falla, para que el llamador (StremioLauncher) siga con el
+     * flujo normal en vez de dejar al usuario sin nada.
+     */
+    fun openItem(service: Context, itemId: String): Boolean {
+        if (!StremioLauncher.isPackageInstalled(service, JELLYFIN_PACKAGE)) {
+            return false
+        }
+        val intent = Intent().apply {
+            component = ComponentName(JELLYFIN_PACKAGE, STARTUP_ACTIVITY)
+            putExtra(EXTRA_ITEM_ID, itemId)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        return try {
+            service.startActivity(intent)
+            Log.d(TAG, "Abriendo Jellyfin directo en el ítem de la biblioteca del usuario: $itemId")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "No se pudo abrir Jellyfin en el ítem $itemId", e)
+            false
         }
     }
 }

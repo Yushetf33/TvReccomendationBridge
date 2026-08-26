@@ -63,4 +63,40 @@ object Preferences {
             .putString(KEY_YOUTUBE_APP, app.name)
             .apply()
     }
+
+    // Comprobación opcional contra el servidor Jellyfin personal del usuario
+    // (ver JellyfinApiClient/StremioLauncher.tryOpenInPersonalJellyfin):
+    // totalmente independiente de qué PlayerApp esté elegida arriba, para
+    // que sirva incluso si el destino normal es Nuvio/Stremio/etc. — solo se
+    // activa si el usuario ha rellenado los tres campos.
+    private const val KEY_JELLYFIN_CHECK_ENABLED = "jellyfin_check_enabled"
+    private const val KEY_JELLYFIN_SERVER_URL = "jellyfin_server_url"
+    private const val KEY_JELLYFIN_API_KEY = "jellyfin_api_key"
+
+    fun isJellyfinCheckEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_JELLYFIN_CHECK_ENABLED, false)
+
+    fun setJellyfinCheckEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_JELLYFIN_CHECK_ENABLED, enabled)
+            .apply()
+    }
+
+    fun getJellyfinServerUrl(context: Context): String? =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getString(KEY_JELLYFIN_SERVER_URL, null)
+
+    fun getJellyfinApiKey(context: Context): String? =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getString(KEY_JELLYFIN_API_KEY, null)
+
+    fun setJellyfinServerConfig(context: Context, serverUrl: String, apiKey: String) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_JELLYFIN_SERVER_URL, serverUrl)
+            .putString(KEY_JELLYFIN_API_KEY, apiKey)
+            .apply()
+    }
 }

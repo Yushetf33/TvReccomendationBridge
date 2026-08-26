@@ -43,7 +43,15 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // tarjetas de fila. Usarlos para cortar (en vez de la primera coma)
         // evita truncar títulos que ya traen coma de por sí, como
         // "Monstruos, S.A." (cortar por la primera coma daría solo "Monstruos").
-        private val TITLE_MARKERS = listOf("cuesta:", "se necesita una suscripción a", "puntuación:")
+        //
+        // Guardados codificados (ver Obfuscated.kt) en vez de como literales
+        // de texto plano: son justo las cadenas que un tercero copió leyendo
+        // el APK compilado, ya que R8 no ofusca literales de texto.
+        private val TITLE_MARKERS = listOf(
+            Obfuscated.decode("OS8/KS47YA=="), // "cuesta:"
+            Obfuscated.decode("KT96ND85PykzLjt6LzQ7eikvKTkoMyo5M5npNHo7"), // "se necesita una suscripción a"
+            Obfuscated.decode("Ki80Li87OTOZ6TRg") // "puntuación:"
+        )
 
         // Marcador de las tarjetas de recomendación de YouTube: el launcher
         // les añade "{Título}, Duración: X minutos Y segundos" al content-desc,
@@ -51,7 +59,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // Se comprueba antes que TITLE_MARKERS porque, si no, isMovieOrShowCard
         // las cuela igualmente como "{Título}, {resto}" y las manda a TMDb,
         // donde nunca van a encontrarse (no son películas ni series).
-        private const val YOUTUBE_DURATION_MARKER = "Duración:"
+        private val YOUTUBE_DURATION_MARKER = Obfuscated.decode("Hi8oOzkzmek0YA==") // "Duración:"
 
         private const val AMAZON_LAUNCHER_PACKAGE = "com.amazon.tv.launcher"
         private const val GOOGLE_TV_LAUNCHER_PACKAGE = "com.google.android.apps.tv.launcherx"

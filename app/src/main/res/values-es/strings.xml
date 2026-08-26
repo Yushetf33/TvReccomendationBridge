@@ -35,6 +35,16 @@
     <string name="main_choose_youtube_app">Abrir vídeos de YouTube en:</string>
     <string name="main_smarttube_label">SmartTube</string>
     <string name="main_tizentube_label">TizenTube Cobalt (necesita TizenTube Bridge)</string>
+
+    <string name="main_jellyfin_check_title">Comprobar mi Jellyfin primero (opcional)</string>
+    <string name="main_jellyfin_check_explainer">Si una recomendación ya está en tu propia biblioteca de Jellyfin, ábrela ahí directamente — sin importar qué app hayas elegido arriba. Déjalo desactivado si no usas Jellyfin.</string>
+    <string name="main_jellyfin_check_enable">Activar</string>
+    <string name="main_jellyfin_server_url_hint">URL del servidor (ej. http://192.168.1.10:8096)</string>
+    <string name="main_jellyfin_api_key_hint">API key (Panel → API Keys)</string>
+    <string name="main_jellyfin_check_save">Guardar</string>
+    <string name="main_jellyfin_check_saved">Guardado</string>
+    <string name="main_jellyfin_check_missing_fields">Introduce la URL del servidor y la API key</string>
+
     <string name="main_open_accessibility_settings">Activar el servicio en Accesibilidad</string>
     <string name="main_accessibility_settings_unavailable">No se pudo abrir Ajustes de Accesibilidad automáticamente en este dispositivo — abre Ajustes manualmente y busca TvRecommendationBridge dentro de Accesibilidad.</string>
     <string name="main_accessibility_enabled_directly">Servicio activado</string>
