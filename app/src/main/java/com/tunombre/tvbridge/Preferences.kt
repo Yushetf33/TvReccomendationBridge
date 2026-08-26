@@ -8,7 +8,12 @@ enum class PlayerApp(val packageName: String, val label: String) {
     STREMIO("com.stremio.one", "Stremio"),
     PLEX("com.plexapp.android", "Plex"),
     JELLYFIN("org.jellyfin.androidtv", "Jellyfin"),
-    WUPLAY("app.wuplay.androidtv", "WuPlay")
+    WUPLAY("app.wuplay.androidtv", "WuPlay"),
+    // Cliente de Jellyfin alternativo (ver WholphinLauncher) — mismo caso
+    // de uso que JELLYFIN (autoalojado, sin catálogo compartido), pero
+    // apunta a Wholphin en vez de a la app oficial para quien la use como
+    // su cliente principal.
+    WHOLPHIN("com.github.damontecres.wholphin", "Wholphin")
 }
 
 /** App de destino donde se abre la búsqueda de un vídeo de YouTube

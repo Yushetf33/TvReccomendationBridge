@@ -25,7 +25,8 @@ class PlayerAppStepFragment : GuidedStepSupportFragment() {
             Triple(ID_STREMIO, PlayerApp.STREMIO, R.string.main_stremio_label),
             Triple(ID_PLEX, PlayerApp.PLEX, R.string.main_plex_label),
             Triple(ID_JELLYFIN, PlayerApp.JELLYFIN, R.string.main_jellyfin_label),
-            Triple(ID_WUPLAY, PlayerApp.WUPLAY, R.string.main_wuplay_label)
+            Triple(ID_WUPLAY, PlayerApp.WUPLAY, R.string.main_wuplay_label),
+            Triple(ID_WHOLPHIN, PlayerApp.WHOLPHIN, R.string.main_wholphin_label)
         )
         for ((id, app, labelRes) in apps) {
             actions.add(
@@ -65,6 +66,7 @@ class PlayerAppStepFragment : GuidedStepSupportFragment() {
             ID_PLEX -> Preferences.setSelectedApp(context, PlayerApp.PLEX)
             ID_JELLYFIN -> Preferences.setSelectedApp(context, PlayerApp.JELLYFIN)
             ID_WUPLAY -> Preferences.setSelectedApp(context, PlayerApp.WUPLAY)
+            ID_WHOLPHIN -> Preferences.setSelectedApp(context, PlayerApp.WHOLPHIN)
             ID_ASK_AMBIGUOUS -> Preferences.setAskWhenAmbiguousEnabled(context, action.isChecked)
             ID_WATCH_NOW -> Preferences.setWatchNowConfirmEnabled(context, action.isChecked)
         }
@@ -76,6 +78,7 @@ class PlayerAppStepFragment : GuidedStepSupportFragment() {
         private const val ID_PLEX = 3L
         private const val ID_JELLYFIN = 4L
         private const val ID_WUPLAY = 5L
+        private const val ID_WHOLPHIN = 8L
         private const val ID_ASK_AMBIGUOUS = 6L
         private const val ID_WATCH_NOW = 7L
     }

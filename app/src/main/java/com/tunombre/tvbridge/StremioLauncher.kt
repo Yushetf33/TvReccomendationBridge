@@ -63,6 +63,11 @@ object StremioLauncher {
                 val uri = Uri.parse("wuplay://$wuplayType/${match.imdbId}")
                 openWithFallback(service, uri, app.packageName, app.label)
             }
+            PlayerApp.WHOLPHIN -> {
+                // Mismo caso que JELLYFIN: autoalojado, sin ID compartido,
+                // se abre con búsqueda del título.
+                WholphinLauncher.openSearch(service, match.title)
+            }
         }
     }
 
@@ -84,7 +89,14 @@ object StremioLauncher {
         if (serverUrl.isNullOrBlank() || apiKey.isNullOrBlank()) return false
 
         val itemId = JellyfinApiClient.findExactItemId(serverUrl, apiKey, match.title) ?: return false
-        return JellyfinLauncher.openItem(service, itemId)
+        // Si Wholphin es la app elegida, abrir ahí en vez de en la app
+        // oficial de Jellyfin — algunos usuarios usan Wholphin como único
+        // cliente y puede que ni tengan la oficial instalada.
+        return if (Preferences.getSelectedApp(service) == PlayerApp.WHOLPHIN) {
+            WholphinLauncher.openItem(service, itemId)
+        } else {
+            JellyfinLauncher.openItem(service, itemId)
+        }
     }
 
     private fun openWithFallback(service: Context, uri: Uri, targetPackage: String, appLabel: String) {

@@ -53,6 +53,7 @@
         <package android:name="com.plexapp.android" />
         <package android:name="org.jellyfin.androidtv" />
         <package android:name="app.wuplay.androidtv" />
+        <package android:name="com.github.damontecres.wholphin" />
         <package android:name="com.android.vending" />
     </queries>
 
