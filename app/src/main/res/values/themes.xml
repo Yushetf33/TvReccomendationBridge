@@ -15,4 +15,14 @@
         <item name="android:statusBarColor">@color/bg_root</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Tema para los pasos de Ajustes (ver MainMenuStepFragment y demás
+         GuidedStepSupportFragment, devuelto desde su onProvideTheme) —
+         mismo fondo/acento que el resto de la app en vez del gris por
+         defecto de Leanback. -->
+    <style name="Theme.TvRecommendationBridge.GuidedStep" parent="Theme.Leanback.GuidedStep">
+        <item name="guidedStepBackground">@color/bg_root</item>
+        <item name="guidedActionsBackground">@color/bg_root</item>
+        <item name="guidedActionsBackgroundDark">@color/bg_root</item>
+    </style>
 </resources>

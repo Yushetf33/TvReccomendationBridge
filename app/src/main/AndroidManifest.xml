@@ -80,6 +80,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".SubscriptionActivity" android:exported="false" />
+
         <activity android:name=".DeviceManagerActivity" android:exported="false" />
 
         <activity android:name=".HelpActivity" android:exported="false" />

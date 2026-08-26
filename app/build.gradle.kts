@@ -27,8 +27,8 @@ android {
         // coincidir con el tag_name de GitHub, p.ej. v1.0.8 -> "1.0.8") o el
         // comprobador de actualizaciones (UpdateChecker) nunca detectará la
         // versión nueva como más reciente que la instalada.
-        versionCode = 23
-        versionName = "1.0.23"
+        versionCode = 25
+        versionName = "1.0.25"
 
         // Se lee de local.properties (no versionado). Consigue la tuya
         // gratis en https://www.themoviedb.org/settings/api
@@ -112,6 +112,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
+    // Para GuidedStepSupportFragment (pasos de Ajustes con mejor foco de
+    // mando) — ver PlayerAppStepFragment/YoutubeAppStepFragment/etc.
+    implementation(libs.androidx.leanback)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // Solo el "core" de ZXing (generar QR), no la librería completa de
     // escaneo — no hace falta cámara para esto.

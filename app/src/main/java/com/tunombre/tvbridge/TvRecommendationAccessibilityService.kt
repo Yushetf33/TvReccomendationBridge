@@ -499,6 +499,20 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     }
 
     private fun handleMovieClick(title: String) {
+        // Un título ya se ha resuelto para este ciclo (por clic directo o
+        // por el propio OCR) — cualquier reintento de OCR de respaldo que
+        // siga pendiente (ver tryOcrFallbackForEntityDetails) queda
+        // obsoleto a partir de aquí. Sin esto: un clic normal que SÍ abre
+        // bien la app puede, unos segundos después, seguir teniendo vivo el
+        // reintento de OCR programado por el breve paso por la ficha de
+        // detalle del launcher — y como ya no estamos viendo el launcher
+        // (la app de destino ya está en primer plano, fuera de los paquetes
+        // que este servicio observa, así que nunca llega un evento que
+        // cancele el reintento por sí solo), ese reintento acaba haciendo
+        // OCR de lo que sea que haya en pantalla EN ESE MOMENTO — la propia
+        // app de destino — y abre lo que sea que haya leído ahí. Confirmado
+        // en dispositivo real.
+        isOnEntityDetailsWindow = false
         backgroundExecutor.execute {
             when (val resolution = TmdbClient.resolve(title)) {
                 is TmdbResolution.Resolved -> {
