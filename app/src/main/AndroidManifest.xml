@@ -86,6 +86,11 @@
 
         <activity android:name=".MatchPickerActivity" android:exported="false" />
 
+        <activity
+            android:name=".WatchNowConfirmActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+
         <!-- Diálogo de confirmación del modo Fire TV (ver
              FireTvCaptureService/ConfirmOpenActivity): necesita ser una
              Activity real (no un overlay) para poder recibir el pulso de OK

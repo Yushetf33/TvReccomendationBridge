@@ -48,6 +48,10 @@
     <string name="main_help_button">¿Tienes problemas? Obtén ayuda</string>
     <string name="main_ask_when_ambiguous">Preguntar cuando una coincidencia sea ambigua</string>
     <string name="match_picker_title">¿Cuál de estos es \"%1$s\"?</string>
+    <string name="main_watch_now_confirm">Confirmar antes de abrir (\"Ver ahora\")</string>
+    <string name="main_watch_now_confirm_explainer">Opcional. Muestra un botón de confirmación en vez de abrir directo. Descartarlo con Atrás solo lo oculta — reaparece unos segundos después hasta que confirmes o navegues a otra pantalla.</string>
+    <string name="watch_now_confirm_message">¿Abrir \"%1$s\"?</string>
+    <string name="watch_now_confirm_button">Ver ahora en %1$s</string>
 
     <string name="help_title">Solución de problemas</string>
     <string name="help_restricted_title">El interruptor de Accesibilidad se desactiva solo</string>

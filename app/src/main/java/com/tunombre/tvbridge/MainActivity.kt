@@ -277,6 +277,12 @@ class MainActivity : Activity() {
             Preferences.setAskWhenAmbiguousEnabled(this, isChecked)
         }
 
+        val watchNowConfirmCheckbox = findViewById<CheckBox>(R.id.checkbox_watch_now_confirm)
+        watchNowConfirmCheckbox.isChecked = Preferences.isWatchNowConfirmEnabled(this)
+        watchNowConfirmCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            Preferences.setWatchNowConfirmEnabled(this, isChecked)
+        }
+
         setupYoutubeAppSelector()
     }
 

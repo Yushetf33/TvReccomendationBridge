@@ -48,6 +48,10 @@
     <string name="main_help_button">Having trouble? Get help</string>
     <string name="main_ask_when_ambiguous">Ask when a match is ambiguous</string>
     <string name="match_picker_title">Which one did you mean, \"%1$s\"?</string>
+    <string name="main_watch_now_confirm">Confirm before opening (\"Watch now\")</string>
+    <string name="main_watch_now_confirm_explainer">Optional. Shows a confirm button instead of opening straight away. Dismissing it with Back only hides it — it reappears a few seconds later until you confirm or navigate away.</string>
+    <string name="watch_now_confirm_message">Open \"%1$s\"?</string>
+    <string name="watch_now_confirm_button">Watch now in %1$s</string>
 
     <string name="help_title">Troubleshooting</string>
     <string name="help_restricted_title">The Accessibility toggle turns itself off</string>

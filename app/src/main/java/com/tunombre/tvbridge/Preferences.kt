@@ -117,4 +117,21 @@ object Preferences {
             .putBoolean(KEY_ASK_WHEN_AMBIGUOUS, enabled)
             .apply()
     }
+
+    // Confirmación "Watch now in {App}" antes de abrir, con reaparición tras
+    // descartarla (ver WatchNowConfirmActivity) — opcional y DESACTIVADA por
+    // defecto a petición expresa: cambia el comportamiento de siempre (abrir
+    // directo) para cualquiera que la active, así que no debe imponerse.
+    private const val KEY_WATCH_NOW_CONFIRM = "watch_now_confirm_enabled"
+
+    fun isWatchNowConfirmEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_WATCH_NOW_CONFIRM, false)
+
+    fun setWatchNowConfirmEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_WATCH_NOW_CONFIRM, enabled)
+            .apply()
+    }
 }

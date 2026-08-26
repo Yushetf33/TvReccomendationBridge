@@ -39,6 +39,14 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     companion object {
         private const val TAG = "TvRecService"
 
+        // Ver WatchNowConfirmActivity: necesita avisar al servicio cuando se
+        // descarta (Atrás) o se confirma, y el servicio necesita poder
+        // relanzarla. Mismo patrón que FireTvCaptureService.instance.
+        var instance: TvRecommendationAccessibilityService? = null
+            private set
+
+        private const val WATCH_NOW_REAPPEAR_DELAY_MS = 4000L
+
         // Marcadores que separan el título del resto del content-desc en las
         // tarjetas de fila. Usarlos para cortar (en vez de la primera coma)
         // evita truncar títulos que ya traen coma de por sí, como
@@ -99,6 +107,16 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     // Movie" de una tarjeta distinta y abrió eso en su lugar.
     private var isOnEntityDetailsWindow = false
 
+    // Recomendación pendiente de confirmar por WatchNowConfirmActivity (ver
+    // Preferences.isWatchNowConfirmEnabled) — null si esa opción está
+    // desactivada o no hay ninguna pendiente ahora mismo.
+    private var pendingWatchNowMatch: TmdbMatch? = null
+    private var pendingWatchNowAppLabel: String? = null
+    private val watchNowHandler = Handler(Looper.getMainLooper())
+    private val watchNowReappearRunnable = Runnable {
+        pendingWatchNowMatch?.let { showWatchNowConfirm(it, pendingWatchNowAppLabel.orEmpty()) }
+    }
+
     // ACTION_SCREEN_ON no se puede declarar en el manifest (broadcast
     // implícito restringido desde Android 8), así que se registra aquí en
     // caliente, ya que este servicio vive todo el tiempo que la TV está en
@@ -113,6 +131,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        instance = this
 
         // Configuración programática del servicio: en este dispositivo (TCL,
         // Android 12) el meta-data de accessibility_service_config.xml no se
@@ -183,11 +202,26 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                 // Al salir de la ficha de detalle (Inicio, otra app...) se
                 // libera el título ya procesado, para poder volver a buscar
                 // por voz ese mismo título más tarde sin que el filtro
-                // anti-doble-disparo de arriba lo bloquee para siempre. Y se
-                // corta cualquier reintento de OCR pendiente (ver
-                // isOnEntityDetailsWindow más arriba).
-                isOnEntityDetailsWindow = false
+                // anti-doble-disparo de arriba lo bloquee para siempre. Esto
+                // es inofensivo hacerlo siempre: en el peor caso permite un
+                // duplicado.
                 lastHandledEntityTitle = null
+
+                // Cortar el reintento de OCR pendiente y el watch-now (ver
+                // isOnEntityDetailsWindow más arriba) es más delicado: el
+                // propio launcher dispara eventos de ventana internos y
+                // transitorios (p.ej. un FrameLayout "Pantalla de inicio del
+                // usuario principal") DURANTE el flujo normal de abrir una
+                // ficha, sin que el usuario haya salido de verdad —
+                // confirmado en dispositivo real que cortar ahí mataba el
+                // reintento de OCR antes de que le diera tiempo a leer el
+                // título, dejando la app sin reaccionar a partir del segundo
+                // clic. Solo se corta ante la señal fiable de haber vuelto
+                // de verdad a Inicio (HomeActivity).
+                if (event.className?.toString()?.endsWith(".home.HomeActivity") == true) {
+                    isOnEntityDetailsWindow = false
+                    cancelPendingWatchNow()
+                }
             }
             return
         }
@@ -469,7 +503,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             when (val resolution = TmdbClient.resolve(title)) {
                 is TmdbResolution.Resolved -> {
                     Log.d(TAG, "IMDb ID resuelto: $title -> ${resolution.match.imdbId} (${resolution.match.type})")
-                    StremioLauncher.open(this, resolution.match)
+                    openOrConfirm(resolution.match)
                 }
                 is TmdbResolution.Ambiguous -> {
                     if (Preferences.isAskWhenAmbiguousEnabled(this)) {
@@ -480,7 +514,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                         if (match == null) {
                             Log.w(TAG, "No se pudo resolver el primer candidato ambiguo para: $title")
                         } else {
-                            StremioLauncher.open(this, match)
+                            openOrConfirm(match)
                         }
                     }
                 }
@@ -489,12 +523,65 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         }
     }
 
+    /** Abre directo, salvo que el usuario haya activado la confirmación
+     * "Watch now" opcional (ver Preferences.isWatchNowConfirmEnabled) — en
+     * ese caso muestra WatchNowConfirmActivity en su lugar y espera a que
+     * confirme. NOTA: [MatchPickerActivity] no pasa por aquí — elegir entre
+     * varias opciones ya es en sí mismo un paso de confirmación explícito,
+     * apilar un segundo encima sería redundante. */
+    private fun openOrConfirm(match: TmdbMatch) {
+        if (!Preferences.isWatchNowConfirmEnabled(this)) {
+            StremioLauncher.open(this, match)
+            return
+        }
+        showWatchNowConfirm(match, Preferences.getSelectedApp(this).label)
+    }
+
+    private fun showWatchNowConfirm(match: TmdbMatch, appLabel: String) {
+        pendingWatchNowMatch = match
+        pendingWatchNowAppLabel = appLabel
+        watchNowHandler.removeCallbacks(watchNowReappearRunnable)
+        val intent = Intent(this, WatchNowConfirmActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra(WatchNowConfirmActivity.EXTRA_TITLE, match.title)
+            putExtra(WatchNowConfirmActivity.EXTRA_APP_LABEL, appLabel)
+            putExtra(WatchNowConfirmActivity.EXTRA_IMDB_ID, match.imdbId)
+            putExtra(WatchNowConfirmActivity.EXTRA_TYPE, match.type.name)
+        }
+        startActivity(intent)
+    }
+
+    /** Llamado por WatchNowConfirmActivity cuando se descarta (Atrás) sin
+     * confirmar — la reprograma para dentro de unos segundos, salvo que
+     * mientras tanto ya se haya cancelado (ver cancelPendingWatchNow, p.ej.
+     * al volver a Inicio). */
+    fun onWatchNowDismissed() {
+        if (pendingWatchNowMatch == null) return
+        watchNowHandler.postDelayed(watchNowReappearRunnable, WATCH_NOW_REAPPEAR_DELAY_MS)
+    }
+
+    /** Llamado por WatchNowConfirmActivity cuando el usuario confirma — ya
+     * abrió la app elegida, aquí solo se limpia el estado pendiente. */
+    fun onWatchNowConfirmed() {
+        pendingWatchNowMatch = null
+        pendingWatchNowAppLabel = null
+    }
+
+    private fun cancelPendingWatchNow() {
+        if (pendingWatchNowMatch == null) return
+        pendingWatchNowMatch = null
+        pendingWatchNowAppLabel = null
+        watchNowHandler.removeCallbacks(watchNowReappearRunnable)
+    }
+
     override fun onInterrupt() {
         Log.d(TAG, "Servicio interrumpido")
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        instance = null
+        watchNowHandler.removeCallbacks(watchNowReappearRunnable)
         unregisterReceiver(screenOnReceiver)
         backgroundExecutor.shutdown()
     }

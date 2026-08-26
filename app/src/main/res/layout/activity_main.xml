@@ -219,10 +219,28 @@
             android:id="@+id/checkbox_ask_when_ambiguous"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/main_ask_when_ambiguous"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_watch_now_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/main_watch_now_confirm"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="480dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:text="@string/main_watch_now_confirm_explainer"
+            android:textColor="#888888"
+            android:textSize="12sp" />
 
         <!-- App de destino para YouTube (independiente de la de arriba) -->
         <TextView
