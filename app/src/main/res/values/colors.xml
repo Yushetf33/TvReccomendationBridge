@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Legacy template colors (mantenidas por si algo externo las referencia). -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -8,4 +9,33 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="tv_banner_background">#FF1A1A2E</color>
+
+    <!-- Paleta de la interfaz: fondo con un punto azulado (no negro plano),
+         tarjetas ligeramente más claras que el fondo para dar jerarquía sin
+         necesitar líneas separadoras, y UN acento (azul) para todo lo
+         interactivo — distinto del verde de éxito, para no confundir
+         "esto se puede pulsar" con "esto ya se guardó". -->
+    <color name="bg_root">#0B0D12</color>
+    <color name="surface_card">#171B24</color>
+    <color name="surface_card_border">#262B36</color>
+
+    <color name="accent">#5B8DEF</color>
+    <color name="accent_dim">#3A5CA8</color>
+    <color name="success">#4CD964</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9AA1AC</color>
+    <color name="text_tertiary">#6B7280</color>
+
+    <!-- Colores de las insignias de cada app (ver activity_main.xml) — no
+         son logos, solo un círculo con la inicial en el color de marca de
+         cada una, para dar identidad visual sin usar ningún asset con
+         derechos de terceros. -->
+    <color name="badge_nuvio">#E85D75</color>
+    <color name="badge_stremio">#7B5EEA</color>
+    <color name="badge_plex">#E5A00D</color>
+    <color name="badge_jellyfin">#00A4DC</color>
+    <color name="badge_wuplay">#FF6B35</color>
+    <color name="badge_smarttube">#CC1F2D</color>
+    <color name="badge_tizentube">#1B998B</color>
 </resources>

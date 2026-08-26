@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
 
 /**
@@ -52,6 +53,8 @@ class MatchPickerActivity : Activity() {
             val label = if (candidate.year != null) "${candidate.title} (${candidate.year})" else candidate.title
             val button = Button(this).apply {
                 text = label
+                setBackgroundResource(R.drawable.bg_button)
+                setTextColor(ContextCompat.getColor(context, R.color.text_primary))
                 setOnClickListener { onCandidateChosen(candidate) }
             }
             val spacingPx = (12 * resources.displayMetrics.density).toInt()

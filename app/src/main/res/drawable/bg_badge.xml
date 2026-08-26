@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Óvalo base para las insignias de app (ver activity_main.xml) — el
+     color real se fija por instancia con android:backgroundTint, así que
+     este mismo drawable sirve para todas. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/accent" />
+</shape>

@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
 /**
  * Diálogo de confirmación para el "modo Fire TV" (ver FireTvCaptureService):
@@ -45,11 +46,14 @@ class ConfirmOpenActivity : Activity() {
         val openButton = Button(this).apply {
             text = getString(R.string.firetv_confirm_button)
             isFocusableInTouchMode = true
+            setBackgroundResource(R.drawable.bg_button)
+            setTextColor(ContextCompat.getColor(context, R.color.text_primary))
             setOnClickListener { finishWith(confirmed = true) }
         }
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(56, 48, 56, 48)
+            setBackgroundResource(R.drawable.bg_card)
             addView(message)
             addView(openButton)
         }

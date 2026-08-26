@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fondo de botón con estado de foco visible para mando de TV: azul de
+     acento cuando tiene el foco (en vez del resaltado gris por defecto de
+     Android, poco visible sobre fondo oscuro), tarjeta translúcida en
+     reposo. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@drawable/bg_button_focused" />
+    <item android:state_pressed="true" android:drawable="@drawable/bg_button_focused" />
+    <item android:drawable="@drawable/bg_button_default" />
+</selector>

@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#101010">
+    android:background="@color/bg_root">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_primary"
             android:textSize="28sp"
             android:textStyle="bold" />
 
@@ -25,7 +25,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:text="@string/main_subtitle"
-            android:textColor="#AAAAAA"
+            android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 
         <!-- Botón de ayuda arriba del todo, visible sin hacer scroll: es lo
@@ -35,314 +35,394 @@
             android:id="@+id/button_help"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="28dp"
+            android:background="@drawable/bg_button"
+            android:textColor="@color/text_primary"
             android:text="@string/main_help_button" />
 
         <!-- Suscripción -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/main_subscription_title"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/subscription_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/main_subscription_unknown"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/email_input"
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/main_email_hint"
-            android:inputType="textEmailAddress"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#777777"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/button_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/main_verify_button" />
-
-        <Button
-            android:id="@+id/button_manage_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="@string/main_manage_devices_button" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/main_payment_hint"
-            android:textColor="#888888"
-            android:textSize="13sp"
-            android:layout_marginBottom="16dp" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="32dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@drawable/bg_card"
+            android:padding="28dp"
+            android:layout_marginBottom="24dp">
 
-            <!-- Mensual -->
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginBottom="8dp"
+                android:text="@string/main_subscription_title"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/subscription_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/main_subscription_unknown"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/email_input"
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/main_email_hint"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_tertiary"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/button_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_button"
+                android:textColor="@color/text_primary"
+                android:text="@string/main_verify_button" />
+
+            <Button
+                android:id="@+id/button_manage_devices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_button"
+                android:textColor="@color/text_primary"
+                android:text="@string/main_manage_devices_button" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginEnd="24dp">
+                android:text="@string/main_payment_hint"
+                android:textColor="@color/text_tertiary"
+                android:textSize="13sp"
+                android:layout_marginBottom="16dp" />
 
-                <ImageView
-                    android:id="@+id/monthly_qr"
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
-                    android:background="#FFFFFF"
-                    android:padding="6dp"
-                    android:contentDescription="@string/main_monthly_label" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/main_monthly_label"
-                    android:textColor="#CCCCCC"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center"
-                    android:text="@string/main_monthly_trial_note"
-                    android:textColor="#4CD964"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <!-- Lifetime -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/lifetime_qr"
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
-                    android:background="#FFFFFF"
-                    android:padding="6dp"
-                    android:contentDescription="@string/main_lifetime_label" />
-
-                <TextView
+                <!-- Mensual -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/main_lifetime_label"
-                    android:textColor="#CCCCCC"
-                    android:textSize="13sp" />
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="24dp">
+
+                    <ImageView
+                        android:id="@+id/monthly_qr"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:background="#FFFFFF"
+                        android:padding="6dp"
+                        android:contentDescription="@string/main_monthly_label" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/main_monthly_label"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:text="@string/main_monthly_trial_note"
+                        android:textColor="@color/success"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Lifetime -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/lifetime_qr"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:background="#FFFFFF"
+                        android:padding="6dp"
+                        android:contentDescription="@string/main_lifetime_label" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/main_lifetime_label"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
         <!-- App de destino -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/main_choose_app"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="28dp"
+            android:layout_marginBottom="24dp">
 
-        <RadioGroup
-            android:id="@+id/player_app_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
-
-            <RadioButton
-                android:id="@+id/radio_nuvio"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_nuvio_label"
-                android:textColor="#FFFFFF"
+                android:layout_marginBottom="16dp"
+                android:text="@string/main_choose_app"
+                android:textColor="@color/text_primary"
                 android:textSize="18sp"
-                android:padding="12dp" />
+                android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/radio_stremio"
+            <RadioGroup
+                android:id="@+id/player_app_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_nuvio" android:gravity="center" android:text="N" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_nuvio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_nuvio_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_stremio" android:gravity="center" android:text="S" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_stremio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_stremio_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_plex" android:gravity="center" android:text="P" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_plex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_plex_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_jellyfin" android:gravity="center" android:text="J" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_jellyfin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_jellyfin_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_wuplay" android:gravity="center" android:text="W" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_wuplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_wuplay_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+            </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/checkbox_ask_when_ambiguous"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_stremio_label"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:padding="12dp" />
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:buttonTint="@color/accent"
+                android:text="@string/main_ask_when_ambiguous"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp" />
 
-            <RadioButton
-                android:id="@+id/radio_plex"
+            <CheckBox
+                android:id="@+id/checkbox_watch_now_confirm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_plex_label"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:padding="12dp" />
+                android:layout_marginBottom="4dp"
+                android:buttonTint="@color/accent"
+                android:text="@string/main_watch_now_confirm"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp" />
 
-            <RadioButton
-                android:id="@+id/radio_jellyfin"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="480dp"
                 android:layout_height="wrap_content"
-                android:text="@string/main_jellyfin_label"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:padding="12dp" />
-
-            <RadioButton
-                android:id="@+id/radio_wuplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_wuplay_label"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:padding="12dp" />
-        </RadioGroup>
-
-        <CheckBox
-            android:id="@+id/checkbox_ask_when_ambiguous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/main_ask_when_ambiguous"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <CheckBox
-            android:id="@+id/checkbox_watch_now_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="@string/main_watch_now_confirm"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="480dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:gravity="center"
-            android:text="@string/main_watch_now_confirm_explainer"
-            android:textColor="#888888"
-            android:textSize="12sp" />
+                android:gravity="center"
+                android:text="@string/main_watch_now_confirm_explainer"
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <!-- App de destino para YouTube (independiente de la de arriba) -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/main_choose_youtube_app"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="28dp"
+            android:layout_marginBottom="24dp">
 
-        <RadioGroup
-            android:id="@+id/youtube_app_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
-
-            <RadioButton
-                android:id="@+id/radio_smarttube"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_smarttube_label"
-                android:textColor="#FFFFFF"
+                android:layout_marginBottom="16dp"
+                android:text="@string/main_choose_youtube_app"
+                android:textColor="@color/text_primary"
                 android:textSize="18sp"
-                android:padding="12dp" />
+                android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/radio_tizentube"
+            <RadioGroup
+                android:id="@+id/youtube_app_group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_tizentube_label"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:padding="12dp" />
-        </RadioGroup>
+                android:layout_height="wrap_content">
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_smarttube" android:gravity="center" android:text="S" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_smarttube"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_smarttube_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginStart="4dp" android:background="@drawable/bg_badge" android:backgroundTint="@color/badge_tizentube" android:gravity="center" android:text="T" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp" />
+                    <RadioButton
+                        android:id="@+id/radio_tizentube"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/accent"
+                        android:text="@string/main_tizentube_label"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:padding="12dp" />
+                </LinearLayout>
+            </RadioGroup>
+        </LinearLayout>
 
         <!-- Comprobación opcional contra el servidor Jellyfin personal del
              usuario, independiente de la app de destino elegida arriba. -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="@string/main_jellyfin_check_title"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@drawable/bg_card"
+            android:padding="28dp"
+            android:layout_marginBottom="24dp">
 
-        <TextView
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:gravity="center"
-            android:text="@string/main_jellyfin_check_explainer"
-            android:textColor="#888888"
-            android:textSize="12sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/main_jellyfin_check_title"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <CheckBox
-            android:id="@+id/checkbox_jellyfin_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/main_jellyfin_check_enable"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            <TextView
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center"
+                android:text="@string/main_jellyfin_check_explainer"
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp" />
 
-        <EditText
-            android:id="@+id/jellyfin_server_url_input"
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/main_jellyfin_server_url_hint"
-            android:inputType="textUri"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#777777"
-            android:layout_marginBottom="12dp" />
+            <CheckBox
+                android:id="@+id/checkbox_jellyfin_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:buttonTint="@color/accent"
+                android:text="@string/main_jellyfin_check_enable"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/jellyfin_api_key_input"
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/main_jellyfin_api_key_hint"
-            android:inputType="textPassword"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#777777"
-            android:layout_marginBottom="12dp" />
+            <EditText
+                android:id="@+id/jellyfin_server_url_input"
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/main_jellyfin_server_url_hint"
+                android:inputType="textUri"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_tertiary"
+                android:layout_marginBottom="12dp" />
 
-        <Button
-            android:id="@+id/button_save_jellyfin_config"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/main_jellyfin_check_save" />
+            <EditText
+                android:id="@+id/jellyfin_api_key_input"
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/main_jellyfin_api_key_hint"
+                android:inputType="textPassword"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_tertiary"
+                android:layout_marginBottom="12dp" />
 
-        <TextView
-            android:id="@+id/jellyfin_check_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:textColor="#4CD964"
-            android:textSize="13sp" />
+            <Button
+                android:id="@+id/button_save_jellyfin_config"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_button"
+                android:textColor="@color/text_primary"
+                android:text="@string/main_jellyfin_check_save" />
+
+            <TextView
+                android:id="@+id/jellyfin_check_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/success"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_activate_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_button"
+            android:textColor="@color/text_primary"
             android:text="@string/main_open_accessibility_settings" />
 
         <TextView
@@ -352,7 +432,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/main_firetv_mode_explainer"
-            android:textColor="#888888"
+            android:textColor="@color/text_tertiary"
             android:textSize="12sp"
             android:visibility="gone" />
 
@@ -361,6 +441,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:background="@drawable/bg_button"
+            android:textColor="@color/text_primary"
             android:text="@string/main_voice_search_button"
             android:visibility="gone" />
 
@@ -371,7 +453,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/main_voice_search_explainer"
-            android:textColor="#888888"
+            android:textColor="@color/text_tertiary"
             android:textSize="12sp"
             android:visibility="gone" />
 
@@ -382,7 +464,7 @@
             android:layout_marginTop="48dp"
             android:layout_marginBottom="12dp"
             android:text="@string/main_credits_title"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_primary"
             android:textSize="18sp" />
 
         <ImageView
@@ -397,7 +479,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/main_tmdb_attribution"
-            android:textColor="#888888"
+            android:textColor="@color/text_tertiary"
             android:textSize="12sp" />
 
     </LinearLayout>
