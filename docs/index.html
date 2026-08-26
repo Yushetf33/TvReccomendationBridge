@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TvRecommendationBridge — open recommendations in the app you actually want</title>
+<meta name="description" content="TvRecommendationBridge catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1.5' y='1.5' width='27' height='27' rx='8' fill='%230B0D12' stroke='%235B8DEF' stroke-width='2'/%3E%3Cpath d='M12 10.5L20 15L12 19.5V10.5Z' fill='%235B8DEF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0B0D12; color: #FFFFFF; font-family: "Manrope", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3 { font-family: "Sora", system-ui, sans-serif; margin: 0; }
+  p { margin: 0; }
+  a { color: #5B8DEF; text-decoration: none; }
+  a:hover { color: #86A9F5; text-decoration: underline; }
+  ::selection { background: #5B8DEF; color: #FFFFFF; }
+  img, svg { display: block; }
+
+  .navlink { color: #9AA1AC; text-decoration: none; font-size: 14px; transition: color .15s ease; }
+  .navlink:hover { color: #FFFFFF; text-decoration: none; }
+  .cta-primary { display: inline-flex; align-items: center; gap: 10px; border-radius: 9px; background: #5B8DEF; color: #0B0D12; font-weight: 700; text-decoration: none; transition: background .15s ease; }
+  .cta-primary:hover { background: #6E9CF2; text-decoration: none; }
+  .cta-secondary { display: inline-flex; align-items: center; gap: 10px; border-radius: 9px; border: 1px solid #262B36; background: #12151C; color: #FFFFFF; font-weight: 600; text-decoration: none; transition: border-color .15s ease, background .15s ease; }
+  .cta-secondary:hover { border-color: #3A5CA8; background: #1B2029; text-decoration: none; }
+  .card { border: 1px solid #262B36; border-radius: 12px; background: #12151C; transition: border-color .15s ease; }
+  .card:hover { border-color: #3A5CA8; }
+  .chip { transition: transform .15s ease; }
+  .tab-btn { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; background: transparent; color: #9AA1AC; transition: background .15s ease, color .15s ease; }
+  .tab-btn.active { background: #5B8DEF; color: #0B0D12; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; padding: 5px 10px; border: 1px solid #262B36; border-radius: 6px; background: #171B24; color: #9AA1AC; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: color .15s ease, border-color .15s ease; }
+  .copy-btn:hover { color: #FFFFFF; border-color: #3A5CA8; }
+  .install-panel { display: none; }
+  .install-panel.active { display: block; }
+
+  section { padding-left: 40px; padding-right: 40px; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr !important; }
+    .nav-links { display: none !important; }
+    .col-3 { grid-template-columns: 1fr !important; }
+    .col-2 { grid-template-columns: 1fr !important; }
+    .col-4 { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+    .firetv-grid { grid-template-columns: 1fr !important; }
+    .h1 { font-size: 40px !important; }
+    .h2 { font-size: 28px !important; }
+    section { padding-left: 20px !important; padding-right: 20px !important; }
+  }
+  @media (max-width: 560px) {
+    .col-4 { grid-template-columns: 1fr !important; }
+    .stats { flex-direction: column !important; align-items: flex-start !important; gap: 18px !important; }
+    .install-tabs { flex-direction: column !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(11,13,18,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #1C1F26;">
+  <a href="#top" style="display: flex; align-items: center; gap: 11px;">
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="1.5" y="1.5" width="27" height="27" rx="8" stroke="#5B8DEF" stroke-width="2"/><path d="M12 10.5L20 15L12 19.5V10.5Z" fill="#5B8DEF"/></svg>
+    <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16.5px; letter-spacing: -0.01em; color: #FFFFFF;">TvRecommendationBridge</span>
+  </a>
+  <div style="display: flex; align-items: center; gap: 28px;">
+    <nav style="display: flex; align-items: center; gap: 28px;" class="nav-links">
+      <a href="#how" class="navlink">How it works</a>
+      <a href="#firetv" class="navlink">Fire TV</a>
+      <a href="#pricing" class="navlink">Pricing</a>
+      <a href="#install" class="navlink">Install</a>
+      <a href="install.html" class="navlink">Visual guide</a>
+    </nav>
+    <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" class="cta-primary" style="padding: 9px 18px; font-size: 13.5px; flex-shrink: 0;">Get the APK</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" style="padding-top: 100px; padding-bottom: 64px;">
+  <div class="wrap">
+    <div class="hero-grid" style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,0.86fr); gap: 60px; align-items: center;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 9px; padding: 6px 13px; border: 1px solid #262B36; border-radius: 999px; background: #12151C; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: #9AA1AC; margin-bottom: 28px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #4CD964;"></span>Google TV &amp; Fire TV
+        </div>
+        <h1 class="h1" style="font-weight: 700; font-size: 52px; line-height: 1.05; letter-spacing: -0.03em; color: #FFFFFF; margin: 0 0 22px;">Right recommendation.<br>Wrong app — every time.</h1>
+        <p style="font-size: 18px; line-height: 1.58; color: #9AA1AC; max-width: 32em; margin: 0 0 30px; text-wrap: pretty;">Google TV suggests a movie and opens whatever streaming app it happened to come from. TvRecommendationBridge catches that click and sends it straight to the player you actually chose.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 34px;">
+          <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" class="cta-primary" style="padding: 15px 26px; font-size: 15.5px;">
+            Download the APK
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2V11M8 11L4.5 7.5M8 11L11.5 7.5M2.5 13.5H13.5" stroke="#0B0D12" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#how" class="cta-secondary" style="padding: 15px 26px; font-size: 15.5px;">See how it works</a>
+        </div>
+        <div class="stats" style="display: flex; gap: 34px; flex-wrap: wrap;">
+          <div><p style="margin: 0 0 3px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 24px; color: #FFFFFF;">6</p><p style="color: #6B7280; font-size: 13px;">player apps supported</p></div>
+          <div><p style="margin: 0 0 3px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 24px; color: #FFFFFF;">€4.99</p><p style="color: #6B7280; font-size: 13px;">one-time, not a subscription</p></div>
+          <div><p style="margin: 0 0 3px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 24px; color: #FFFFFF;">5</p><p style="color: #6B7280; font-size: 13px;">devices per license</p></div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #262B36; border-radius: 16px; background: #12151C; padding: 28px; box-shadow: 0 30px 80px -40px rgba(0,0,0,0.85);">
+        <p style="margin: 0 0 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7280;">On a recommendation click</p>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 10px; background: #171B24; border: 1px solid #262B36;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink: 0;"><rect x="2" y="2" width="16" height="16" rx="3" stroke="#5B8DEF" stroke-width="1.6"/><path d="M2 6H18" stroke="#5B8DEF" stroke-width="1.6"/></svg>
+            <div><p style="margin: 0 0 2px; font-weight: 600; font-size: 14.5px; color: #FFFFFF;">"Dune"</p><p style="margin: 0; font-size: 12.5px; color: #6B7280;">recommended on the launcher home screen</p></div>
+          </div>
+          <div style="display: flex; justify-content: center;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2V14M8 14L4 10M8 14L12 10" stroke="#3A5CA8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 10px; background: #171B24; border: 1px solid #262B36;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink: 0;"><circle cx="8.5" cy="8.5" r="6" stroke="#5B8DEF" stroke-width="1.6"/><path d="M13 13L17.5 17.5" stroke="#5B8DEF" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <div><p style="margin: 0 0 2px; font-weight: 600; font-size: 14.5px; color: #FFFFFF;">Identified via TMDB</p><p style="margin: 0; font-size: 12.5px; color: #6B7280;">Dune (2021) — not the 1984 original</p></div>
+          </div>
+          <div style="display: flex; justify-content: center;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2V14M8 14L4 10M8 14L12 10" stroke="#3A5CA8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 10px; background: rgba(76,217,100,0.08); border: 1px solid rgba(76,217,100,0.35);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink: 0;"><path d="M4 10.5L8 14.5L16 5.5" stroke="#4CD964" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div><p style="margin: 0 0 2px; font-weight: 600; font-size: 14.5px; color: #FFFFFF;">Opens in Stremio</p><p style="margin: 0; font-size: 12.5px; color: #6B7280;">the player you picked in Settings</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYER STRIP -->
+<section style="padding-top: 8px; padding-bottom: 72px;">
+  <div class="wrap">
+    <p style="text-align: center; margin: 0 0 20px; color: #6B7280; font-size: 13px; letter-spacing: 0.04em;">Opens directly in whichever you use</p>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+      <span class="chip" style="display: flex; align-items: center; gap: 9px; padding: 10px 18px; border-radius: 999px; border: 1px solid #262B36; background: #12151C; font-size: 14.5px; font-weight: 600; color: #E8E9EB;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #E85D75;"></span>Nuvio</span>
+      <span class="chip" style="display: flex; align-items: center; gap: 9px; padding: 10px 18px; border-radius: 999px; border: 1px solid #262B36; background: #12151C; font-size: 14.5px; font-weight: 600; color: #E8E9EB;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #7B5EEA;"></span>Stremio</span>
+      <span class="chip" style="display: flex; align-items: center; gap: 9px; padding: 10px 18px; border-radius: 999px; border: 1px solid #262B36; background: #12151C; font-size: 14.5px; font-weight: 600; color: #E8E9EB;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #E5A00D;"></span>Plex</span>
+      <span class="chip" style="display: flex; align-items: center; gap: 9px; padding: 10px 18px; border-radius: 999px; border: 1px solid #262B36; background: #12151C; font-size: 14.5px; font-weight: 600; color: #E8E9EB;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #00A4DC;"></span>Jellyfin</span>
+      <span class="chip" style="display: flex; align-items: center; gap: 9px; padding: 10px 18px; border-radius: 999px; border: 1px solid #262B36; background: #12151C; font-size: 14.5px; font-weight: 600; color: #E8E9EB;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #FF6B35;"></span>WuPlay</span>
+      <span class="chip" style="display: flex; align-items: center; gap: 9px; padding: 10px 18px; border-radius: 999px; border: 1px solid #262B36; background: #12151C; font-size: 14.5px; font-weight: 600; color: #E8E9EB;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #29C4D9;"></span>Wholphin</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="padding-top: 24px; padding-bottom: 96px;">
+  <div class="wrap">
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">How it works</p>
+    <h2 class="h2" style="font-weight: 700; font-size: 34px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 18px;">One narrow job, done carefully</h2>
+    <p style="max-width: 44em; color: #9AA1AC; font-size: 16.5px; line-height: 1.6; margin: 0 0 44px; text-wrap: pretty;">Android's Accessibility API lets an app observe what's on screen for assistive purposes. TvRecommendationBridge uses it narrowly — watching only for clicks on the launcher's recommendation cards. Every other click, app icons, menus, anything that isn't a recommendation, is left completely alone.</p>
+    <div class="col-3" style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px;">
+      <div class="card" style="padding: 28px;">
+        <div style="width: 38px; height: 38px; border-radius: 9px; background: rgba(91,141,239,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;"><svg width="19" height="19" viewBox="0 0 19 19" fill="none"><path d="M4 4L15 8L10 10L8 15L4 4Z" stroke="#5B8DEF" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <h3 style="font-size: 18.5px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">Catch the click</h3>
+        <p style="color: #9AA1AC; font-size: 15px; line-height: 1.6;">You select a recommendation. TvRecommendationBridge sees that click's payload — nothing else on screen.</p>
+      </div>
+      <div class="card" style="padding: 28px;">
+        <div style="width: 38px; height: 38px; border-radius: 9px; background: rgba(91,141,239,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;"><svg width="19" height="19" viewBox="0 0 19 19" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#5B8DEF" stroke-width="1.6"/><path d="M12.5 12.5L16.5 16.5" stroke="#5B8DEF" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <h3 style="font-size: 18.5px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">Identify the title</h3>
+        <p style="color: #9AA1AC; font-size: 15px; line-height: 1.6;">Looked up against <a href="https://www.themoviedb.org/">TMDB</a> with a bundled key — nothing to set up. Remakes and same-named sequels get disambiguated, not guessed.</p>
+      </div>
+      <div class="card" style="padding: 28px;">
+        <div style="width: 38px; height: 38px; border-radius: 9px; background: rgba(91,141,239,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;"><svg width="19" height="19" viewBox="0 0 19 19" fill="none"><path d="M3 9.5H15M15 9.5L10.5 5M15 9.5L10.5 14" stroke="#5B8DEF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3 style="font-size: 18.5px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">Hand it off</h3>
+        <p style="color: #9AA1AC; font-size: 15px; line-height: 1.6;">Opens straight in your chosen player — or shows a <strong style="color: #E8E9EB;">"Watch now"</strong> button first, if you'd rather confirm before it does.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIRE TV -->
+<section id="firetv" style="border-top: 1px solid #1C1F26; border-bottom: 1px solid #1C1F26; background: #0E1014; padding-top: 96px; padding-bottom: 96px;">
+  <div class="wrap">
+    <div class="firetv-grid" style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,0.8fr); gap: 56px; align-items: start;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 9px; padding: 6px 13px; border: 1px solid rgba(255,138,61,0.35); border-radius: 999px; background: rgba(255,138,61,0.08); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: #FF8A3D; margin-bottom: 22px;">Fire TV mode</div>
+        <h2 class="h2" style="font-weight: 700; font-size: 36px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 20px; line-height: 1.15;">Fire OS blocks this for every sideloaded app. We built around it anyway.</h2>
+        <p style="margin: 0 0 18px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;">Fire OS disables the standard Android Accessibility method for any app not installed from the Amazon Appstore — the same method every recommendation-redirect app depends on. The usual workaround is temporarily rooting your Fire TV Stick and replacing Fire OS's own launcher with Google TV's.</p>
+        <p style="margin: 0 0 30px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;">TvRecommendationBridge doesn't ask you to do any of that. Fire TV mode reads the recommendation's title straight off the screen using on-device text recognition — nothing recorded leaves the device. Grant Usage access and a one-time screen-recording permission, and it runs from your actual Fire TV home screen, no root, no launcher swap.</p>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;">No root, no replacing Fire OS's launcher</p></div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;">Text recognition runs on-device — nothing uploaded</p></div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;">Honest about the tradeoff: hold still on a card for a couple seconds and confirm with OK — not instant like Google TV, but it works</p></div>
+        </div>
+      </div>
+      <div style="border: 1px solid #262B36; border-radius: 16px; background: #12151C; padding: 28px;">
+        <p style="margin: 0 0 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7280;">Setup — one time</p>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; gap: 14px;"><span style="flex-shrink: 0; width: 24px; height: 24px; border-radius: 6px; background: #171B24; border: 1px solid #262B36; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B8DEF;">1</span><p style="color: #B9BCC4; font-size: 14.5px; line-height: 1.55;">Open the app — Fire TV is detected automatically and shows the right button</p></div>
+          <div style="display: flex; gap: 14px;"><span style="flex-shrink: 0; width: 24px; height: 24px; border-radius: 6px; background: #171B24; border: 1px solid #262B36; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B8DEF;">2</span><p style="color: #B9BCC4; font-size: 14.5px; line-height: 1.55;">Grant <strong style="color: #E8E9EB;">Usage access</strong> — Settings → Apps → Special app access</p></div>
+          <div style="display: flex; gap: 14px;"><span style="flex-shrink: 0; width: 24px; height: 24px; border-radius: 6px; background: #171B24; border: 1px solid #262B36; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B8DEF;">3</span><p style="color: #B9BCC4; font-size: 14.5px; line-height: 1.55;">Accept the one-time screen-recording permission</p></div>
+        </div>
+        <div style="margin-top: 22px; padding: 16px 18px; border-radius: 10px; background: #171B24; border: 1px solid #262B36;">
+          <p style="color: #6B7280; font-size: 13px; line-height: 1.6;">Android keeps a recording indicator visible while it's active — a system requirement, not something we add.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMART MATCHING -->
+<section style="padding-top: 96px; padding-bottom: 96px;">
+  <div class="wrap">
+    <div class="col-2" style="display: grid; grid-template-columns: minmax(0,0.85fr) minmax(0,1fr); gap: 56px; align-items: center;">
+      <div>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">Matching</p>
+        <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 18px; line-height: 1.2;">Asks once. Never asks again.</h2>
+        <p style="margin: 0 0 16px; color: #9AA1AC; font-size: 16px; line-height: 1.65; text-wrap: pretty;">When two titles share an exact name but not a year — a remake, say — TvRecommendationBridge asks which one you meant instead of guessing.</p>
+        <p style="margin: 0 0 16px; color: #9AA1AC; font-size: 16px; line-height: 1.65; text-wrap: pretty;">Pick once, and it's remembered: the same title never has to ask twice. And when one candidate is obviously the popular pick — a new release next to a decades-old obscurity — it skips the question entirely.</p>
+        <p style="color: #6B7280; font-size: 14px; line-height: 1.6;">Turn it off from Settings → "Ask when a match is ambiguous" if you'd rather it always pick automatically.</p>
+      </div>
+      <div style="border: 1px solid #262B36; border-radius: 16px; background: #12151C; padding: 30px;">
+        <p style="margin: 0 0 20px; color: #E8E9EB; font-size: 15.5px; font-weight: 600;">"Dune" — two exact matches</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 10px; background: rgba(91,141,239,0.1); border: 1px solid #5B8DEF;"><span style="font-size: 14.5px; color: #FFFFFF; font-weight: 600;">Dune (2021)</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #5B8DEF;">picked once</span></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 10px; background: #171B24; border: 1px solid #262B36;"><span style="font-size: 14.5px; color: #9AA1AC;">Dune (1984)</span></div>
+        </div>
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #262B36; display: flex; align-items: center; gap: 12px;">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="color: #9AA1AC; font-size: 13.5px;">Recommended again later — opens the 2021 pick directly, no question shown</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALSO INCLUDED -->
+<section style="border-top: 1px solid #1C1F26; background: #0E1014; padding-top: 88px; padding-bottom: 88px;">
+  <div class="wrap">
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">Also included</p>
+    <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 40px;">Four more switches worth knowing about</h2>
+    <div class="col-4" style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px;">
+      <div class="card" style="padding: 24px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-bottom: 16px;"><rect x="3" y="4" width="14" height="10" rx="2" stroke="#00A4DC" stroke-width="1.5"/><path d="M8 17H12M10 14V17" stroke="#00A4DC" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3 style="font-size: 15.5px; margin: 0 0 9px; font-weight: 600; color: #FFFFFF;">Check my Jellyfin first</h3>
+        <p style="color: #9AA1AC; font-size: 13.5px; line-height: 1.55;">Already on your own server? Opens straight there instead of your usual player — no search needed.</p>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-bottom: 16px;"><path d="M10 3V6M10 3L7 5M10 3L13 5" stroke="#5B8DEF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="11" r="6" stroke="#5B8DEF" stroke-width="1.5"/></svg>
+        <h3 style="font-size: 15.5px; margin: 0 0 9px; font-weight: 600; color: #FFFFFF;">Watch now confirm</h3>
+        <p style="color: #9AA1AC; font-size: 13.5px; line-height: 1.55;">Optional confirm button before opening, so a stray click never redirects you by accident.</p>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-bottom: 16px;"><rect x="2.5" y="5" width="15" height="10" rx="2.5" stroke="#CC1F2D" stroke-width="1.5"/><path d="M8.5 8.5L12 10L8.5 11.5V8.5Z" fill="#CC1F2D"/></svg>
+        <h3 style="font-size: 15.5px; margin: 0 0 9px; font-weight: 600; color: #FFFFFF;">YouTube redirect</h3>
+        <p style="color: #9AA1AC; font-size: 13.5px; line-height: 1.55;">Sends YouTube recommendations to SmartTube or TizenTube Cobalt instead — independent of your movie/show player.</p>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-bottom: 16px;"><rect x="2.5" y="3.5" width="6" height="13" rx="1.3" stroke="#4CD964" stroke-width="1.5"/><rect x="11.5" y="3.5" width="6" height="13" rx="1.3" stroke="#4CD964" stroke-width="1.5"/></svg>
+        <h3 style="font-size: 15.5px; margin: 0 0 9px; font-weight: 600; color: #FFFFFF;">Manage devices</h3>
+        <p style="color: #9AA1AC; font-size: 13.5px; line-height: 1.55;">One license, up to 5 TVs. See every linked device and unlink any of them, anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="padding-top: 96px; padding-bottom: 96px;">
+  <div class="wrap">
+    <div style="text-align: center; max-width: 40em; margin: 0 auto 48px;">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">Pricing</p>
+      <h2 class="h2" style="font-weight: 700; font-size: 34px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 16px;">One payment. Not a subscription.</h2>
+      <p style="color: #9AA1AC; font-size: 16.5px; line-height: 1.6;">Pay once and it's yours. No recurring charge, no account, no password — just the email you paid with.</p>
+    </div>
+    <div class="col-2" style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; max-width: 760px; margin: 0 auto;">
+      <div style="border: 1px solid #262B36; border-radius: 14px; background: #12151C; padding: 32px;">
+        <p style="margin: 0 0 8px; color: #9AA1AC; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Free trial</p>
+        <p style="margin: 0 0 6px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 38px; color: #FFFFFF;">2 days</p>
+        <p style="margin: 0 0 24px; color: #6B7280; font-size: 14px;">no card needed, once per device</p>
+        <div style="display: flex; align-items: center; gap: 10px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="#4CD964" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="color: #B9BCC4; font-size: 13.5px;">Full functionality, nothing gated</span></div>
+      </div>
+      <div style="border: 1px solid #5B8DEF; border-radius: 14px; background: #12151C; padding: 32px; position: relative;">
+        <span style="position: absolute; top: -12px; right: 24px; padding: 4px 12px; border-radius: 999px; background: #5B8DEF; color: #0B0D12; font-size: 11.5px; font-weight: 700;">ONE-TIME</span>
+        <p style="margin: 0 0 8px; color: #9AA1AC; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Lifetime</p>
+        <p style="margin: 0 0 6px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 38px; color: #FFFFFF;">€4.99</p>
+        <p style="margin: 0 0 24px; color: #6B7280; font-size: 14px;">paid once, yours for good</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="#4CD964" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="color: #B9BCC4; font-size: 13.5px;">Up to 5 devices, manage anytime</span></div>
+          <div style="display: flex; align-items: center; gap: 10px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="#4CD964" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="color: #B9BCC4; font-size: 13.5px;">Verified by email, no account needed</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="text-align: center; margin: 28px 0 0; color: #6B7280; font-size: 13.5px;">Scan the QR code shown in the app with your phone, pay with the same email, then verify it on the TV.</p>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install" style="border-top: 1px solid #1C1F26; background: #0E1014; padding-top: 96px; padding-bottom: 96px;">
+  <div class="wrap">
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">Installation</p>
+    <h2 class="h2" style="font-weight: 700; font-size: 34px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 14px;">Sideload the APK</h2>
+    <p style="max-width: 46em; color: #9AA1AC; font-size: 16.5px; line-height: 1.6; margin: 0 0 34px;">Not on Google Play yet. Grab the APK from the <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest">latest release</a>, then pick whichever route suits you.</p>
+
+    <div class="install-tabs" style="display: flex; padding: 4px; gap: 4px; border: 1px solid #262B36; border-radius: 11px; background: #12151C; margin-bottom: 26px; width: fit-content;">
+      <button class="tab-btn active" data-tab="dl" onclick="tvrbSwitchTab('dl')">Downloader code</button>
+      <button class="tab-btn" data-tab="phone" onclick="tvrbSwitchTab('phone')">From your phone</button>
+      <button class="tab-btn" data-tab="adb" onclick="tvrbSwitchTab('adb')">Via ADB</button>
+    </div>
+
+    <div class="install-panel active" data-panel="dl">
+      <div class="col-2" style="border: 1px solid #262B36; border-radius: 14px; background: #12151C; padding: 34px 36px; display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 44px; align-items: center;">
+        <ol style="margin: 0; padding-left: 22px; color: #B9BCC4; font-size: 15.5px; line-height: 1.7; display: flex; flex-direction: column; gap: 12px;">
+          <li>On the TV, install <strong style="color: #E8E9EB;">Downloader</strong> (by AFTVnews) from Google Play.</li>
+          <li>Open it and enter this code in the URL field.</li>
+          <li>It fetches the APK and offers to install it right away.</li>
+          <li>If Android TV warns about an unknown source, temporarily allow that install.</li>
+        </ol>
+        <div style="border: 1px solid #262B36; border-radius: 12px; background: #0B0D12; padding: 26px 28px; text-align: center;">
+          <p style="margin: 0 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B7280;">Downloader code</p>
+          <p style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 38px; letter-spacing: 0.05em; color: #5B8DEF;">4414843</p>
+          <p style="margin: 12px 0 0; color: #6B7280; font-size: 12.5px;">Always points to the latest version</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-panel" data-panel="phone">
+      <div style="border: 1px solid #262B36; border-radius: 14px; background: #12151C; padding: 34px 36px;">
+        <ol style="margin: 0; padding-left: 22px; color: #B9BCC4; font-size: 15.5px; line-height: 1.7; display: flex; flex-direction: column; gap: 12px; max-width: 42em;">
+          <li>On the TV, install <strong style="color: #E8E9EB;">Send Files to TV</strong> from Google Play.</li>
+          <li>Open it — it shows an address or QR code to connect from your phone.</li>
+          <li>From your phone's browser, go there and pick the APK from the <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest">latest release</a>.</li>
+          <li>Once it transfers, the TV lets you start the install.</li>
+          <li>If Android TV warns about an unknown source, temporarily allow that install.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="install-panel" data-panel="adb">
+      <div style="border: 1px solid #262B36; border-radius: 14px; background: #12151C; padding: 34px 36px;">
+        <p style="margin: 0 0 20px; color: #B9BCC4; font-size: 15.5px; line-height: 1.6;">Enable developer options: <strong style="color: #E8E9EB;">Settings → Device Preferences → About → tap "Build" 7 times</strong>, turn on <strong style="color: #E8E9EB;">Network debugging</strong>, then from your computer:</p>
+        <div style="position: relative; border: 1px solid #262A33; border-radius: 10px; background: #0B0D12; padding: 18px 20px;">
+          <button class="copy-btn" onclick="tvrbCopy(this)">copy</button>
+          <pre style="margin: 0; overflow-x: auto;"><code style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.9; color: #CFD2D8;">adb connect &lt;tv-ip&gt;:5555
+adb install app-release.apk</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin: 28px 0 0; color: #6B7280; font-size: 14px;">Full walkthrough, screenshots included: <a href="install.html">the visual install guide</a>.</p>
+  </div>
+</section>
+
+<!-- REQUIREMENTS -->
+<section style="padding-top: 88px; padding-bottom: 88px;">
+  <div class="wrap">
+    <div style="border: 1px solid #262B36; border-radius: 16px; background: #12151C; padding: 40px 44px; display: flex; gap: 40px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+      <div style="max-width: 30em;">
+        <h2 class="h2" style="font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 12px;">Ready when your TV is</h2>
+        <p style="color: #9AA1AC; font-size: 15.5px; line-height: 1.6;">Any <strong style="color: #E8E9EB;">Google TV</strong> device — Chromecast with Google TV, or a Google TV edition from Sony, TCL, Hisense — or any <strong style="color: #E8E9EB;">Fire TV</strong> device, via Fire TV mode above. Plus one of the six player apps already installed.</p>
+      </div>
+      <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" class="cta-primary" style="flex-shrink: 0; padding: 15px 28px; font-size: 15.5px;">Download the APK</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top: 1px solid #1C1F26; background: #0E1014; padding: 56px 40px 64px;">
+  <div class="wrap col-2" style="display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap: 56px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
+        <svg width="22" height="22" viewBox="0 0 30 30" fill="none"><rect x="1.5" y="1.5" width="27" height="27" rx="8" stroke="#5B8DEF" stroke-width="2"/><path d="M12 10.5L20 15L12 19.5V10.5Z" fill="#5B8DEF"/></svg>
+        <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; color: #E8E9EB;">TvRecommendationBridge</span>
+      </div>
+      <p style="margin: 0 0 14px; color: #6B7280; font-size: 13px; line-height: 1.7;">Detects certain recommendations shown by the device's launcher, identifies the selected content, and opens its page in a third-party app you've already installed and configured yourself. It does not host, store, distribute, or provide any movies, series, streams, torrents, or other audiovisual content — you're responsible for your own use of the third-party apps it hands off to.</p>
+      <p style="color: #6B7280; font-size: 13px; line-height: 1.7;">Not affiliated with, sponsored by, or endorsed by Google, Google TV, Amazon, Fire TV, Nuvio, Stremio, WuPlay, Plex, Jellyfin, or Wholphin — those names are trademarks of their respective owners.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p style="margin: 0 0 4px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B7280;">Links</p>
+      <a href="https://github.com/Yushetf33/TvReccomendationBridge" style="font-size: 14px;">Repository</a>
+      <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" style="font-size: 14px;">Latest release</a>
+      <a href="install.html" style="font-size: 14px;">Visual install guide</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function tvrbSwitchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.tab === name); });
+    document.querySelectorAll('.install-panel').forEach(function (p) { p.classList.toggle('active', p.dataset.panel === name); });
+  }
+  function tvrbCopy(btn) {
+    var code = btn.parentElement.querySelector('code');
+    if (!code) return;
+    navigator.clipboard && navigator.clipboard.writeText(code.innerText);
+    var prev = btn.textContent;
+    btn.textContent = 'copied';
+    setTimeout(function () { btn.textContent = prev; }, 1400);
+  }
+</script>
+</body>
+</html>
