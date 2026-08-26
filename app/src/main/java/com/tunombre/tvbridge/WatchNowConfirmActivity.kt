@@ -48,12 +48,30 @@ class WatchNowConfirmActivity : Activity() {
             setTextColor(ContextCompat.getColor(context, R.color.text_primary))
             setOnClickListener { finishWith(confirmed = true) }
         }
+        // Botón en pantalla en vez de depender solo de la tecla física
+        // Atrás: confirmado en dispositivo real (mismo diseño que
+        // ConfirmOpenActivity, ver ahí) que la tecla física a veces también
+        // le llega, por detrás, al launcher que queda debajo.
+        val backButton = Button(this).apply {
+            text = getString(R.string.help_back_button)
+            isFocusableInTouchMode = true
+            setBackgroundResource(R.drawable.bg_button)
+            setTextColor(ContextCompat.getColor(context, R.color.text_primary))
+            setOnClickListener { finishWith(confirmed = false) }
+        }
+        val buttonRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            addView(openButton)
+            addView(backButton, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { marginStart = (16 * resources.displayMetrics.density).toInt() })
+        }
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(56, 48, 56, 48)
             setBackgroundResource(R.drawable.bg_card)
             addView(message)
-            addView(openButton)
+            addView(buttonRow)
         }
         setContentView(layout)
         openButton.requestFocus()

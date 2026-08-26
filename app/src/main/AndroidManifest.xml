@@ -86,12 +86,29 @@
 
         <activity android:name=".HelpActivity" android:exported="false" />
 
-        <activity android:name=".MatchPickerActivity" android:exported="false" />
+        <!-- android:taskAffinity="" + excludeFromRecents en las tres de
+             abajo: se lanzan con FLAG_ACTIVITY_NEW_TASK desde un Service o
+             el AccessibilityService (obligatorio para arrancar una Activity
+             fuera de una Activity), y sin una task affinity propia, Android
+             las mete en la MISMA tarea que MainActivity si esa tarea ya
+             existe (todas las Activities del paquete comparten la afinidad
+             por defecto) — confirmado en dispositivo real: al pulsar Atrás,
+             en vez de volver al launcher exactamente donde estaba, se
+             quedaba dentro de nuestra propia app. Con su propia tarea
+             aislada, Atrás revela de verdad lo que había en primer plano
+             antes (el launcher, en su mismo sitio). -->
+        <activity
+            android:name=".MatchPickerActivity"
+            android:exported="false"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" />
 
         <activity
             android:name=".WatchNowConfirmActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" />
 
         <!-- Diálogo de confirmación del modo Fire TV (ver
              FireTvCaptureService/ConfirmOpenActivity): necesita ser una
@@ -100,7 +117,9 @@
         <activity
             android:name=".ConfirmOpenActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" />
 
         <!-- Recibe el aviso de DownloadManager cuando termina de bajar la
              APK de una actualización, para lanzar la notificación de
