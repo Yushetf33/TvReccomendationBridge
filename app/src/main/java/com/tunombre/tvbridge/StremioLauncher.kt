@@ -23,6 +23,14 @@ object StremioLauncher {
 
     private const val TAG = "StremioLauncher"
 
+    // Nuvio se distribuye con dos paquetes distintos según de dónde venga:
+    // com.nuvio.app es el flavor "playstore", com.nuvio.tv es el flavor
+    // "full" que se publica en las releases de GitHub (con más funciones
+    // activadas) — confirmado leyendo su build.gradle.kts. Antes solo
+    // comprobábamos com.nuvio.app, así que cualquiera con la build de
+    // GitHub salía como "no instalado" aunque lo tuviera.
+    private val NUVIO_PACKAGES = listOf("com.nuvio.app", "com.nuvio.tv")
+
     fun open(service: Context, match: TmdbMatch) {
         // Base del historial para la fila de "Recomendado para ti" (ver
         // RecommendationChannelManager) — se registra aquí, en el único
@@ -45,12 +53,12 @@ object StremioLauncher {
                 } else {
                     Uri.parse("nuvio://detail/tv/${match.imdbId}")
                 }
-                openWithFallback(service, uri, app.packageName, app.label)
+                openWithFallback(service, uri, NUVIO_PACKAGES, app.label)
             }
             PlayerApp.STREMIO -> {
                 val stremioType = if (match.type == MediaType.SERIES) "series" else "movie"
                 val uri = Uri.parse("stremio:///detail/$stremioType/${match.imdbId}")
-                openWithFallback(service, uri, app.packageName, app.label)
+                openWithFallback(service, uri, listOf(app.packageName), app.label)
             }
             PlayerApp.PLEX -> {
                 // A diferencia de Nuvio/Stremio, Plex no tiene un esquema de
@@ -63,7 +71,7 @@ object StremioLauncher {
                     Log.w(TAG, "No encontrado en el catálogo gratuito de Plex: ${match.imdbId}")
                     return
                 }
-                openWithFallback(service, Uri.parse(watchUrl), app.packageName, app.label)
+                openWithFallback(service, Uri.parse(watchUrl), listOf(app.packageName), app.label)
             }
             PlayerApp.JELLYFIN -> {
                 // Jellyfin es autoalojado: no hay un ID de contenido
@@ -74,7 +82,7 @@ object StremioLauncher {
             PlayerApp.WUPLAY -> {
                 val wuplayType = if (match.type == MediaType.SERIES) "series" else "movie"
                 val uri = Uri.parse("wuplay://$wuplayType/${match.imdbId}")
-                openWithFallback(service, uri, app.packageName, app.label)
+                openWithFallback(service, uri, listOf(app.packageName), app.label)
             }
             PlayerApp.WHOLPHIN -> {
                 // Mismo caso que JELLYFIN: autoalojado, sin ID compartido,
@@ -112,7 +120,7 @@ object StremioLauncher {
         }
     }
 
-    private fun openWithFallback(service: Context, uri: Uri, targetPackage: String, appLabel: String) {
+    private fun openWithFallback(service: Context, uri: Uri, candidatePackages: List<String>, appLabel: String) {
         // FLAG_ACTIVITY_CLEAR_TASK + NEW_TASK: tanto Nuvio como Stremio
         // declaran su Activity como launchMode="singleTask". Sin CLEAR_TASK,
         // si la app ya estaba abierta en segundo plano, Android a veces solo
@@ -127,9 +135,13 @@ object StremioLauncher {
         // este método se llama a veces desde el hilo principal (p.ej. el
         // botón de ConfirmOpenActivity) y no debe bloquearlo.
         Thread {
-            if (!isPackageInstalled(service, targetPackage)) {
-                Log.w(TAG, "$appLabel ($targetPackage) no está instalado — abriendo su ficha en la Play Store")
-                openPlayStoreListing(service, targetPackage, appLabel)
+            // Puede haber más de un paquete válido (ver NUVIO_PACKAGES) —
+            // se usa el primero que esté realmente instalado, no
+            // necesariamente el primero de la lista.
+            val targetPackage = candidatePackages.firstOrNull { isPackageInstalled(service, it) }
+            if (targetPackage == null) {
+                Log.w(TAG, "$appLabel (${candidatePackages.joinToString()}) no está instalado — abriendo su ficha en la Play Store")
+                openPlayStoreListing(service, candidatePackages.first(), appLabel)
                 return@Thread
             }
 

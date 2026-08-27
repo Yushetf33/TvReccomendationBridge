@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Icono simple: un triángulo de "play" blanco centrado, sobre el fondo
-     de color sólido de ic_launcher_background.xml. -->
+<!-- Icono: un puente blanco simple (torres + tablero + cable en arco),
+     sobre el fondo de color sólido de ic_launcher_background.xml — alusión
+     directa al nombre de la app ("Bridge"). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Cable en arco -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:pathData="M16,45 A38,29 0 0 1 92,45" />
+    <!-- Torres -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M40,34 L74,54 L40,74 Z" />
+        android:pathData="M30,46 L38,46 L38,82 L30,82 Z M70,46 L78,46 L78,82 L70,82 Z" />
+    <!-- Tablero -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16,82 L92,82 L92,90 L16,90 Z" />
 </vector>
