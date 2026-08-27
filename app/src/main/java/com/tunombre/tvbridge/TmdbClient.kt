@@ -1,5 +1,6 @@
 package com.tunombre.tvbridge
 
+import android.content.Context
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,7 +20,7 @@ import java.util.Locale
 /** Tipo de contenido resuelto en TMDb, usado para elegir el deep link correcto en Nuvio. */
 enum class MediaType { MOVIE, SERIES }
 
-data class TmdbMatch(val imdbId: String, val type: MediaType, val title: String)
+data class TmdbMatch(val imdbId: String, val type: MediaType, val title: String, val tmdbId: Int)
 
 /** Un resultado de TMDb todavía sin resolver a IMDb ID — solo lo que hace
  * falta para mostrárselo al usuario en [MatchPickerActivity] cuando hay
@@ -69,13 +70,15 @@ object TmdbClient {
     // parte del título real y rompen la búsqueda en TMDb si se dejan.
     private val TRAILING_PARENTHETICAL = Regex("\\s*\\([^)]*\\)\\s*$")
 
-    fun findImdbId(title: String): TmdbMatch? {
+    fun findImdbId(context: Context, title: String): TmdbMatch? {
         // Wrapper de compatibilidad para llamadores que no soportan el
         // selector de ambigüedad (ver FireTvCaptureService, que ya tiene su
         // propio diálogo de confirmación y no necesita uno segundo encima):
-        // si resolve() devuelve Ambiguous, coge el primer candidato — mismo
-        // comportamiento que tenía esta función antes de existir el picker.
-        return when (val resolution = resolve(title)) {
+        // si resolve() devuelve Ambiguous (tras agotar la elección recordada
+        // y la heurística de popularidad, ver resolveTitle), coge el primer
+        // candidato — mismo comportamiento que tenía esta función antes de
+        // existir el picker.
+        return when (val resolution = resolve(context, title)) {
             is TmdbResolution.Resolved -> resolution.match
             is TmdbResolution.Ambiguous -> resolveCandidate(resolution.candidates.first())
             null -> null
@@ -88,7 +91,7 @@ object TmdbClient {
      * usuario (ver TvRecommendationAccessibilityService.handleMovieClick y
      * MatchPickerActivity).
      */
-    fun resolve(title: String): TmdbResolution? {
+    fun resolve(context: Context, title: String): TmdbResolution? {
         // Quita TODOS los paréntesis finales, no solo uno: algunos títulos
         // traen más de uno seguido, p.ej. "El Cuervo (The Crow) (The Crow)".
         var cleanedTitle = title
@@ -98,9 +101,9 @@ object TmdbClient {
             cleanedTitle = next
         }
         if (cleanedTitle.isNotBlank() && cleanedTitle != title) {
-            resolveTitle(cleanedTitle)?.let { return it }
+            resolveTitle(context, cleanedTitle)?.let { return it }
         }
-        return resolveTitle(title)
+        return resolveTitle(context, title)
     }
 
     /** Segunda llamada (external_ids) para el candidato que el usuario ha
@@ -108,10 +111,19 @@ object TmdbClient {
      * colapsa un [TmdbResolution.Ambiguous] automáticamente. */
     fun resolveCandidate(candidate: TmdbCandidate): TmdbMatch? {
         val imdbId = fetchImdbId(candidate.tmdbId, candidate.mediaPath) ?: return null
-        return TmdbMatch(imdbId, candidate.type, candidate.title)
+        return TmdbMatch(imdbId, candidate.type, candidate.title, candidate.tmdbId)
     }
 
-    private fun resolveTitle(title: String): TmdbResolution? {
+    // Umbrales de la heurística de popularidad (ver resolveTitle): solo
+    // auto-resuelve sin preguntar cuando la diferencia es clara, a
+    // propósito conservadores — el objetivo es evitar la pregunta en casos
+    // obvios (un estreno reciente frente a un homónimo oscuro sin apenas
+    // votos), no adivinar en empates reales, que es justo lo que este
+    // selector existe para evitar.
+    private const val MIN_CONFIDENT_POPULARITY = 10.0
+    private const val CONFIDENT_POPULARITY_RATIO = 4.0
+
+    private fun resolveTitle(context: Context, title: String): TmdbResolution? {
         val results = searchAll(title) ?: return null
         if (results.isEmpty()) return null
 
@@ -133,6 +145,30 @@ object TmdbClient {
         // película equivocada" en apps similares).
         val distinctYears = exactMatches.mapNotNull { it.year }.toSet()
         if (exactMatches.size > 1 && distinctYears.size > 1) {
+            // Antes de preguntar, dos formas de resolverlo sin interrumpir:
+
+            // 1) Ya se preguntó por este mismo título antes y el usuario
+            // eligió uno de estos candidatos (ver MatchPickerActivity) — se
+            // reutiliza esa elección en vez de volver a preguntar, p.ej. si
+            // una serie ambigua reaparece en recomendaciones más adelante.
+            val remembered = Preferences.getRememberedDisambiguation(context, title)
+            val rememberedMatch = remembered?.let { id -> exactMatches.find { it.tmdbId == id } }
+            resolveExact(rememberedMatch)?.let { return it }
+
+            // 2) Un candidato es muchísimo más popular que el resto — caso
+            // típico de un estreno reciente frente a un homónimo oscuro de
+            // hace décadas sin apenas votos: casi seguro que el usuario se
+            // refiere al popular. Umbrales conservadores a propósito, ver
+            // arriba — si la diferencia no es clara, se sigue preguntando.
+            val byPopularity = exactMatches.sortedByDescending { it.popularity }
+            val top = byPopularity[0]
+            val runnerUp = byPopularity[1]
+            if (top.popularity >= MIN_CONFIDENT_POPULARITY &&
+                top.popularity >= runnerUp.popularity * CONFIDENT_POPULARITY_RATIO
+            ) {
+                resolveExact(top)?.let { return it }
+            }
+
             return TmdbResolution.Ambiguous(
                 query = title,
                 candidates = exactMatches.map { TmdbCandidate(it.tmdbId, it.mediaPath, it.title, it.year) }
@@ -141,16 +177,27 @@ object TmdbClient {
 
         val candidatesInOrder = exactMatches.ifEmpty { results.take(1) }
         for (candidate in candidatesInOrder) {
-            val imdbId = fetchImdbId(candidate.tmdbId, candidate.mediaPath) ?: continue
-            val type = if (candidate.mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
-            return TmdbResolution.Resolved(TmdbMatch(imdbId, type, candidate.title))
+            resolveExact(candidate)?.let { return it }
         }
         return null
     }
 
+    private fun resolveExact(candidate: SearchResult?): TmdbResolution.Resolved? {
+        if (candidate == null) return null
+        val imdbId = fetchImdbId(candidate.tmdbId, candidate.mediaPath) ?: return null
+        val type = if (candidate.mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
+        return TmdbResolution.Resolved(TmdbMatch(imdbId, type, candidate.title, candidate.tmdbId))
+    }
+
     private fun normalizeTitle(title: String) = title.trim().lowercase()
 
-    private data class SearchResult(val tmdbId: Int, val mediaPath: String, val title: String, val year: String?)
+    private data class SearchResult(
+        val tmdbId: Int,
+        val mediaPath: String,
+        val title: String,
+        val year: String?,
+        val popularity: Double
+    )
 
     private fun searchAll(title: String): List<SearchResult>? {
         val encoded = URLEncoder.encode(title, "UTF-8")
@@ -186,7 +233,8 @@ object TmdbClient {
                         val resolvedTitle = result.optString("title", result.optString("name", title))
                         val date = result.optString("release_date", result.optString("first_air_date", ""))
                         val year = date.take(4).takeIf { it.length == 4 }
-                        matches.add(SearchResult(result.getInt("id"), mediaType, resolvedTitle, year))
+                        val popularity = result.optDouble("popularity", 0.0)
+                        matches.add(SearchResult(result.getInt("id"), mediaType, resolvedTitle, year, popularity))
                     }
                 }
                 if (matches.isEmpty()) {
@@ -197,6 +245,56 @@ object TmdbClient {
         } catch (e: Exception) {
             Log.e(TAG, "Error buscando en TMDb", e)
             null
+        }
+    }
+
+    /** Una recomendación de TMDb para la fila de "Recomendado para ti" que
+     * publicamos en la pantalla de inicio (ver RecommendationChannelWorker)
+     * — no necesita imdb_id hasta que el usuario la pulsa de verdad
+     * (RecommendationOpenActivity resuelve eso al vuelo con
+     * [resolveCandidate]), así que aquí basta con lo que trae /recommendations
+     * directamente, sin la llamada extra a external_ids. */
+    data class TmdbRecommendation(
+        val tmdbId: Int,
+        val mediaPath: String,
+        val title: String,
+        val posterPath: String?,
+        val popularity: Double,
+        val overview: String?
+    ) {
+        val type: MediaType get() = if (mediaPath == "tv") MediaType.SERIES else MediaType.MOVIE
+    }
+
+    /** Títulos "más como este" para [tmdbId] (una entrada del historial de
+     * lo que el usuario ya ha abierto) — usa el propio endpoint de
+     * recomendaciones de TMDb, sin ningún LLM: es gratis, no alucina
+     * títulos que no existen, y ya tenemos la key. */
+    fun fetchRecommendations(tmdbId: Int, mediaPath: String): List<TmdbRecommendation> {
+        val language = Locale.getDefault().toLanguageTag()
+        val url = "https://api.themoviedb.org/3/$mediaPath/$tmdbId/recommendations?api_key=$TMDB_API_KEY&language=$language"
+        val request = Request.Builder().url(url).build()
+
+        return try {
+            httpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    Log.w(TAG, "recommendations ($mediaPath/$tmdbId) falló: ${response.code}")
+                    return emptyList()
+                }
+                val body = response.body?.string() ?: return emptyList()
+                val results = JSONObject(body).optJSONArray("results") ?: return emptyList()
+                val out = mutableListOf<TmdbRecommendation>()
+                for (i in 0 until results.length()) {
+                    val r = results.getJSONObject(i)
+                    val title = r.optString("title", r.optString("name", "")).takeIf { it.isNotBlank() } ?: continue
+                    val posterPath = r.optString("poster_path", "").takeIf { it.isNotBlank() }
+                    val overview = r.optString("overview", "").takeIf { it.isNotBlank() }
+                    out.add(TmdbRecommendation(r.getInt("id"), mediaPath, title, posterPath, r.optDouble("popularity", 0.0), overview))
+                }
+                out
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error obteniendo recomendaciones ($mediaPath/$tmdbId)", e)
+            emptyList()
         }
     }
 

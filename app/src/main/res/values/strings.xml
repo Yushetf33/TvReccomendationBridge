@@ -74,6 +74,9 @@
 
     <string name="main_open_accessibility_settings">Enable the service in Accessibility</string>
     <string name="main_accessibility_settings_unavailable">Couldn\'t open Accessibility settings automatically on this device — open Settings manually and look for TvRecommendationBridge under Accessibility.</string>
+    <string name="main_usage_access_settings_unavailable">Couldn\'t open Usage access settings automatically on this device — open Settings manually, look under Apps (or Apps → Special app access on some versions) and find TvRecommendationBridge there.</string>
+    <string name="help_app_info_unavailable">Couldn\'t open this app\'s info screen automatically — open Settings manually and look for TvRecommendationBridge under Apps.</string>
+    <string name="help_guide_unavailable">Couldn\'t open the install guide — check your connection and try again.</string>
     <string name="main_accessibility_enabled_directly">Service enabled</string>
     <string name="target_app_not_installed">%1$s isn\'t installed — opening its Play Store page</string>
 
@@ -107,6 +110,16 @@
     <string name="firetv_confirm_message">Open \"%1$s\" in %2$s?</string>
     <string name="firetv_confirm_button">Open</string>
     <string name="main_firetv_usage_access_needed">Fire TV mode also needs "Usage access" — find TvRecommendationBridge in this list and enable it, then come back and press the button again</string>
+    <string name="recommendation_channel_name">Recommended for you</string>
+    <string name="main_recommendations_button">Enable "Recommended for you"</string>
+    <string name="main_recommendations_explainer">Optional, Google TV only. Suggests more titles based on what you\'ve actually opened through this app (via TMDB — no AI, no invented titles). Also tries to show a row on the Android TV home screen, but many launchers block that silently — use "View recommendations" below to see them either way. Needs a few opens first before it has anything to recommend.</string>
+    <string name="main_recommendations_enabled">Recommendations enabled — open a few more titles to see them fill in</string>
+    <string name="main_view_recommendations_button">View recommendations</string>
+    <string name="recommendations_empty">No recommendations yet — open a few titles first</string>
+    <string name="recommendations_movies_header">Movies for you</string>
+    <string name="recommendations_series_header">Series for you</string>
+    <string name="recommendations_more_header">More</string>
+    <string name="recommendations_settings_card">Settings</string>
     <string name="main_voice_search_button">Enable voice search (experimental)</string>
     <string name="main_voice_search_explainer">Optional. Helps recommendations opened by voice search work on devices where they otherwise wouldn\'t. Keeps a screen recording notification visible at all times while enabled.</string>
     <string name="main_voice_search_enabled">Voice search support enabled</string>

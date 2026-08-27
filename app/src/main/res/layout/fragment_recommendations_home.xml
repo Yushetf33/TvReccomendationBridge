@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/bg_root">
+
+    <!-- Panel de ficha ampliada: póster + título + sinopsis del título
+         actualmente enfocado en las filas de la derecha (ver
+         RecommendationsHomeFragment / RecommendationsRowsFragment.onSelectionChanged).
+         paddingTop/paddingBottom iguales, sin gravity — póster y título
+         fijos arriba, la sinopsis ocupa todo el resto vía layout_weight, así
+         que el hueco arriba y abajo es siempre el mismo (el padding) pase lo
+         que pase con el alto de la sinopsis. Si aun así no cabe entera, se
+         desplaza sola hacia arriba (ver updateDetailPanel). -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.32"
+        android:orientation="vertical"
+        android:paddingStart="40dp"
+        android:paddingEnd="32dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp">
+
+        <ImageView
+            android:id="@+id/detail_poster"
+            android:layout_width="150dp"
+            android:layout_height="225dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/surface_card"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <FrameLayout
+            android:id="@+id/detail_overview_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="12dp"
+            android:clipChildren="true">
+
+            <!-- layout_height fijo y generoso (NO wrap_content): dentro de
+                 un contenedor de alto fijo, wrap_content hace que Android
+                 limite el alto propio del TextView al del contenedor
+                 (AT_MOST), aunque el texto sea más largo — así, por mucho
+                 que se traslade la vista para "desplazar" el texto, nunca
+                 llega a dibujar nada más allá de esos px iniciales y el
+                 desplazamiento solo saca la ventana entera de la pantalla,
+                 sin revelar nada nuevo. Con una altura fija de sobra, mide
+                 SIEMPRE el texto completo, y es el contenedor (clipChildren)
+                 el único que recorta lo que no cabe. -->
+            <TextView
+                android:id="@+id/detail_overview"
+                android:layout_width="match_parent"
+                android:layout_height="3000dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:lineSpacingExtra="5dp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/rows_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.68" />
+
+</LinearLayout>

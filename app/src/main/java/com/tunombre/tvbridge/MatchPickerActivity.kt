@@ -80,6 +80,13 @@ class MatchPickerActivity : Activity() {
                     finish()
                     return@runOnUiThread
                 }
+                // Recuerda esta elección para no volver a preguntar si el
+                // mismo título ambiguo reaparece más adelante (ver
+                // TmdbClient.resolveTitle).
+                val query = intent.getStringExtra(EXTRA_QUERY)
+                if (!query.isNullOrBlank()) {
+                    Preferences.rememberDisambiguation(this, query, candidate.tmdbId)
+                }
                 StremioLauncher.open(this, match)
                 finish()
             }

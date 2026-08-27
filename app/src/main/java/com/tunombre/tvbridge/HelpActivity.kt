@@ -35,7 +35,7 @@ class HelpActivity : Activity() {
                     )
                 )
             } catch (e: Exception) {
-                Toast.makeText(this, R.string.main_accessibility_settings_unavailable, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.help_app_info_unavailable, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -51,7 +51,7 @@ class HelpActivity : Activity() {
             try {
                 startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
             } catch (e: Exception) {
-                Toast.makeText(this, R.string.main_accessibility_settings_unavailable, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.main_usage_access_settings_unavailable, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -61,7 +61,7 @@ class HelpActivity : Activity() {
                     Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.help_guide_url)))
                 )
             } catch (e: Exception) {
-                Toast.makeText(this, R.string.main_accessibility_settings_unavailable, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.help_guide_unavailable, Toast.LENGTH_LONG).show()
             }
         }
     }

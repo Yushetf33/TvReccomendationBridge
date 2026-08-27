@@ -101,8 +101,9 @@ class ConfirmOpenActivity : Activity() {
             val imdbId = intent.getStringExtra(EXTRA_IMDB_ID)
             val typeName = intent.getStringExtra(EXTRA_TYPE)
             val title = intent.getStringExtra(EXTRA_TITLE)
-            if (imdbId != null && typeName != null && title != null) {
-                val match = TmdbMatch(imdbId, MediaType.valueOf(typeName), title)
+            val tmdbId = intent.getIntExtra(EXTRA_TMDB_ID, -1)
+            if (imdbId != null && typeName != null && title != null && tmdbId != -1) {
+                val match = TmdbMatch(imdbId, MediaType.valueOf(typeName), title, tmdbId)
                 StremioLauncher.open(this, match)
             }
         }
@@ -122,6 +123,7 @@ class ConfirmOpenActivity : Activity() {
         const val EXTRA_APP_LABEL = "appLabel"
         const val EXTRA_IMDB_ID = "imdbId"
         const val EXTRA_TYPE = "type"
+        const val EXTRA_TMDB_ID = "tmdbId"
         private const val CONFIRM_TIMEOUT_MS = 6000L
     }
 }

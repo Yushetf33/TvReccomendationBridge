@@ -27,8 +27,8 @@ android {
         // coincidir con el tag_name de GitHub, p.ej. v1.0.8 -> "1.0.8") o el
         // comprobador de actualizaciones (UpdateChecker) nunca detectará la
         // versión nueva como más reciente que la instalada.
-        versionCode = 28
-        versionName = "1.0.28"
+        versionCode = 29
+        versionName = "1.0.29"
 
         // Se lee de local.properties (no versionado). Consigue la tuya
         // gratis en https://www.themoviedb.org/settings/api
@@ -119,8 +119,14 @@ dependencies {
     // Solo el "core" de ZXing (generar QR), no la librería completa de
     // escaneo — no hace falta cámara para esto.
     implementation("com.google.zxing:core:3.5.3")
-    // Para el chequeo periódico de actualizaciones en segundo plano.
+    // Para el chequeo periódico de actualizaciones en segundo plano, y para
+    // el worker que refresca la fila de recomendaciones (ver
+    // RecommendationChannelWorker).
     implementation(libs.androidx.work.runtime.ktx)
+    // API oficial de "canales" de la pantalla de inicio de Android TV (ver
+    // RecommendationChannelWorker) — publica nuestra propia fila de
+    // recomendaciones, igual que hacen Netflix/HBO/etc.
+    implementation(libs.androidx.tvprovider)
     // OCR on-device para el "modo Fire TV" (MediaProjection + lectura de
     // pantalla), ya que allí el AccessibilityService está bloqueado por la
     // plataforma. Variante "bundled" (com.google.mlkit, no

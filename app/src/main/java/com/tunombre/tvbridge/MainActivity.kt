@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,6 +31,9 @@ class MainActivity : FragmentActivity() {
 
         requestNotificationPermissionIfNeeded()
         UpdateChecker.schedulePeriodicCheck(this)
+        if (Preferences.isRecommendationsEnabled(this)) {
+            RecommendationChannelManager.schedulePeriodicRefresh(this)
+        }
 
         // Refresca la verificación de suscripción en segundo plano al
         // abrir, para que main_subscription_active no dependa de que el
@@ -39,14 +43,65 @@ class MainActivity : FragmentActivity() {
         }
 
         if (savedInstanceState == null) {
-            GuidedStepSupportFragment.addAsRoot(this, MainMenuStepFragment(), android.R.id.content)
+            // Una vez el usuario ha activado recomendaciones y ya tiene
+            // historial, ir directo a "Recomendado para ti" en vez de a
+            // Ajustes — la primera vez (o mientras no haya nada que
+            // recomendar todavía) se sigue viendo Ajustes como siempre.
+            val hasRecommendationsReady = Preferences.isRecommendationsEnabled(this) &&
+                RecommendationHistory.getAll(this).isNotEmpty()
+            if (hasRecommendationsReady) {
+                supportFragmentManager.beginTransaction()
+                    .replace(android.R.id.content, RecommendationsHomeFragment())
+                    .commit()
+            } else {
+                GuidedStepSupportFragment.addAsRoot(this, MainMenuStepFragment(), android.R.id.content)
+            }
         }
+    }
+
+    /** Vuelve a Ajustes desde la fila de recomendaciones cuando esta es el
+     * contenido raíz de la Activity (ver onCreate) — llamado desde
+     * RecommendationsRowsFragment al pulsar su tarjeta de "Ajustes". */
+    fun showSettingsFromHome() {
+        GuidedStepSupportFragment.addAsRoot(this, MainMenuStepFragment(), android.R.id.content)
     }
 
     /** true en Fire TV — donde Fire OS bloquea AccessibilityService para
      * apps sideloaded (comprobado a fondo, sin workaround posible), así
      * que hace falta el modo de captura de pantalla + OCR en su lugar. */
     fun isFireTvDevice(): Boolean = Build.MANUFACTURER.equals("Amazon", ignoreCase = true)
+
+    /** Activa la fila de "Recomendado para ti" (ver
+     * RecommendationChannelManager) — crea el canal si hace falta, pide que
+     * sea visible en la pantalla de inicio, y programa el primer refresco
+     * (puede no tener nada que mostrar todavía si el historial está vacío,
+     * ver main_recommendations_enabled). Llamado desde
+     * [MainMenuStepFragment] al marcar la casilla. */
+    fun performActivateRecommendations() {
+        Toast.makeText(this, R.string.main_recommendations_enabled, Toast.LENGTH_LONG).show()
+        RecommendationChannelManager.schedulePeriodicRefresh(this)
+        RecommendationChannelManager.scheduleOneShotRefresh(this)
+        Thread {
+            val browsableIntent = RecommendationChannelManager.requestBrowsable(this)
+            if (browsableIntent == null) {
+                Log.w(TAG, "requestBrowsable() devolvió null — no se pudo crear/leer el canal")
+                return@Thread
+            }
+            runOnUiThread {
+                try {
+                    Log.d(TAG, "Lanzando ACTION_REQUEST_CHANNEL_BROWSABLE: $browsableIntent")
+                    startActivityForResult(browsableIntent, REQUEST_CODE_CHANNEL_BROWSABLE)
+                } catch (e: Exception) {
+                    // Sin actividad del sistema que lo gestione (poco
+                    // probable en un Google TV real) — el canal ya se
+                    // creó igualmente, solo no se le pudo pedir permiso
+                    // aparte; se comportará como el primer canal de la
+                    // app, que ya se marca visible por su cuenta.
+                    Log.e(TAG, "No se pudo lanzar ACTION_REQUEST_CHANNEL_BROWSABLE", e)
+                }
+            }
+        }.start()
+    }
 
     /** Un único punto de entrada que hace lo correcto según el
      * dispositivo — llamado desde [MainMenuStepFragment]. */
@@ -57,7 +112,7 @@ class MainActivity : FragmentActivity() {
                 try {
                     startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                 } catch (e: Exception) {
-                    Toast.makeText(this, R.string.main_accessibility_settings_unavailable, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.main_usage_access_settings_unavailable, Toast.LENGTH_LONG).show()
                 }
                 return
             }
@@ -167,6 +222,9 @@ class MainActivity : FragmentActivity() {
                 ContextCompat.startForegroundService(this, serviceIntent)
                 Toast.makeText(this, R.string.main_voice_search_enabled, Toast.LENGTH_LONG).show()
             }
+            REQUEST_CODE_CHANNEL_BROWSABLE -> {
+                Log.d(TAG, "ACTION_REQUEST_CHANNEL_BROWSABLE resultCode=$resultCode (RESULT_OK=$RESULT_OK)")
+            }
         }
     }
 
@@ -181,7 +239,9 @@ class MainActivity : FragmentActivity() {
     }
 
     companion object {
+        private const val TAG = "MainActivity"
         private const val REQUEST_CODE_SCREEN_CAPTURE = 100
         private const val REQUEST_CODE_VOICE_SEARCH_CAPTURE = 101
+        private const val REQUEST_CODE_CHANNEL_BROWSABLE = 102
     }
 }

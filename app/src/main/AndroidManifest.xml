@@ -40,6 +40,14 @@
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Para publicar nuestra propia fila de "Recomendado para ti" en la
+         pantalla de inicio (ver RecommendationChannelManager) — el permiso
+         que exige la API de canales de Android TV para poder escribir en
+         ella, no aparece como diálogo normal (igual que otras apps con fila
+         propia, p.ej. Wholphin/Plezy). Solo tiene efecto en Google TV: Fire
+         OS no tiene este sistema de canales. -->
+    <uses-permission android:name="com.android.providers.tv.permission.WRITE_EPG_DATA" />
+
     <!-- Sin esto, PackageManager.getPackageInfo() de cualquiera de estos
          paquetes puede devolver "no encontrado" aunque SÍ estén instalados
          — confirmado en dispositivo real con WuPlay (Android 11+ oculta la
@@ -71,7 +79,7 @@
         android:banner="@drawable/tv_banner"
         android:networkSecurityConfig="@xml/network_security_config">
 
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name=".MainActivity" android:exported="true" android:theme="@style/Theme.Leanback">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -86,6 +94,30 @@
         <activity android:name=".DeviceManagerActivity" android:exported="false" />
 
         <activity android:name=".HelpActivity" android:exported="false" />
+
+        <activity
+            android:name=".RecommendationsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Recibe el clic de un título de nuestra fila de "Recomendado
+             para ti" en la pantalla de inicio (ver
+             RecommendationChannelManager/RecommendationOpenActivity).
+             exported=true porque quien lo lanza es el propio launcher del
+             sistema, un proceso distinto — igual que MainActivity. -->
+        <activity
+            android:name=".RecommendationOpenActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:taskAffinity=""
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tvbridge" android:host="recommend" />
+            </intent-filter>
+        </activity>
 
         <!-- android:taskAffinity="" + excludeFromRecents en las tres de
              abajo: se lanzan con FLAG_ACTIVITY_NEW_TASK desde un Service o

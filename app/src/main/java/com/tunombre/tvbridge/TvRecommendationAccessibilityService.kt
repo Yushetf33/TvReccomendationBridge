@@ -47,6 +47,11 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
         private const val WATCH_NOW_REAPPEAR_DELAY_MS = 4000L
 
+        // Ver comentario junto a lastMovieClickHandledAt: cubre con margen
+        // los ~200-400ms observados en dispositivo real entre un clic
+        // resuelto directamente y el eco de EntityActivity que lo sigue.
+        private const val ENTITY_ECHO_SUPPRESS_WINDOW_MS = 2000L
+
         // Marcadores que separan el título del resto del content-desc en las
         // tarjetas de fila. Usarlos para cortar (en vez de la primera coma)
         // evita truncar títulos que ya traen coma de por sí, como
@@ -106,6 +111,11 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     // Inicio tras abrir "Toy Story 5", un reintento OCR tardío leyó "Scary
     // Movie" de una tarjeta distinta y abrió eso en su lugar.
     private var isOnEntityDetailsWindow = false
+
+    // Instante del último título resuelto vía handleMovieClick (clic
+    // directo, ficha por voz, u OCR) — ver el eco de EntityActivity más
+    // arriba en onAccessibilityEvent.
+    private var lastMovieClickHandledAt = 0L
 
     // Recomendación pendiente de confirmar por WatchNowConfirmActivity (ver
     // Preferences.isWatchNowConfirmEnabled) — null si esa opción está
@@ -196,8 +206,24 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             if (event.packageName == GOOGLE_TV_LAUNCHER_PACKAGE &&
                 event.className?.toString()?.endsWith(".entity.EntityActivity") == true
             ) {
-                isOnEntityDetailsWindow = true
-                handleEntityDetailsWindow()
+                // Un clic normal sobre una tarjeta (ya resuelto directamente
+                // por content-desc, sin pasar por aquí) puede hacer que el
+                // propio launcher pase de refilón por esta misma pantalla
+                // como efecto secundario — confirmado en dispositivo real:
+                // "The Super Mario Galaxy Movie" resuelto y abierto al
+                // instante, y ~400ms después este evento llega igualmente y
+                // rearma el reintento de OCR, que 10s más tarde lee
+                // cualquier cosa de lo que haya en pantalla en ESE momento
+                // (ya la app de destino) y abre eso también. Si acabamos de
+                // resolver un título por esa vía hace un instante, este
+                // EntityActivity es ese eco, no una ficha nueva que
+                // necesite OCR — se ignora.
+                if (System.currentTimeMillis() - lastMovieClickHandledAt < ENTITY_ECHO_SUPPRESS_WINDOW_MS) {
+                    Log.d(TAG, "EntityActivity ignorada: eco de un clic ya resuelto hace <${ENTITY_ECHO_SUPPRESS_WINDOW_MS}ms")
+                } else {
+                    isOnEntityDetailsWindow = true
+                    handleEntityDetailsWindow()
+                }
             } else {
                 // Al salir de la ficha de detalle (Inicio, otra app...) se
                 // libera el título ya procesado, para poder volver a buscar
@@ -513,8 +539,13 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // app de destino — y abre lo que sea que haya leído ahí. Confirmado
         // en dispositivo real.
         isOnEntityDetailsWindow = false
+        // Ver el eco de EntityActivity en onAccessibilityEvent: marca este
+        // instante para poder distinguir un WINDOW_STATE_CHANGED genuino
+        // (una ficha nueva de verdad) de uno que es solo efecto secundario
+        // de este mismo clic ya resuelto.
+        lastMovieClickHandledAt = System.currentTimeMillis()
         backgroundExecutor.execute {
-            when (val resolution = TmdbClient.resolve(title)) {
+            when (val resolution = TmdbClient.resolve(this, title)) {
                 is TmdbResolution.Resolved -> {
                     Log.d(TAG, "IMDb ID resuelto: $title -> ${resolution.match.imdbId} (${resolution.match.type})")
                     openOrConfirm(resolution.match)
@@ -561,6 +592,7 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             putExtra(WatchNowConfirmActivity.EXTRA_APP_LABEL, appLabel)
             putExtra(WatchNowConfirmActivity.EXTRA_IMDB_ID, match.imdbId)
             putExtra(WatchNowConfirmActivity.EXTRA_TYPE, match.type.name)
+            putExtra(WatchNowConfirmActivity.EXTRA_TMDB_ID, match.tmdbId)
         }
         startActivity(intent)
     }

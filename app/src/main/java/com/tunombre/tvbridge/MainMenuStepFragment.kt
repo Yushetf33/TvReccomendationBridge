@@ -78,6 +78,21 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
                     .description(R.string.main_voice_search_explainer)
                     .build()
             )
+            actions.add(
+                GuidedAction.Builder(context)
+                    .id(ACTION_RECOMMENDATIONS)
+                    .checkSetId(GuidedAction.CHECKBOX_CHECK_SET_ID)
+                    .checked(Preferences.isRecommendationsEnabled(context))
+                    .title(R.string.main_recommendations_button)
+                    .description(R.string.main_recommendations_explainer)
+                    .build()
+            )
+            actions.add(
+                GuidedAction.Builder(context)
+                    .id(ACTION_VIEW_RECOMMENDATIONS)
+                    .title(R.string.main_view_recommendations_button)
+                    .build()
+            )
         }
         actions.add(
             GuidedAction.Builder(context)
@@ -103,6 +118,11 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
             ACTION_JELLYFIN_CHECK -> add(parentFragmentManager,JellyfinCheckStepFragment())
             ACTION_ACTIVATE -> hostActivity.performActivateService()
             ACTION_VOICE_SEARCH -> hostActivity.performVoiceSearchSetup()
+            ACTION_RECOMMENDATIONS -> {
+                Preferences.setRecommendationsEnabled(hostActivity, action.isChecked)
+                if (action.isChecked) hostActivity.performActivateRecommendations()
+            }
+            ACTION_VIEW_RECOMMENDATIONS -> startActivity(Intent(hostActivity, RecommendationsActivity::class.java))
             ACTION_HELP -> startActivity(Intent(hostActivity, HelpActivity::class.java))
         }
     }
@@ -140,5 +160,7 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
         private const val ACTION_VOICE_SEARCH = 6L
         private const val ACTION_HELP = 7L
         private const val ACTION_CREDITS = 8L
+        private const val ACTION_RECOMMENDATIONS = 9L
+        private const val ACTION_VIEW_RECOMMENDATIONS = 10L
     }
 }

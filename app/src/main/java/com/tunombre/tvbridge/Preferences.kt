@@ -139,4 +139,49 @@ object Preferences {
             .putBoolean(KEY_WATCH_NOW_CONFIRM, enabled)
             .apply()
     }
+
+    // Recuerda qué candidato eligió el usuario la última vez que un título
+    // fue ambiguo (ver MatchPickerActivity/TmdbClient.resolveTitle), para no
+    // volver a preguntar por el mismo título si la recomendación reaparece
+    // más adelante (p.ej. una serie ambigua que sale varias veces en
+    // "Recomendado para ti"). Clave normalizada igual que
+    // TmdbClient.normalizeTitle (trim + minúsculas) para que ambos lados
+    // coincidan sin tener que compartir esa función entre archivos.
+    private const val KEY_DISAMBIGUATION_PREFIX = "disambig_tmdb_id_"
+    private const val NO_REMEMBERED_CHOICE = -1
+
+    private fun normalizeDisambiguationQuery(query: String) = query.trim().lowercase()
+
+    fun getRememberedDisambiguation(context: Context, query: String): Int? {
+        val key = KEY_DISAMBIGUATION_PREFIX + normalizeDisambiguationQuery(query)
+        val value = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getInt(key, NO_REMEMBERED_CHOICE)
+        return value.takeIf { it != NO_REMEMBERED_CHOICE }
+    }
+
+    fun rememberDisambiguation(context: Context, query: String, tmdbId: Int) {
+        val key = KEY_DISAMBIGUATION_PREFIX + normalizeDisambiguationQuery(query)
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putInt(key, tmdbId)
+            .apply()
+    }
+
+    // Fila propia de "Recomendado para ti" en la pantalla de inicio (ver
+    // RecommendationChannelManager) — opt-in como el resto de funciones que
+    // dependen de trabajo en segundo plano, DESACTIVADA por defecto: solo
+    // debe empezar a registrar historial y llamar a TMDb en segundo plano
+    // si el usuario lo ha pedido explícitamente desde Ajustes.
+    private const val KEY_RECOMMENDATIONS_ENABLED = "recommendations_channel_enabled"
+
+    fun isRecommendationsEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_RECOMMENDATIONS_ENABLED, false)
+
+    fun setRecommendationsEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_RECOMMENDATIONS_ENABLED, enabled)
+            .apply()
+    }
 }

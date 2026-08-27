@@ -350,6 +350,27 @@ TizenTube Cobalt needs an extra piece to receive that search —
 remove YouTube TV completely, in which case this option won't work
 there).
 
+### Recommended for you (optional, Google TV only)
+
+Independent of the click-redirect feature above, TvRecommendationBridge
+can build its own "Recommended for you" screen based on what you've
+actually opened through the app — split into **Movies** and **Series**,
+powered by TMDB's own recommendation engine (no AI, so it never
+suggests a title that doesn't exist). Turn it on from Settings →
+**"Enable 'Recommended for you'"**; once you've opened a few titles,
+it'll show up right when you open the app, or you can jump to it
+anytime with **"View recommendations"**. Tapping a card opens it the
+same way as a regular recommendation — in whichever app you've picked
+above.
+
+The app also tries to publish this same list as a native row on the
+Android TV home screen (the same mechanism Netflix/HBO use), but many
+Google TV launchers silently refuse to show it — the in-app screen
+above is the reliable way to see it either way.
+
+Off by default, and needs a few opens before there's anything to
+recommend.
+
 ## Known limitations
 
 - Occasionally, a title may match a lesser-known movie or show with the

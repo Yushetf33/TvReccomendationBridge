@@ -24,6 +24,19 @@ object StremioLauncher {
     private const val TAG = "StremioLauncher"
 
     fun open(service: Context, match: TmdbMatch) {
+        // Base del historial para la fila de "Recomendado para ti" (ver
+        // RecommendationChannelManager) — se registra aquí, en el único
+        // punto por el que pasan todos los caminos de apertura (clic
+        // normal, Fire TV, Watch Now), en vez de en cada uno por separado.
+        // Detrás de su propio ajuste (opt-in, ver Preferences): si está
+        // desactivado no hace falta ni guardar historial ni tocar TMDb de
+        // más en segundo plano.
+        if (Preferences.isRecommendationsEnabled(service)) {
+            val mediaPath = if (match.type == MediaType.SERIES) "tv" else "movie"
+            RecommendationHistory.record(service, match.tmdbId, mediaPath, match.title)
+            RecommendationChannelManager.scheduleOneShotRefresh(service)
+        }
+
         if (tryOpenInPersonalJellyfin(service, match)) return
         when (val app = Preferences.getSelectedApp(service)) {
             PlayerApp.NUVIO -> {

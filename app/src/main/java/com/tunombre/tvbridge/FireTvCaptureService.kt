@@ -255,7 +255,7 @@ class FireTvCaptureService : Service() {
         backgroundExecutor.execute {
             try {
                 Log.d(TAG, "Título OCR: \"$title\" — resolviendo en TMDb")
-                val match = TmdbClient.findImdbId(title)
+                val match = TmdbClient.findImdbId(this, title)
                 if (match != null) {
                     lastProcessedTitle = title
                     confirmationPending = true
@@ -277,6 +277,7 @@ class FireTvCaptureService : Service() {
             putExtra(ConfirmOpenActivity.EXTRA_APP_LABEL, appLabel)
             putExtra(ConfirmOpenActivity.EXTRA_IMDB_ID, match.imdbId)
             putExtra(ConfirmOpenActivity.EXTRA_TYPE, match.type.name)
+            putExtra(ConfirmOpenActivity.EXTRA_TMDB_ID, match.tmdbId)
         }
         startActivity(intent)
     }
