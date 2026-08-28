@@ -73,7 +73,23 @@ you straight to the right screen). Enable it there.
 > troubleshooting steps below and direct shortcuts to the right system
 > screens — no need to leave the TV to read this file.
 
-#### The toggle turns itself off immediately
+#### Error codes
+
+Each known issue below has a short code (E01, E02...) — the app's own
+"Having trouble? Get help" screen and any error message it shows use
+the same codes, so you can jump straight to the matching section here
+or mention the code if you ask for help elsewhere.
+
+| Code | Symptom |
+|---|---|
+| E01 | The toggle turns itself off immediately |
+| E02 | Google TV Streamer: no visible option to allow it |
+| E03 | Service enabled, but tapping a recommendation doesn't open Nuvio/Stremio |
+| E04 | TCL devices: service stops working after a while |
+| E05 | Fire TV: nothing works at all |
+| E06 | Voice search doesn't work |
+
+#### E01 — The toggle turns itself off immediately
 
 On Android 13 and newer, the system blocks any sideloaded app (anything
 not installed from Google Play — which includes this one) from enabling
@@ -92,7 +108,7 @@ Accessibility and enable the service again.
 TV Streamer, for example — see below), you'll need the ADB workaround
 instead.
 
-#### Google TV Streamer: no visible option to allow it
+#### E02 — Google TV Streamer: no visible option to allow it
 
 On the Google TV Streamer specifically, the app info screen doesn't
 expose any "Allow restricted setting" option at all. You can accept the
@@ -139,7 +155,7 @@ service's process after a few seconds. If the service shows as enabled
 in Settings but stops detecting clicks after a while, that's usually the
 reason.
 
-#### Service is enabled, but tapping a recommendation doesn't open Nuvio/Stremio
+#### E03 — Service is enabled, but tapping a recommendation doesn't open Nuvio/Stremio
 
 If the accessibility service is confirmed enabled but nothing happens
 when you tap a recommendation, check whether Nuvio/Stremio is up to
@@ -164,7 +180,7 @@ detected at all — you can check for that with:
 adb logcat -s TvRecService:D StremioLauncher:D TmdbClient:D
 ```
 
-#### TCL devices: service stops working after a while, no visible setting to fix it
+#### E04 — TCL devices: service stops working after a while, no visible setting to fix it
 
 On some TCL units, background auto-start permissions for third-party
 apps are locked down at the OS level with no toggle exposed anywhere in
@@ -184,6 +200,8 @@ Note this may need to be repeated after reinstalling or updating the
 app, since reinstalling can reset these permissions.
 
 ## Fire TV
+
+*(Nothing working at all here? That's error code **E05** — see [Error codes](#error-codes) above.)*
 
 Fire TV works a bit differently from Google TV: instead of opening
 automatically the moment you select a recommendation, you need to
@@ -223,6 +241,8 @@ asked for two permissions, once:
   requirement, not something this app adds.
 
 ## Voice search (Google TV)
+
+*(Not working? That's error code **E06** — see [Error codes](#error-codes) above.)*
 
 By default, recommendations opened through voice search (either by
 holding the remote's mic button or saying "Ok Google, open \<title\>")
@@ -364,7 +384,10 @@ title that doesn't exist). Turn it on from Settings →
 it'll show up right when you open the app, or you can jump to it
 anytime with **"View recommendations"**. Tapping a card opens it the
 same way as a regular recommendation — in whichever app you've picked
-above.
+above. If a card has a trailer, **holding down the select button on it**
+plays it directly (via TMDB, in your device's language when available)
+in whichever YouTube app you've picked — no separate button to navigate
+to, works on any card regardless of position.
 
 The app also tries to publish this same list as a native row on the
 Android TV home screen (the same mechanism Netflix/HBO use), but many
