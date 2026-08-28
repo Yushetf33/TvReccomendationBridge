@@ -67,19 +67,23 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         )
 
         // Marcador de las tarjetas de recomendación de YouTube: el launcher
-        // les añade "{Título}, Duración: X minutos Y segundos" (o su
-        // equivalente en el idioma del propio vídeo, no necesariamente el
-        // del dispositivo — confirmado por ADB en dispositivo real con
-        // "Duration is X minutes Y seconds" en un vídeo en inglés estando
-        // el resto de la interfaz en español) al content-desc, en vez de
-        // precio/puntuación. Se comprueba antes que TITLE_MARKERS porque,
-        // si no, isMovieOrShowCard las cuela igualmente como "{Título},
-        // {resto}" y las manda a TMDb, donde nunca van a encontrarse (no
-        // son películas ni series) — visto también en dispositivo real.
-        private val YOUTUBE_DURATION_MARKERS = listOf(
-            Obfuscated.decode("Hi8oOzkzmek0YA=="), // "Duración:"
-            Obfuscated.decode("Hi8oOy4zNTR6Myk=") // "Duration is"
-        )
+        // les añade "{Título}, Duración: X minutos Y segundos" al
+        // content-desc, en vez de precio/puntuación — pero en el idioma del
+        // propio vídeo, no necesariamente el del dispositivo (confirmado
+        // por ADB en dispositivo real con "Duration is X minutes Y
+        // seconds" en un vídeo en inglés estando el resto de la interfaz
+        // en español). En vez de una lista de traducciones conocidas de
+        // "Duración:" (nunca cubriría todos los idiomas que YouTube
+        // soporta), se detecta por la forma que tiene esa frase en
+        // cualquier idioma: una o varias parejas "número + palabra"
+        // (minutos, segundos, horas...) justo al final, después de la coma
+        // que separa el título del resto. Se comprueba antes que
+        // TITLE_MARKERS porque, si no, isMovieOrShowCard las cuela
+        // igualmente como "{Título}, {resto}" y las manda a TMDb, donde
+        // nunca van a encontrarse (no son películas ni series) — visto
+        // también en dispositivo real.
+        private val YOUTUBE_DURATION_SUFFIX_REGEX =
+            Regex(Obfuscated.decode("cgY+cQYpcQYqIRYncQYpcHMha3ZpJ34="))
 
         private const val AMAZON_LAUNCHER_PACKAGE = "com.amazon.tv.launcher"
         private const val GOOGLE_TV_LAUNCHER_PACKAGE = "com.google.android.apps.tv.launcherx"
@@ -517,11 +521,11 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     }
 
     private fun extractYoutubeTitle(contentDesc: String): String? {
-        val markerIndex = YOUTUBE_DURATION_MARKERS
-            .map { contentDesc.indexOf(it) }
-            .filter { it > 0 }
-            .minOrNull() ?: return null
-        return contentDesc.substring(0, markerIndex).trim().trimEnd(',').trim().takeIf { it.isNotBlank() }
+        val commaIndex = contentDesc.indexOf(',')
+        if (commaIndex <= 0) return null
+        val rest = contentDesc.substring(commaIndex + 1).trim()
+        if (!YOUTUBE_DURATION_SUFFIX_REGEX.containsMatchIn(rest)) return null
+        return contentDesc.substring(0, commaIndex).trim().takeIf { it.isNotBlank() }
     }
 
     private fun extractTitle(contentDesc: String): String {
