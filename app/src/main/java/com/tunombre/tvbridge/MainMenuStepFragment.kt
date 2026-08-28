@@ -34,6 +34,7 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
             GuidedAction.Builder(context)
                 .id(ACTION_SUBSCRIPTION)
                 .title(R.string.main_subscription_title)
+                .description(trialStatusDescription(context))
                 .build()
         )
         actions.add(
@@ -96,6 +97,12 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
         }
         actions.add(
             GuidedAction.Builder(context)
+                .id(ACTION_CHECK_FOR_UPDATE)
+                .title(R.string.main_check_for_update_button)
+                .build()
+        )
+        actions.add(
+            GuidedAction.Builder(context)
                 .id(ACTION_HELP)
                 .title(R.string.main_help_button)
                 .build()
@@ -123,6 +130,7 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
                 if (action.isChecked) hostActivity.performActivateRecommendations()
             }
             ACTION_VIEW_RECOMMENDATIONS -> startActivity(Intent(hostActivity, RecommendationsActivity::class.java))
+            ACTION_CHECK_FOR_UPDATE -> hostActivity.performCheckForUpdate()
             ACTION_HELP -> startActivity(Intent(hostActivity, HelpActivity::class.java))
         }
     }
@@ -140,7 +148,37 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
             } else {
                 getString(R.string.main_not_configured)
             }
+            list.find { it.id == ACTION_SUBSCRIPTION }?.description = trialStatusDescription(context)
             setActions(list)
+        }
+    }
+
+    /** null si no hay trial en curso (lifetime, plan antiguo, o sin
+     * suscripción todavía) — en esos casos no hace falta ningún aviso
+     * aparte del título "Suscripción" de siempre. */
+    private fun trialStatusDescription(context: android.content.Context): CharSequence? {
+        if (LicenseManager.isTrialExpired(context)) {
+            return getString(R.string.main_subscription_trial_expired_short)
+        }
+        val trialEndsAt = LicenseManager.getTrialEndsAt(context)
+        if (trialEndsAt != null) {
+            val hoursLeft = (trialEndsAt - System.currentTimeMillis()) / (60 * 60 * 1000L)
+            return if (hoursLeft > 24) {
+                val daysLeft = ((hoursLeft + 23) / 24).toInt() // redondeo hacia arriba
+                getString(R.string.main_subscription_trial_ends_in_days, daysLeft)
+            } else {
+                getString(R.string.main_subscription_trial_ends_today)
+            }
+        }
+        // Sin trial en curso — indicamos el estado en vez de dejar la
+        // descripción en blanco. "active" cubre tanto una mensualidad real
+        // como un email exento (ver isFreeEmail en el backend) — en ninguno
+        // de los dos casos hay fecha de la que avisar, así que un texto
+        // genérico basta.
+        return when (LicenseManager.getLicenseStatus(context)) {
+            "lifetime" -> getString(R.string.main_subscription_lifetime_label)
+            "active" -> getString(R.string.main_subscription_active_short)
+            else -> null
         }
     }
 
@@ -162,5 +200,6 @@ class MainMenuStepFragment : GuidedStepSupportFragment() {
         private const val ACTION_CREDITS = 8L
         private const val ACTION_RECOMMENDATIONS = 9L
         private const val ACTION_VIEW_RECOMMENDATIONS = 10L
+        private const val ACTION_CHECK_FOR_UPDATE = 11L
     }
 }

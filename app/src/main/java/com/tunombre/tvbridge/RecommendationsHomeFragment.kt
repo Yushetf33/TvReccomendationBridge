@@ -1,5 +1,6 @@
 package com.tunombre.tvbridge
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -33,6 +34,8 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
         val titleView = view.findViewById<TextView>(R.id.detail_title)
         val overviewContainer = view.findViewById<FrameLayout>(R.id.detail_overview_container)
         val overviewView = view.findViewById<TextView>(R.id.detail_overview)
+        val tabMovies = view.findViewById<TextView>(R.id.tab_movies)
+        val tabSeries = view.findViewById<TextView>(R.id.tab_series)
         posterView.applyRoundedCorners(CORNER_RADIUS_PX)
 
         // El fragmento hijo puede que ya exista (p.ej. tras un cambio de
@@ -49,6 +52,27 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
             }
         rowsFragment.onSelectionChanged =
             { rec -> updateDetailPanel(rec, posterView, titleView, overviewContainer, overviewView) }
+        rowsFragment.onCategoryChanged =
+            { category -> updateTabSelection(category, tabMovies, tabSeries) }
+
+        tabMovies.setOnClickListener { rowsFragment.setCategory(RecommendationsRowsFragment.Category.MOVIES) }
+        tabSeries.setOnClickListener { rowsFragment.setCategory(RecommendationsRowsFragment.Category.SERIES) }
+    }
+
+    /** El fondo azul de acento marca la pestaña activa (independiente del
+     * foco del mando, que además sigue resaltando en azul la que NO está
+     * activa al pasar por encima — ver bg_button). Negrita de más para que
+     * la pestaña activa se note incluso sin foco encima. */
+    private fun updateTabSelection(
+        category: RecommendationsRowsFragment.Category,
+        tabMovies: TextView,
+        tabSeries: TextView
+    ) {
+        val moviesActive = category == RecommendationsRowsFragment.Category.MOVIES
+        tabMovies.setBackgroundResource(if (moviesActive) R.drawable.bg_button_focused else R.drawable.bg_button)
+        tabSeries.setBackgroundResource(if (moviesActive) R.drawable.bg_button else R.drawable.bg_button_focused)
+        tabMovies.setTypeface(null, if (moviesActive) Typeface.BOLD else Typeface.NORMAL)
+        tabSeries.setTypeface(null, if (moviesActive) Typeface.NORMAL else Typeface.BOLD)
     }
 
     private fun updateDetailPanel(

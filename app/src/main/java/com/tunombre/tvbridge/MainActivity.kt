@@ -66,6 +66,28 @@ class MainActivity : FragmentActivity() {
         GuidedStepSupportFragment.addAsRoot(this, MainMenuStepFragment(), android.R.id.content)
     }
 
+    /** Comprobación manual de actualizaciones (botón en Ajustes), a
+     * diferencia del chequeo automático en segundo plano — esta siempre
+     * consulta a GitHub de verdad (sin el límite de frecuencia de
+     * [UpdateChecker.checkAndDownloadIfNewer]) y avisa con un Toast del
+     * resultado, ya que el usuario la ha pedido explícitamente. */
+    fun performCheckForUpdate() {
+        Thread {
+            val outcome = UpdateChecker.checkNow(this)
+            runOnUiThread {
+                val message = when (outcome) {
+                    is UpdateChecker.CheckOutcome.UpToDate ->
+                        getString(R.string.update_check_up_to_date, BuildConfig.VERSION_NAME)
+                    is UpdateChecker.CheckOutcome.DownloadStarted ->
+                        getString(R.string.update_check_downloading, outcome.version)
+                    is UpdateChecker.CheckOutcome.NetworkError ->
+                        getString(R.string.update_check_network_error)
+                }
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            }
+        }.start()
+    }
+
     /** true en Fire TV — donde Fire OS bloquea AccessibilityService para
      * apps sideloaded (comprobado a fondo, sin workaround posible), así
      * que hace falta el modo de captura de pantalla + OCR en su lugar. */

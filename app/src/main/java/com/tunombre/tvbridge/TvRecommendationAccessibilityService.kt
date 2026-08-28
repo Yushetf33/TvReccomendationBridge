@@ -187,7 +187,12 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null) return
-        if (!LicenseManager.isLikelyValid(this)) return
+        // La comprobación de licencia se hace en handleMovieClick, no aquí
+        // arriba — este método recibe TODOS los eventos de la pantalla
+        // (cualquier cambio de ventana, no solo clics de recomendación), así
+        // que cortar aquí en cuanto la licencia no es válida impediría que
+        // el aviso de "prueba terminada" (ver handleMovieClick) llegase a
+        // mostrarse nunca.
 
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             Log.d(
@@ -544,6 +549,18 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // (una ficha nueva de verdad) de uno que es solo efecto secundario
         // de este mismo clic ya resuelto.
         lastMovieClickHandledAt = System.currentTimeMillis()
+
+        if (!LicenseManager.isLikelyValid(this)) {
+            // Justo el momento de mayor intención de compra: el usuario
+            // acaba de intentar usar la función que le interesa, en vez de
+            // dejar que la app se quede muda sin explicar por qué.
+            startActivity(
+                Intent(this, TrialExpiredActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            return
+        }
+
         backgroundExecutor.execute {
             when (val resolution = TmdbClient.resolve(this, title)) {
                 is TmdbResolution.Resolved -> {

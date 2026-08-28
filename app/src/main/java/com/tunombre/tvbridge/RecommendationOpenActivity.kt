@@ -1,6 +1,7 @@
 package com.tunombre.tvbridge
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.FrameLayout
@@ -29,6 +30,7 @@ class RecommendationOpenActivity : Activity() {
         })
 
         if (!LicenseManager.isLikelyValid(this)) {
+            startActivity(Intent(this, TrialExpiredActivity::class.java))
             finish()
             return
         }

@@ -144,6 +144,16 @@
             android:taskAffinity=""
             android:excludeFromRecents="true" />
 
+        <!-- Paywall contextual al pulsar una recomendación con la prueba
+             gratuita ya terminada (ver TvRecommendationAccessibilityService/
+             RecommendationOpenActivity/FireTvCaptureService). -->
+        <activity
+            android:name=".TrialExpiredActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" />
+
         <!-- Diálogo de confirmación del modo Fire TV (ver
              FireTvCaptureService/ConfirmOpenActivity): necesita ser una
              Activity real (no un overlay) para poder recibir el pulso de OK

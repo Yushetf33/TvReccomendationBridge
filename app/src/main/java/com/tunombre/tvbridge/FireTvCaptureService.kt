@@ -250,7 +250,13 @@ class FireTvCaptureService : Service() {
     }
 
     private fun resolveAndConfirm(title: String) {
-        if (!LicenseManager.isLikelyValid(this)) return
+        if (!LicenseManager.isLikelyValid(this)) {
+            startActivity(
+                Intent(this, TrialExpiredActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            return
+        }
         resolving = true
         backgroundExecutor.execute {
             try {

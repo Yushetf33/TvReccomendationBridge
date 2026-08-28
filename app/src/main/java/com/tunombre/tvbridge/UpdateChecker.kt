@@ -84,6 +84,15 @@ object UpdateChecker {
         )
     }
 
+    /** Resultado de una comprobación manual (ver [checkNow]) — a diferencia
+     * de [checkAndDownloadIfNewer] (en segundo plano, sin nada que mostrar),
+     * esta sí necesita devolver algo que enseñarle al usuario. */
+    sealed class CheckOutcome {
+        object UpToDate : CheckOutcome()
+        data class DownloadStarted(val version: String) : CheckOutcome()
+        object NetworkError : CheckOutcome()
+    }
+
     /** Comprueba la última release y, si es más nueva que la instalada,
      * lanza la descarga. Bloqueante — llamar desde un hilo de fondo.
      * No hace nada si ya se comprobó hace menos de [MIN_CHECK_INTERVAL_MS]. */
@@ -94,19 +103,28 @@ object UpdateChecker {
             Log.d(TAG, "Chequeo omitido: ya se comprobó hace menos de ${MIN_CHECK_INTERVAL_MS / 60000} min")
             return
         }
-        prefs.edit().putLong(KEY_LAST_CHECK_AT, System.currentTimeMillis()).apply()
+        checkNow(context)
+    }
 
-        val release = fetchLatestRelease() ?: return
+    /** Igual que [checkAndDownloadIfNewer], pero ignora el límite de
+     * frecuencia (para un botón de "buscar actualización" explícito) y
+     * devuelve qué ha pasado, para poder avisar al usuario. Bloqueante —
+     * llamar desde un hilo de fondo. */
+    fun checkNow(context: Context): CheckOutcome {
+        prefs(context).edit().putLong(KEY_LAST_CHECK_AT, System.currentTimeMillis()).apply()
+
+        val release = fetchLatestRelease() ?: return CheckOutcome.NetworkError
         val latestVersion = release.tagName.removePrefix("v")
         if (!isNewer(latestVersion, BuildConfig.VERSION_NAME)) {
             Log.d(TAG, "Ya en la última versión ($latestVersion)")
-            return
+            return CheckOutcome.UpToDate
         }
         if (release.apkUrl == null) {
             Log.w(TAG, "Release $latestVersion no tiene asset $APK_ASSET_NAME")
-            return
+            return CheckOutcome.NetworkError
         }
         startDownload(context, release.apkUrl, latestVersion)
+        return CheckOutcome.DownloadStarted(latestVersion)
     }
 
     /** Llamado por [UpdateDownloadReceiver] cuando DownloadManager termina

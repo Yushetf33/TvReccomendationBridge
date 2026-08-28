@@ -17,14 +17,19 @@ import androidx.leanback.widget.OnItemViewSelectedListener
  * Pantalla de "Recomendado para ti" dentro de la propia app — la vía
  * garantizada, ya que la fila equivalente en la pantalla de inicio de
  * Android TV depende de que el launcher del usuario apruebe el canal, cosa
- * que muchos no hacen (ver RecommendationChannelManager). Dos filas
- * (Películas / Series) más una tarjeta de acceso a Ajustes al final.
+ * que muchos no hacen (ver RecommendationChannelManager). Una fila "Porque
+ * viste X" por cada uno de los últimos títulos vistos (por separado en
+ * películas y series, ver RecommendationEngine), filtradas por la pestaña
+ * activa (ver [Category] y [onCategoryChanged]), más una tarjeta de acceso
+ * a Ajustes al final.
  *
  * Se usa tanto como contenido raíz de [MainActivity] (una vez la app ya
  * está configurada, ver su onCreate) como dentro de [RecommendationsActivity]
  * (accesible desde Ajustes con "Ver recomendaciones").
  */
 class RecommendationsRowsFragment : RowsSupportFragment() {
+
+    enum class Category { MOVIES, SERIES }
 
     /** Marcador para la tarjeta de "Ajustes" al final de las filas — no es
      * una recomendación real, solo un acceso directo. */
@@ -34,8 +39,18 @@ class RecommendationsRowsFragment : RowsSupportFragment() {
      * [RecommendationsHomeFragment] para actualizar el panel de ficha
      * ampliada a la izquierda (póster grande + sinopsis). Null cuando el
      * foco está en algo que no es una recomendación (p.ej. la tarjeta de
-     * Ajustes) o todavía no hay nada. */
+     * Ajustes, o la categoría activa no tiene ninguna fila). */
     var onSelectionChanged: ((TmdbClient.TmdbRecommendation?) -> Unit)? = null
+
+    /** Notifica la categoría actualmente mostrada — tanto por un clic en
+     * una pestaña (ver [setCategory]) como por la selección automática
+     * inicial cuando la categoría por defecto no tiene nada que mostrar
+     * (ver [onResume]) — para que [RecommendationsHomeFragment] mantenga
+     * las pestañas de arriba sincronizadas con lo que se ve debajo. */
+    var onCategoryChanged: ((Category) -> Unit)? = null
+
+    private var recommendations: RecommendationEngine.Recommendations? = null
+    private var currentCategory: Category = Category.MOVIES
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -60,24 +75,51 @@ class RecommendationsRowsFragment : RowsSupportFragment() {
         super.onResume()
         val context = requireContext()
         Thread {
-            val recommendations = RecommendationEngine.compute(context)
+            val result = RecommendationEngine.compute(context)
             activity?.runOnUiThread {
-                if (isAdded) buildRows(recommendations)
+                if (isAdded) {
+                    recommendations = result
+                    // Si la categoría activa se queda sin filas mientras la
+                    // otra sí tiene (p.ej. todavía no se ha abierto ninguna
+                    // serie), cambia sola a la que sí tiene algo en vez de
+                    // dejar la pestaña activa vacía sin explicación.
+                    if (rowsFor(currentCategory).isEmpty() && rowsFor(otherCategory()).isNotEmpty()) {
+                        currentCategory = otherCategory()
+                    }
+                    onCategoryChanged?.invoke(currentCategory)
+                    rebuildRows()
+                    if (result.isEmpty) {
+                        Toast.makeText(context, R.string.recommendations_empty, Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }.start()
     }
 
-    private fun buildRows(recommendations: RecommendationEngine.Recommendations) {
-        if (recommendations.isEmpty) {
-            Toast.makeText(requireContext(), R.string.recommendations_empty, Toast.LENGTH_LONG).show()
-        }
+    /** Cambia qué categoría se muestra (llamado desde las pestañas en
+     * [RecommendationsHomeFragment]) — solo reordena filas ya calculadas,
+     * sin volver a pedir nada a TMDb. */
+    fun setCategory(category: Category) {
+        if (category == currentCategory) return
+        currentCategory = category
+        onCategoryChanged?.invoke(category)
+        rebuildRows()
+    }
 
+    private fun otherCategory(): Category =
+        if (currentCategory == Category.MOVIES) Category.SERIES else Category.MOVIES
+
+    private fun rowsFor(category: Category): List<RecommendationEngine.SeedRow> {
+        val recs = recommendations ?: return emptyList()
+        return if (category == Category.MOVIES) recs.movieRows else recs.seriesRows
+    }
+
+    private fun rebuildRows() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter(FocusHighlight.ZOOM_FACTOR_MEDIUM))
-        if (recommendations.movies.isNotEmpty()) {
-            rowsAdapter.add(buildContentRow(HEADER_ID_MOVIES, R.string.recommendations_movies_header, recommendations.movies))
-        }
-        if (recommendations.series.isNotEmpty()) {
-            rowsAdapter.add(buildContentRow(HEADER_ID_SERIES, R.string.recommendations_series_header, recommendations.series))
+        var nextHeaderId = 1L
+        val seedRows = rowsFor(currentCategory)
+        for (seedRow in seedRows) {
+            rowsAdapter.add(buildContentRow(nextHeaderId++, seedRow))
         }
 
         val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
@@ -88,16 +130,18 @@ class RecommendationsRowsFragment : RowsSupportFragment() {
 
         // El listener de selección de Leanback no siempre dispara un
         // evento inicial solo con poner el adapter — sin esto, el panel de
-        // ficha (ver RecommendationsHomeFragment) se queda vacío hasta que
-        // el usuario mueve el foco por primera vez.
-        (recommendations.movies.firstOrNull() ?: recommendations.series.firstOrNull())
-            ?.let { onSelectionChanged?.invoke(it) }
+        // ficha (ver RecommendationsHomeFragment) se queda vacío (o con el
+        // título de la categoría anterior) hasta que el usuario mueve el
+        // foco por primera vez.
+        val firstRec = seedRows.firstOrNull()?.recommendations?.firstOrNull()
+        onSelectionChanged?.invoke(firstRec)
     }
 
-    private fun buildContentRow(headerId: Long, titleRes: Int, items: List<TmdbClient.TmdbRecommendation>): ListRow {
+    private fun buildContentRow(headerId: Long, seedRow: RecommendationEngine.SeedRow): ListRow {
         val cardAdapter = ArrayObjectAdapter(RecommendationCardPresenter())
-        items.forEach { cardAdapter.add(it) }
-        return ListRow(HeaderItem(headerId, getString(titleRes)), cardAdapter)
+        seedRow.recommendations.forEach { cardAdapter.add(it) }
+        val title = getString(R.string.recommendations_because_you_watched, seedRow.seedTitle)
+        return ListRow(HeaderItem(headerId, title), cardAdapter)
     }
 
     private fun openRecommendation(rec: TmdbClient.TmdbRecommendation) {
@@ -126,8 +170,8 @@ class RecommendationsRowsFragment : RowsSupportFragment() {
     }
 
     companion object {
-        private const val HEADER_ID_MOVIES = 1L
-        private const val HEADER_ID_SERIES = 2L
-        private const val HEADER_ID_SETTINGS = 3L
+        // Reservado y muy por encima de los headers dinámicos de las filas
+        // "Porque viste X" (ver buildRows) — nunca van a llegar tan alto.
+        private const val HEADER_ID_SETTINGS = 1000L
     }
 }

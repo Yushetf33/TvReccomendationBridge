@@ -215,10 +215,14 @@ object RecommendationChannelManager {
             Log.d(TAG, "Sin historial todavía — no se publica nada")
             return
         }
-        // Intercaladas y con un límite propio más bajo — una fila de la
-        // pantalla de inicio de Android TV no necesita las mismas ~20 por
-        // categoría que la pantalla dedicada dentro de la app.
-        val ordered = (recommendations.movies + recommendations.series)
+        // Todas las filas "Porque viste X" mezcladas en una sola, y con un
+        // límite propio más bajo — una fila de la pantalla de inicio de
+        // Android TV no necesita el mismo detalle por semilla que la
+        // pantalla dedicada dentro de la app, ni distinguir de qué título
+        // vino cada recomendación.
+        val ordered = (recommendations.movieRows + recommendations.seriesRows)
+            .flatMap { it.recommendations }
+            .distinctBy { it.tmdbId to it.mediaPath }
             .sortedByDescending { it.popularity }
             .take(MAX_PROGRAMS)
         val channelId = ensureChannel(context) ?: return

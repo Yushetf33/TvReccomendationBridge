@@ -12,7 +12,12 @@ import org.json.JSONObject
 
 /** Resultado de una verificación (en vivo o desde caché) de la suscripción. */
 sealed class VerifyResult {
-    object Valid : VerifyResult()
+    /** [trialEndsAt] es null si no está en periodo de prueba (lifetime, plan
+     * antiguo, o email exento) — solo viene relleno durante el trial.
+     * [status] es el estado devuelto por el backend ("lifetime", "active" o
+     * "trialing"), para poder distinguir lifetime de una suscripción normal
+     * activa aunque ninguna de las dos tenga trialEndsAt. */
+    data class Valid(val trialEndsAt: Long? = null, val status: String? = null) : VerifyResult()
     data class Invalid(val reason: String, val retryInDays: Int? = null) : VerifyResult()
     object NetworkError : VerifyResult()
 }
@@ -34,6 +39,8 @@ object LicenseManager {
     private const val KEY_EMAIL = "email"
     private const val KEY_LAST_OK = "last_ok"
     private const val KEY_LAST_CHECK_AT = "last_check_at"
+    private const val KEY_TRIAL_ENDS_AT = "trial_ends_at"
+    private const val KEY_LICENSE_STATUS = "license_status"
 
     private val GRACE_PERIOD_MS = 3 * 24 * 60 * 60 * 1000L // 3 días
 
@@ -66,6 +73,31 @@ object LicenseManager {
         return (System.currentTimeMillis() - lastCheckAt) < GRACE_PERIOD_MS
     }
 
+    /** Fecha (epoch ms) en la que termina el trial en curso, o null si no
+     * hay trial activo (lifetime, plan antiguo, o directamente sin
+     * suscripción) — viene de la última verificación con el backend, ver
+     * [verifyNow]. */
+    fun getTrialEndsAt(context: Context): Long? {
+        val value = prefs(context).getLong(KEY_TRIAL_ENDS_AT, -1L)
+        return value.takeIf { it > 0 }
+    }
+
+    /** true si hay una fecha de fin de trial guardada y ya ha pasado —
+     * distinto de [isLikelyValid], que solo mira si la última verificación
+     * fue positiva dentro del periodo de gracia. Un trial recién expirado
+     * puede seguir dando isLikelyValid=true unos días más por el periodo de
+     * gracia, así que esto es lo que hay que mirar para decidir si mostrar
+     * el aviso de "tu prueba ha terminado". */
+    fun isTrialExpired(context: Context): Boolean {
+        val endsAt = getTrialEndsAt(context) ?: return false
+        return System.currentTimeMillis() >= endsAt
+    }
+
+    /** "lifetime", "active" o "trialing" según la última verificación con
+     * éxito, o null si todavía no se ha verificado nunca. */
+    fun getLicenseStatus(context: Context): String? =
+        prefs(context).getString(KEY_LICENSE_STATUS, null)
+
     /**
      * Verificación SÍNCRONA y bloqueante contra el backend. Llamar siempre
      * desde un hilo de fondo.
@@ -97,7 +129,9 @@ object LicenseManager {
                 } else {
                     val json = JSONObject(responseBody)
                     if (json.optBoolean("ok", false)) {
-                        VerifyResult.Valid
+                        val trialEndsAt = if (json.isNull("trialEndsAt")) null else json.optLong("trialEndsAt")
+                        val status = if (json.isNull("status")) null else json.optString("status")
+                        VerifyResult.Valid(trialEndsAt = trialEndsAt?.takeIf { it > 0 }, status = status)
                     } else {
                         VerifyResult.Invalid(
                             reason = json.optString("reason", "unknown"),
@@ -122,6 +156,21 @@ object LicenseManager {
             is VerifyResult.Valid -> {
                 editor.putBoolean(KEY_LAST_OK, true)
                 editor.putLong(KEY_LAST_CHECK_AT, System.currentTimeMillis())
+                if (result.status != null) {
+                    editor.putString(KEY_LICENSE_STATUS, result.status)
+                } else {
+                    editor.remove(KEY_LICENSE_STATUS)
+                }
+                if (result.trialEndsAt != null) {
+                    editor.putLong(KEY_TRIAL_ENDS_AT, result.trialEndsAt)
+                    TrialReminderScheduler.scheduleFor(context, result.trialEndsAt)
+                } else {
+                    // No es un trial (o ya se convirtió a lifetime) — no
+                    // dejamos una fecha vieja que dispare avisos de más, ni
+                    // avisos ya programados de cuando sí lo era.
+                    editor.remove(KEY_TRIAL_ENDS_AT)
+                    TrialReminderScheduler.cancelAll(context)
+                }
             }
             is VerifyResult.Invalid -> {
                 editor.putBoolean(KEY_LAST_OK, false)
