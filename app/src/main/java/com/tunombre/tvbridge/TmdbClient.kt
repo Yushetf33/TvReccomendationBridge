@@ -42,6 +42,7 @@ object TmdbClient {
 
     private val TMDB_API_KEY = BuildConfig.TMDB_API_KEY
     private const val TAG = "TmdbClient"
+    private val VOSE_MARKER_REGEX = Regex("VOSE|subtitulad", RegexOption.IGNORE_CASE)
 
     private val httpClient = OkHttpClient()
 
@@ -295,6 +296,57 @@ object TmdbClient {
         } catch (e: Exception) {
             Log.e(TAG, "Error obteniendo recomendaciones ($mediaPath/$tmdbId)", e)
             emptyList()
+        }
+    }
+
+    /** ID de vídeo de YouTube del tráiler de [tmdbId], o null si no hay
+     * ninguno publicado — se pide al vuelo cuando el usuario enfoca una
+     * recomendación (ver RecommendationsHomeFragment), no de golpe para
+     * toda la fila, mismo motivo que [fetchImdbId]. Prioriza un tráiler
+     * marcado "official" si hay varios.
+     *
+     * TMDb filtra /videos por idioma (por defecto en-US si no se manda
+     * ninguno) en vez de devolver todos y traducir solo el nombre — muchos
+     * títulos no tienen tráiler cargado en el idioma del dispositivo, así
+     * que se prueba primero con ese idioma y, si no hay nada, se repite sin
+     * parámetro (cae al inglés) antes de darse por vencido. */
+    fun fetchTrailerKey(tmdbId: Int, mediaPath: String): String? {
+        val language = Locale.getDefault().toLanguageTag()
+        return fetchTrailerKey(tmdbId, mediaPath, language) ?: fetchTrailerKey(tmdbId, mediaPath, language = null)
+    }
+
+    private fun fetchTrailerKey(tmdbId: Int, mediaPath: String, language: String?): String? {
+        val languageParam = if (language != null) "&language=$language" else ""
+        val url = "https://api.themoviedb.org/3/$mediaPath/$tmdbId/videos?api_key=$TMDB_API_KEY$languageParam"
+        val request = Request.Builder().url(url).build()
+
+        return try {
+            httpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    Log.w(TAG, "videos ($mediaPath/$tmdbId) falló: ${response.code}")
+                    return null
+                }
+                val body = response.body?.string() ?: return null
+                val results = JSONObject(body).optJSONArray("results") ?: return null
+                val trailers = (0 until results.length())
+                    .map { results.getJSONObject(it) }
+                    .filter { it.optString("site") == "YouTube" && it.optString("type") == "Trailer" }
+                // TMDb etiqueta con el mismo idioma tanto un tráiler doblado
+                // como su versión "VOSE" (audio original, solo subtítulos
+                // traducidos) — sin este filtro, un VOSE en la respuesta
+                // antes que el doblado real hace que se abra con audio en el
+                // idioma original igualmente. No hay otro campo que los
+                // distinga, así que se descarta por el nombre.
+                val dubbed = trailers.filterNot {
+                    VOSE_MARKER_REGEX.containsMatchIn(it.optString("name"))
+                }
+                val candidates = dubbed.ifEmpty { trailers }
+                val best = candidates.firstOrNull { it.optBoolean("official", false) } ?: candidates.firstOrNull()
+                best?.optString("key")?.takeIf { it.isNotBlank() }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error obteniendo tráiler ($mediaPath/$tmdbId)", e)
+            null
         }
     }
 

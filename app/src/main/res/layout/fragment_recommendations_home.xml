@@ -41,6 +41,30 @@
             android:maxLines="2"
             android:ellipsize="end" />
 
+        <!-- Puramente informativo (NO focusable/clickable a propósito): solo
+             confirma que hay tráiler para el título enfocado, cuando
+             RecommendationsHomeFragment lo detecta de forma asíncrona (ver
+             updateDetailPanel) — no todos los títulos tienen uno. La acción
+             real es mantener pulsado sobre la propia tarjeta (ver
+             RecommendationCardPresenter), no venir hasta aquí con el mando:
+             este panel está en una columna aparte, fuera del recorrido
+             horizontal normal de las filas, así que solo se puede alcanzar
+             con el mando desde la primera columna de cada fila. -->
+        <TextView
+            android:id="@+id/detail_trailer_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_button_default"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/recommendations_play_trailer"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
         <FrameLayout
             android:id="@+id/detail_overview_container"
             android:layout_width="match_parent"

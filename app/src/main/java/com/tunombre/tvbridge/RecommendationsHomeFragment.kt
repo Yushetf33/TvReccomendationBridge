@@ -8,6 +8,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 /**
@@ -32,6 +33,7 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
 
         val posterView = view.findViewById<ImageView>(R.id.detail_poster)
         val titleView = view.findViewById<TextView>(R.id.detail_title)
+        val trailerButton = view.findViewById<TextView>(R.id.detail_trailer_button)
         val overviewContainer = view.findViewById<FrameLayout>(R.id.detail_overview_container)
         val overviewView = view.findViewById<TextView>(R.id.detail_overview)
         val tabMovies = view.findViewById<TextView>(R.id.tab_movies)
@@ -51,9 +53,10 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
                     .commit()
             }
         rowsFragment.onSelectionChanged =
-            { rec -> updateDetailPanel(rec, posterView, titleView, overviewContainer, overviewView) }
+            { rec -> updateDetailPanel(rec, posterView, titleView, trailerButton, overviewContainer, overviewView) }
         rowsFragment.onCategoryChanged =
             { category -> updateTabSelection(category, tabMovies, tabSeries) }
+        rowsFragment.onTrailerRequested = { rec -> playTrailer(rec) }
 
         tabMovies.setOnClickListener { rowsFragment.setCategory(RecommendationsRowsFragment.Category.MOVIES) }
         tabSeries.setOnClickListener { rowsFragment.setCategory(RecommendationsRowsFragment.Category.SERIES) }
@@ -75,10 +78,32 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
         tabSeries.setTypeface(null, if (moviesActive) Typeface.NORMAL else Typeface.BOLD)
     }
 
+    /** Mantener pulsado sobre una tarjeta (ver RecommendationCardPresenter)
+     * — pide el tráiler de nuevo en vez de reutilizar el que ya se haya
+     * podido cachear para el panel de detalle, para no depender de si esa
+     * tarjeta es o no la actualmente seleccionada (evita acoplar los dos
+     * caminos). Con Toast de aviso si no hay ninguno, ya que a diferencia
+     * del botón del panel, aquí no hay una confirmación visual previa. */
+    private fun playTrailer(rec: TmdbClient.TmdbRecommendation) {
+        val context = requireContext()
+        Thread {
+            val trailerKey = TmdbClient.fetchTrailerKey(rec.tmdbId, rec.mediaPath)
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                if (trailerKey != null) {
+                    YoutubeLauncher.openWatch(context, trailerKey)
+                } else {
+                    Toast.makeText(context, R.string.recommendations_trailer_not_found, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
     private fun updateDetailPanel(
         rec: TmdbClient.TmdbRecommendation?,
         posterView: ImageView,
         titleView: TextView,
+        trailerButton: TextView,
         overviewContainer: FrameLayout,
         overviewView: TextView
     ) {
@@ -92,10 +117,29 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
             overviewView.text = ""
             posterView.setImageDrawable(null)
             posterView.tag = null
+            trailerButton.visibility = View.GONE
+            trailerButton.tag = null
             return
         }
         titleView.text = rec.title
         overviewView.text = rec.overview.orEmpty()
+
+        // Oculto hasta confirmar que hay un tráiler de verdad — se pide al
+        // vuelo (ver TmdbClient.fetchTrailerKey) porque /recommendations no
+        // lo trae, y pedirlo para toda la fila de golpe sería una llamada
+        // de más por tarjeta sin necesidad. El tag descarta la respuesta si
+        // el foco ya se movió a otra tarjeta antes de que vuelva.
+        trailerButton.visibility = View.GONE
+        val selectionTag = "${rec.mediaPath}/${rec.tmdbId}"
+        trailerButton.tag = selectionTag
+        Thread {
+            val trailerKey = TmdbClient.fetchTrailerKey(rec.tmdbId, rec.mediaPath)
+            activity?.runOnUiThread {
+                if (isAdded && trailerButton.tag == selectionTag && trailerKey != null) {
+                    trailerButton.visibility = View.VISIBLE
+                }
+            }
+        }.start()
         // El TextView tiene una altura fija de sobra (ver layout — NO
         // wrap_content, para que mida siempre el texto completo aunque no
         // quepa en el hueco visible) y es el FrameLayout contenedor el que

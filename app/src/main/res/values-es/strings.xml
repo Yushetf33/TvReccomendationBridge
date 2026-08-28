@@ -55,15 +55,17 @@
     <string name="watch_now_confirm_button">Ver ahora en %1$s</string>
 
     <string name="help_title">Solución de problemas</string>
-    <string name="help_restricted_title">El interruptor de Accesibilidad se desactiva solo</string>
+    <string name="help_restricted_title">E01/E02 — El interruptor de Accesibilidad se desactiva solo</string>
     <string name="help_restricted_body">Con diferencia, el problema más habitual. En Android 13+, el sistema bloquea que las apps instaladas por sideload activen Accesibilidad desde el interruptor normal, como medida de seguridad — si se apaga justo después de activarlo, es por esto, no es un fallo.\n\nSolución: abre la ficha de la app de abajo, toca el menú de tres puntos (o busca la opción directamente) y activa \"Permitir ajuste restringido\". Luego vuelve a probar el interruptor de Accesibilidad.\n\nSi tu dispositivo no muestra esa opción en absoluto, hace falta un comando ADB (una sola vez) desde un ordenador o el móvil (app atvTools) — mira la guía visual de instalación de abajo para los pasos exactos.</string>
     <string name="help_open_app_info_button">Abrir la ficha de esta app</string>
     <string name="help_open_accessibility_button">Abrir ajustes de Accesibilidad</string>
-    <string name="help_nothing_happens_title">No pasa nada al pulsar una recomendación</string>
+    <string name="help_nothing_happens_title">E03 — No pasa nada al pulsar una recomendación</string>
     <string name="help_nothing_happens_body">Comprueba, en orden: 1) Que el interruptor de Accesibilidad esté realmente activado — vuelve a Accesibilidad y confirma que no se apagó solo (ver arriba). 2) Que la app de destino elegida (Nuvio, Stremio, Plex, Jellyfin, WuPlay…) esté instalada y actualizada. 3) No todas las tarjetas de recomendación exponen un título — los banners pequeños y anuncios se ignoran a propósito, eso es normal.</string>
-    <string name="help_voice_title">La búsqueda por voz no funciona</string>
+    <string name="help_tcl_title">E04 — Dispositivos TCL: el servicio deja de detectar clics al rato</string>
+    <string name="help_tcl_body">En algunos modelos TCL, los permisos de autoarranque en segundo plano para apps de terceros están bloqueados a nivel del sistema, sin ningún interruptor visible en Ajustes. Si el servicio aparece activado pero deja de detectar clics en silencio al rato, y no encuentras ninguna opción de autoarranque/excepción de batería para la app, es por esto. Hace falta un comando ADB una sola vez — mira la guía visual de instalación de abajo para los pasos exactos.</string>
+    <string name="help_voice_title">E06 — La búsqueda por voz no funciona</string>
     <string name="help_voice_body">La búsqueda por voz es un interruptor aparte y opcional, distinto del servicio de Accesibilidad principal. Vuelve a la pantalla principal y asegúrate de haber tocado también \"Activar búsqueda por voz\" y concedido el permiso de grabación de pantalla que pide una sola vez — con solo el servicio principal activado no basta.</string>
-    <string name="help_firetv_title">En Fire TV no parece funcionar nada</string>
+    <string name="help_firetv_title">E05 — En Fire TV no parece funcionar nada</string>
     <string name="help_firetv_body">Fire OS bloquea por completo el método estándar de Accesibilidad para apps instaladas por sideload — ningún ajuste lo arregla. En Fire TV hace falta el \"modo Fire TV\" (el botón de la pantalla principal cambia solo al detectar Fire TV). Antes necesita que concedas \"Acceso a datos de uso\" — usa el botón de abajo — y luego un permiso de grabación de pantalla, una sola vez.</string>
     <string name="help_open_usage_access_button">Abrir ajustes de Acceso a datos de uso</string>
     <string name="help_still_stuck_title">¿Sigue sin funcionar?</string>
@@ -106,10 +108,10 @@
     <string name="main_firetv_mode_button">Activar modo Fire TV (lectura de pantalla)</string>
     <string name="main_firetv_mode_explainer">Solo hace falta en Fire TV, donde el método estándar de Android no funciona. Requiere aceptar un permiso de grabación de pantalla una sola vez.</string>
     <string name="main_firetv_mode_enabled">Modo Fire TV activo — observando la pantalla</string>
-    <string name="main_firetv_mode_denied">Permiso de grabación de pantalla denegado — el modo Fire TV lo necesita para funcionar</string>
+    <string name="main_firetv_mode_denied">Permiso de grabación de pantalla denegado — el modo Fire TV lo necesita para funcionar (E05)</string>
     <string name="firetv_confirm_message">¿Abrir \"%1$s\" en %2$s?</string>
     <string name="firetv_confirm_button">Abrir</string>
-    <string name="main_firetv_usage_access_needed">El modo Fire TV también necesita "Acceso a datos de uso" — busca TvRecommendationBridge en la lista y actívalo, luego vuelve y pulsa el botón otra vez</string>
+    <string name="main_firetv_usage_access_needed">El modo Fire TV también necesita "Acceso a datos de uso" — busca TvRecommendationBridge en la lista y actívalo, luego vuelve y pulsa el botón otra vez (E05)</string>
     <string name="recommendation_channel_name">Recomendado para ti</string>
     <string name="main_recommendations_button">Activar "Recomendado para ti"</string>
     <string name="main_recommendations_explainer">Opcional, solo Google TV. Sugiere más títulos a partir de lo que has abierto de verdad con la app (vía TMDB — sin IA, sin títulos inventados). También intenta mostrar una fila en la pantalla de inicio de Android TV, pero muchos launchers lo bloquean sin avisar — usa "Ver recomendaciones" más abajo para verlas de todos modos. Necesita unas cuantas aperturas antes de tener algo que recomendar.</string>
@@ -140,10 +142,12 @@
     <string name="main_subscription_active_short">Activa</string>
     <string name="recommendations_tab_movies">Películas</string>
     <string name="recommendations_tab_series">Series</string>
+    <string name="recommendations_play_trailer">Hay tráiler — mantén pulsada la tarjeta</string>
+    <string name="recommendations_trailer_not_found">No hay tráiler disponible para este título</string>
     <string name="main_voice_search_button">Activar búsqueda por voz (experimental)</string>
     <string name="main_voice_search_explainer">Opcional. Ayuda a que las recomendaciones abiertas por búsqueda de voz funcionen en dispositivos donde si no, no funcionarían. Mantiene visible una notificación de grabación de pantalla todo el rato mientras esté activado.</string>
     <string name="main_voice_search_enabled">Soporte de búsqueda por voz activado</string>
-    <string name="main_voice_search_denied">Permiso de grabación de pantalla denegado — el soporte de búsqueda por voz lo necesita para funcionar</string>
+    <string name="main_voice_search_denied">Permiso de grabación de pantalla denegado — el soporte de búsqueda por voz lo necesita para funcionar (E06)</string>
     <string name="voice_search_notification_channel_name">Soporte de búsqueda por voz</string>
     <string name="voice_search_notification_title">TvRecommendationBridge está listo para captar resultados de búsqueda por voz</string>
 </resources>

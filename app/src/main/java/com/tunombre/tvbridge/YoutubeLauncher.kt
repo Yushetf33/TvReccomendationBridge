@@ -13,4 +13,13 @@ object YoutubeLauncher {
             YoutubeApp.TIZENTUBE_COBALT -> TizenTubeLauncher.openSearch(service, title)
         }
     }
+
+    /** Abre un vídeo concreto (p.ej. un tráiler) directamente, en vez de una
+     * búsqueda por título — ver [SmartTubeLauncher.openWatch]/[TizenTubeLauncher.openWatch]. */
+    fun openWatch(service: Context, videoKey: String) {
+        when (Preferences.getSelectedYoutubeApp(service)) {
+            YoutubeApp.SMARTTUBE -> SmartTubeLauncher.openWatch(service, videoKey)
+            YoutubeApp.TIZENTUBE_COBALT -> TizenTubeLauncher.openWatch(service, videoKey)
+        }
+    }
 }

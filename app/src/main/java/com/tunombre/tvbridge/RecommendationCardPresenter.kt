@@ -11,8 +11,16 @@ import androidx.leanback.widget.Presenter
  * apps como WuPlay, póster cargado a mano vía [PosterLoader] con un guard
  * por tag en el ImageView para que una carga tardía de una tarjeta ya
  * reciclada por el RecyclerView no pinte el póster equivocado.
+ *
+ * [onLongPress] dispara el tráiler (ver RecommendationsHomeFragment) —
+ * mantener pulsado en la propia tarjeta en vez de depender de navegar con
+ * el mando hasta el botón del panel de la izquierda, que solo es
+ * alcanzable desde la primera columna de cada fila (el resto de columnas
+ * se quedan sin forma de llegar hasta ahí con el mando).
  */
-class RecommendationCardPresenter : Presenter() {
+class RecommendationCardPresenter(
+    private val onLongPress: (TmdbClient.TmdbRecommendation) -> Unit
+) : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val cardView = ImageCardView(parent.context).apply {
@@ -31,6 +39,10 @@ class RecommendationCardPresenter : Presenter() {
         cardView.contentText = null
         cardView.mainImageView?.tag = rec.posterPath
         cardView.mainImage = null
+        cardView.setOnLongClickListener {
+            onLongPress(rec)
+            true
+        }
 
         val posterPath = rec.posterPath ?: return
         PosterLoader.load(posterPath, POSTER_WIDTH) { bitmap ->

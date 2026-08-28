@@ -32,6 +32,17 @@ object TizenTubeLauncher {
 
     fun openSearch(service: Context, title: String) {
         val uri = Uri.parse("https://www.youtube.com/results?search_query=${Uri.encode(title)}")
+        launch(service, uri)
+    }
+
+    /** Abre un vídeo concreto (p.ej. un tráiler, ver TmdbClient.fetchTrailerKey)
+     * directamente por su ID, sin pasar por una búsqueda. */
+    fun openWatch(service: Context, videoKey: String) {
+        val uri = Uri.parse("https://www.youtube.com/watch?v=${Uri.encode(videoKey)}")
+        launch(service, uri)
+    }
+
+    private fun launch(service: Context, uri: Uri) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = uri
             setPackage(BRIDGE_PACKAGE)

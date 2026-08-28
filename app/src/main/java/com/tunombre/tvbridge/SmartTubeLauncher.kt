@@ -38,6 +38,13 @@ object SmartTubeLauncher {
         launch(service, uri)
     }
 
+    /** Abre un vídeo concreto (p.ej. un tráiler, ver TmdbClient.fetchTrailerKey)
+     * directamente por su ID, sin pasar por una búsqueda. */
+    fun openWatch(service: Context, videoKey: String) {
+        val uri = Uri.parse("https://www.youtube.com/watch?v=${Uri.encode(videoKey)}")
+        launch(service, uri)
+    }
+
     private fun launch(service: Context, uri: Uri): Boolean {
         for (targetPackage in SMARTTUBE_PACKAGES) {
             val intent = Intent(Intent.ACTION_VIEW).apply {

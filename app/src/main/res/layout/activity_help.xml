@@ -74,6 +74,24 @@
             android:textSize="15sp"
             android:layout_marginBottom="32dp" />
 
+        <!-- Problema #2b (E04): dispositivos TCL -->
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_tcl_title"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/help_tcl_body"
+            android:textColor="@color/text_secondary"
+            android:textSize="15sp"
+            android:layout_marginBottom="32dp" />
+
         <!-- Problema #3: busqueda por voz -->
         <TextView
             android:layout_width="560dp"

@@ -42,6 +42,10 @@ class RecommendationsRowsFragment : RowsSupportFragment() {
      * Ajustes, o la categoría activa no tiene ninguna fila). */
     var onSelectionChanged: ((TmdbClient.TmdbRecommendation?) -> Unit)? = null
 
+    /** Mantener pulsado sobre una tarjeta — dispara el tráiler si lo tiene
+     * (ver RecommendationCardPresenter/RecommendationsHomeFragment). */
+    var onTrailerRequested: ((TmdbClient.TmdbRecommendation) -> Unit)? = null
+
     /** Notifica la categoría actualmente mostrada — tanto por un clic en
      * una pestaña (ver [setCategory]) como por la selección automática
      * inicial cuando la categoría por defecto no tiene nada que mostrar
@@ -138,7 +142,7 @@ class RecommendationsRowsFragment : RowsSupportFragment() {
     }
 
     private fun buildContentRow(headerId: Long, seedRow: RecommendationEngine.SeedRow): ListRow {
-        val cardAdapter = ArrayObjectAdapter(RecommendationCardPresenter())
+        val cardAdapter = ArrayObjectAdapter(RecommendationCardPresenter { rec -> onTrailerRequested?.invoke(rec) })
         seedRow.recommendations.forEach { cardAdapter.add(it) }
         val title = getString(R.string.recommendations_because_you_watched, seedRow.seedTitle)
         return ListRow(HeaderItem(headerId, title), cardAdapter)
