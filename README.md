@@ -382,7 +382,10 @@ title that doesn't exist). Turn it on from Settings →
 it'll show up right when you open the app, or you can jump to it
 anytime with **"View recommendations"**. Tapping a card opens it the
 same way as a regular recommendation — in whichever app you've picked
-above.
+above. If a card has a trailer, **holding down the select button on it**
+plays it directly (via TMDB, in your device's language when available)
+in whichever YouTube app you've picked — no separate button to navigate
+to, works on any card regardless of position.
 
 The app also tries to publish this same list as a native row on the
 Android TV home screen (the same mechanism Netflix/HBO use), but many
