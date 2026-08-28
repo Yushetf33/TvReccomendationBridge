@@ -99,52 +99,20 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
         }.start()
     }
 
-    private fun updateDetailPanel(
-        rec: TmdbClient.TmdbRecommendation?,
-        posterView: ImageView,
-        titleView: TextView,
-        trailerButton: TextView,
-        overviewContainer: FrameLayout,
-        overviewView: TextView
-    ) {
+    // El TextView tiene una altura fija de sobra (ver layout — NO
+    // wrap_content, para que mida siempre el texto completo aunque no
+    // quepa en el hueco visible) y es el FrameLayout contenedor el que
+    // recorta lo que sobra. OnPreDrawListener espera a que ESE layout ya
+    // esté resuelto antes de leer las medidas reales. Se llama más de una
+    // vez por selección: la altura del contenedor cambia si el botón de
+    // tráiler aparece después (ver updateDetailPanel), así que hay que
+    // repetir la medición cuando eso pasa.
+    private fun scheduleOverviewScroll(overviewContainer: FrameLayout, overviewView: TextView) {
         overviewView.animate().cancel()
         overviewView.translationY = 0f
         pendingLayoutListener?.let { overviewView.viewTreeObserver.removeOnPreDrawListener(it) }
         pendingLayoutListener = null
 
-        if (rec == null) {
-            titleView.text = ""
-            overviewView.text = ""
-            posterView.setImageDrawable(null)
-            posterView.tag = null
-            trailerButton.visibility = View.GONE
-            trailerButton.tag = null
-            return
-        }
-        titleView.text = rec.title
-        overviewView.text = rec.overview.orEmpty()
-
-        // Oculto hasta confirmar que hay un tráiler de verdad — se pide al
-        // vuelo (ver TmdbClient.fetchTrailerKey) porque /recommendations no
-        // lo trae, y pedirlo para toda la fila de golpe sería una llamada
-        // de más por tarjeta sin necesidad. El tag descarta la respuesta si
-        // el foco ya se movió a otra tarjeta antes de que vuelva.
-        trailerButton.visibility = View.GONE
-        val selectionTag = "${rec.mediaPath}/${rec.tmdbId}"
-        trailerButton.tag = selectionTag
-        Thread {
-            val trailerKey = TmdbClient.fetchTrailerKey(rec.tmdbId, rec.mediaPath)
-            activity?.runOnUiThread {
-                if (isAdded && trailerButton.tag == selectionTag && trailerKey != null) {
-                    trailerButton.visibility = View.VISIBLE
-                }
-            }
-        }.start()
-        // El TextView tiene una altura fija de sobra (ver layout — NO
-        // wrap_content, para que mida siempre el texto completo aunque no
-        // quepa en el hueco visible) y es el FrameLayout contenedor el que
-        // recorta lo que sobra. OnPreDrawListener espera a que ESE layout
-        // ya esté resuelto antes de leer las medidas reales.
         val preDrawListener = object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 overviewView.viewTreeObserver.removeOnPreDrawListener(this)
@@ -166,6 +134,55 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
         }
         pendingLayoutListener = preDrawListener
         overviewView.viewTreeObserver.addOnPreDrawListener(preDrawListener)
+    }
+
+    private fun updateDetailPanel(
+        rec: TmdbClient.TmdbRecommendation?,
+        posterView: ImageView,
+        titleView: TextView,
+        trailerButton: TextView,
+        overviewContainer: FrameLayout,
+        overviewView: TextView
+    ) {
+        if (rec == null) {
+            overviewView.animate().cancel()
+            overviewView.translationY = 0f
+            pendingLayoutListener?.let { overviewView.viewTreeObserver.removeOnPreDrawListener(it) }
+            pendingLayoutListener = null
+            titleView.text = ""
+            overviewView.text = ""
+            posterView.setImageDrawable(null)
+            posterView.tag = null
+            trailerButton.visibility = View.GONE
+            trailerButton.tag = null
+            return
+        }
+        titleView.text = rec.title
+        overviewView.text = rec.overview.orEmpty()
+
+        // Oculto hasta confirmar que hay un tráiler de verdad — se pide al
+        // vuelo (ver TmdbClient.fetchTrailerKey) porque /recommendations no
+        // lo trae, y pedirlo para toda la fila de golpe sería una llamada
+        // de más por tarjeta sin necesidad. El tag descarta la respuesta si
+        // el foco ya se movió a otra tarjeta antes de que vuelva.
+        trailerButton.visibility = View.GONE
+        val selectionTag = "${rec.mediaPath}/${rec.tmdbId}"
+        trailerButton.tag = selectionTag
+        scheduleOverviewScroll(overviewContainer, overviewView)
+        Thread {
+            val trailerKey = TmdbClient.fetchTrailerKey(rec.tmdbId, rec.mediaPath)
+            activity?.runOnUiThread {
+                if (isAdded && trailerButton.tag == selectionTag && trailerKey != null) {
+                    trailerButton.visibility = View.VISIBLE
+                    // El botón recién visible reduce el hueco del contenedor
+                    // de la sinopsis (comparten la misma columna, ver
+                    // layout). El cálculo de arriba ya se hizo SIN contar
+                    // con este espacio — hay que repetirlo, o una sinopsis
+                    // que ahora sí desborda se quedaría sin desplazarse.
+                    scheduleOverviewScroll(overviewContainer, overviewView)
+                }
+            }
+        }.start()
 
         val posterPath = rec.posterPath
         if (posterPath == null) {
