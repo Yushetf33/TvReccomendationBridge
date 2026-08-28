@@ -356,9 +356,10 @@ there).
 
 Independent of the click-redirect feature above, TvRecommendationBridge
 can build its own "Recommended for you" screen based on what you've
-actually opened through the app — split into **Movies** and **Series**,
-powered by TMDB's own recommendation engine (no AI, so it never
-suggests a title that doesn't exist). Turn it on from Settings →
+actually opened through the app — with **Movies** and **Series** tabs
+at the top, each showing up to 5 "Because you watched X" rows, powered
+by TMDB's own recommendation engine (no AI, so it never suggests a
+title that doesn't exist). Turn it on from Settings →
 **"Enable 'Recommended for you'"**; once you've opened a few titles,
 it'll show up right when you open the app, or you can jump to it
 anytime with **"View recommendations"**. Tapping a card opens it the
