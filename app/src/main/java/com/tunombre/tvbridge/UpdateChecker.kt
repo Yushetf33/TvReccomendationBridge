@@ -54,6 +54,12 @@ object UpdateChecker {
     // queda solo como red de seguridad por si la TV se deja siempre encendida.
     private val MIN_CHECK_INTERVAL_MS = TimeUnit.HOURS.toMillis(4)
 
+    // Cuánto está dispuesto a esperar awaitDownloadAndInstall a que termine
+    // la descarga antes de rendirse (el APK pesa ~44MB) — y cada cuánto
+    // vuelve a preguntarle a DownloadManager mientras tanto.
+    private const val DOWNLOAD_POLL_TIMEOUT_MS = 2 * 60 * 1000L
+    private const val DOWNLOAD_POLL_INTERVAL_MS = 500L
+
     // Con los valores por defecto de OkHttp, un chequeo en segundo plano en
     // una TV con una red rara (DNS lento, sin salida real a internet aunque
     // el wifi esté "conectado", etc.) puede quedarse colgado mucho más de lo
@@ -141,6 +147,45 @@ object UpdateChecker {
         showInstallNotification(context, file, version)
     }
 
+    /** Complemento de [checkNow] para el botón manual de "Buscar
+     * actualización": muchos launchers de Android TV no muestran nunca las
+     * notificaciones de apps (ver README, mismo problema que el canal de
+     * "Recomendado para ti"), así que la notificación de
+     * [onDownloadComplete] no basta aquí — el usuario ha pedido esto en
+     * primer plano y puede quedarse esperando. Espera a que la descarga
+     * iniciada por [checkNow] termine y lanza el instalador directamente.
+     * No hace nada si [checkNow] no llegó a iniciar una descarga.
+     * Bloqueante — llamar desde un hilo de fondo, después de [checkNow]. */
+    fun awaitDownloadAndInstall(context: Context) {
+        val downloadId = prefs(context).getLong(KEY_DOWNLOAD_ID, -1L)
+        if (downloadId == -1L || !awaitDownloadSuccess(context, downloadId)) return
+        val file = downloadedFile(context)
+        if (!file.exists()) return
+        context.startActivity(buildInstallIntent(context, file))
+    }
+
+    /** Sondea el estado de una descarga hasta que termina (con éxito o
+     * error) o pasa [DOWNLOAD_POLL_TIMEOUT_MS] sin resolverse — no hay
+     * callback de progreso en DownloadManager sin registrar otro receiver,
+     * y para esto (esperar una vez, en primer plano) sondear cada poco es
+     * más simple. */
+    private fun awaitDownloadSuccess(context: Context, downloadId: Long): Boolean {
+        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val deadline = System.currentTimeMillis() + DOWNLOAD_POLL_TIMEOUT_MS
+        while (System.currentTimeMillis() < deadline) {
+            downloadManager.query(DownloadManager.Query().setFilterById(downloadId)).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    when (cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))) {
+                        DownloadManager.STATUS_SUCCESSFUL -> return true
+                        DownloadManager.STATUS_FAILED -> return false
+                    }
+                }
+            }
+            Thread.sleep(DOWNLOAD_POLL_INTERVAL_MS)
+        }
+        return false
+    }
+
     private data class LatestRelease(val tagName: String, val apkUrl: String?)
 
     private fun fetchLatestRelease(): LatestRelease? {
@@ -206,16 +251,19 @@ object UpdateChecker {
         Log.d(TAG, "Descargando actualización $version (downloadId=$downloadId)")
     }
 
-    private fun showInstallNotification(context: Context, apkFile: File, version: String) {
+    private fun buildInstallIntent(context: Context, apkFile: File): Intent {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", apkFile)
-        val installIntent = Intent(Intent.ACTION_VIEW).apply {
+        return Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, "application/vnd.android.package-archive")
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
+    }
+
+    private fun showInstallNotification(context: Context, apkFile: File, version: String) {
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
-            installIntent,
+            buildInstallIntent(context, apkFile),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 

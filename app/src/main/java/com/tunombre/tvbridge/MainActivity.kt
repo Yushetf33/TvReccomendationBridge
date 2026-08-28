@@ -85,6 +85,14 @@ class MainActivity : FragmentActivity() {
                 }
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             }
+            // Pedido en primer plano por el propio usuario — no nos fiamos
+            // solo de la notificación de fin de descarga para avisar de que
+            // ya se puede instalar, ya que muchos launchers de Android TV
+            // no la muestran nunca (ver comentario en
+            // UpdateChecker.awaitDownloadAndInstall).
+            if (outcome is UpdateChecker.CheckOutcome.DownloadStarted) {
+                UpdateChecker.awaitDownloadAndInstall(this)
+            }
         }.start()
     }
 
