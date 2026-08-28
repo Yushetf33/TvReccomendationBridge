@@ -5,7 +5,7 @@ import android.util.Base64
 /**
  * Guarda como literales las cadenas más "copiables" del proyecto (los
  * marcadores de detección de tarjetas del launcher — ver
- * TvRecommendationAccessibilityService.TITLE_MARKERS/YOUTUBE_DURATION_MARKER)
+ * TvRecommendationAccessibilityService.TITLE_MARKERS/YOUTUBE_DURATION_MARKERS)
  * codificadas en vez de en texto plano.
  *
  * Motivo: R8/minify (ya activo en release) solo ofusca nombres de

@@ -145,7 +145,7 @@
     <string name="recommendations_play_trailer">Hay tráiler — mantén pulsada la tarjeta</string>
     <string name="recommendations_trailer_not_found">No hay tráiler disponible para este título</string>
     <string name="main_voice_search_button">Activar búsqueda por voz (experimental)</string>
-    <string name="main_voice_search_explainer">Opcional. Ayuda a que las recomendaciones abiertas por búsqueda de voz funcionen en dispositivos donde si no, no funcionarían. Mantiene visible una notificación de grabación de pantalla todo el rato mientras esté activado.</string>
+    <string name="main_voice_search_explainer">Opcional. Ayuda a que las recomendaciones abiertas por búsqueda de voz funcionen en dispositivos donde si no, no funcionarían — en algunos dispositivos (p.ej. TCL) también arregla los clics en la fila mixta de arriba del todo en la pantalla de inicio del launcher, no solo la búsqueda por voz. Mantiene visible una notificación de grabación de pantalla todo el rato mientras esté activado.</string>
     <string name="main_voice_search_enabled">Soporte de búsqueda por voz activado</string>
     <string name="main_voice_search_denied">Permiso de grabación de pantalla denegado — el soporte de búsqueda por voz lo necesita para funcionar (E06)</string>
     <string name="voice_search_notification_channel_name">Soporte de búsqueda por voz</string>

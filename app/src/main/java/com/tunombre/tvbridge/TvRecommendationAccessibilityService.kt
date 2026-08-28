@@ -67,12 +67,19 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         )
 
         // Marcador de las tarjetas de recomendación de YouTube: el launcher
-        // les añade "{Título}, Duración: X minutos Y segundos" al content-desc,
-        // en vez de precio/puntuación. Confirmado por ADB en dispositivo real.
-        // Se comprueba antes que TITLE_MARKERS porque, si no, isMovieOrShowCard
-        // las cuela igualmente como "{Título}, {resto}" y las manda a TMDb,
-        // donde nunca van a encontrarse (no son películas ni series).
-        private val YOUTUBE_DURATION_MARKER = Obfuscated.decode("Hi8oOzkzmek0YA==") // "Duración:"
+        // les añade "{Título}, Duración: X minutos Y segundos" (o su
+        // equivalente en el idioma del propio vídeo, no necesariamente el
+        // del dispositivo — confirmado por ADB en dispositivo real con
+        // "Duration is X minutes Y seconds" en un vídeo en inglés estando
+        // el resto de la interfaz en español) al content-desc, en vez de
+        // precio/puntuación. Se comprueba antes que TITLE_MARKERS porque,
+        // si no, isMovieOrShowCard las cuela igualmente como "{Título},
+        // {resto}" y las manda a TMDb, donde nunca van a encontrarse (no
+        // son películas ni series) — visto también en dispositivo real.
+        private val YOUTUBE_DURATION_MARKERS = listOf(
+            Obfuscated.decode("Hi8oOzkzmek0YA=="), // "Duración:"
+            Obfuscated.decode("Hi8oOy4zNTR6Myk=") // "Duration is"
+        )
 
         private const val AMAZON_LAUNCHER_PACKAGE = "com.amazon.tv.launcher"
         private const val GOOGLE_TV_LAUNCHER_PACKAGE = "com.google.android.apps.tv.launcherx"
@@ -510,8 +517,10 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     }
 
     private fun extractYoutubeTitle(contentDesc: String): String? {
-        val markerIndex = contentDesc.indexOf(YOUTUBE_DURATION_MARKER)
-        if (markerIndex <= 0) return null
+        val markerIndex = YOUTUBE_DURATION_MARKERS
+            .map { contentDesc.indexOf(it) }
+            .filter { it > 0 }
+            .minOrNull() ?: return null
         return contentDesc.substring(0, markerIndex).trim().trimEnd(',').trim().takeIf { it.isNotBlank() }
     }
 

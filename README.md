@@ -178,6 +178,20 @@ detected at all — you can check for that with:
 adb logcat -s TvRecService:D StremioLauncher:D TmdbClient:D
 ```
 
+**Specifically the top mixed row on the home screen** ("Recommended for you" /
+whatever your launcher calls the row that mixes shows, movies, and other
+content together, as opposed to a dedicated single-source row): on some
+devices (confirmed on TCL) the accessibility APIs simply don't expose a
+title for cards in that specific row, no matter how long you wait — this
+is a platform limitation on those devices, not a bug in how the app reads
+the row. Turning on **"Enable voice search (experimental)"** in Settings
+also fixes this row specifically, even if you don't use voice search at
+all — it enables an OCR fallback that reads the title directly off the
+screen instead of relying on the broken accessibility data. Costs a
+persistent screen-recording notification while enabled (see
+[Voice search](#voice-search-google-tv) below), which is why it isn't on
+by default.
+
 #### E04 — TCL devices: service stops working after a while, no visible setting to fix it
 
 On some TCL units, background auto-start permissions for third-party
