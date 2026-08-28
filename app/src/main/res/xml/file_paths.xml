@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <!-- DownloadManager guarda la APK de actualización aquí (ver
-         UpdateChecker.startDownload). -->
-    <external-files-path name="downloads" path="Downloads/" />
+         UpdateChecker.startDownload) — Environment.DIRECTORY_DOWNLOADS vale
+         "Download" (singular), no "Downloads": con la "s" de más, FileProvider
+         no encontraba ninguna raíz configurada que cubriera el archivo real
+         y showInstallNotification fallaba con IllegalArgumentException. -->
+    <external-files-path name="downloads" path="Download/" />
 </paths>
