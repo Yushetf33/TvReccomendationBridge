@@ -173,10 +173,17 @@
 
         <!-- Recibe el aviso de DownloadManager cuando termina de bajar la
              APK de una actualización, para lanzar la notificación de
-             "toca para instalar" (ver UpdateChecker/UpdateDownloadReceiver). -->
+             "toca para instalar" (ver UpdateChecker/UpdateDownloadReceiver).
+             DOWNLOAD_COMPLETE lo emite com.android.providers.downloads, un
+             proceso/UID distinto del nuestro — sin exported="true" el
+             sistema bloquea la entrega con un "Permission Denial" silencioso
+             (no llega ni excepción a nuestro logcat) y la descarga termina
+             sin avisar nunca de que ya está lista para instalar. Seguro:
+             UpdateChecker.onDownloadComplete ya descarta cualquier id que no
+             sea el nuestro. -->
         <receiver
             android:name=".UpdateDownloadReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
