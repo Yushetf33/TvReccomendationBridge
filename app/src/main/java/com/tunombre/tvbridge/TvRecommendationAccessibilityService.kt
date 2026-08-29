@@ -71,6 +71,11 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             Obfuscated.decode("Ki80Li87OTOZ6TRg") // "puntuación:"
         )
 
+        // Subconjunto de TITLE_MARKERS fiable para CORTAR el título (ver
+        // extractTitle) — "puntuación:" se queda fuera porque a veces trae
+        // el nombre de la plataforma pegado delante, ver el comentario ahí.
+        private val RELIABLE_TITLE_CUT_MARKERS = listOf(TITLE_MARKERS[0], TITLE_MARKERS[1])
+
         // Marcador de las tarjetas de recomendación de YouTube: el launcher
         // les añade "{Título}, Duración: X minutos Y segundos" al
         // content-desc, en vez de precio/puntuación — pero en el idioma del
@@ -534,7 +539,16 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
     }
 
     private fun extractTitle(contentDesc: String): String {
-        val markerIndex = TITLE_MARKERS
+        // Solo "cuesta:" y el marcador de suscripción son fiables como
+        // límite exacto del título: van pegados justo detrás de la coma
+        // que lo separa del resto. "puntuación:" NO — a veces entre el
+        // título y la puntuación hay además el nombre de la plataforma
+        // ("Dune, HBO Max, buena puntuación: 83 % en Rotten Tomatoes"),
+        // así que cortar justo antes de "puntuación:" dejaba ese nombre de
+        // plataforma colado en el título (confirmado real: "Dune, HBO Max,
+        // buena" en vez de "Dune"). Por eso no se usa aquí para cortar,
+        // solo en isMovieOrShowCard para detectar que es una ficha.
+        val markerIndex = RELIABLE_TITLE_CUT_MARKERS
             .map { contentDesc.indexOf(it) }
             .filter { it >= 0 }
             .minOrNull()
@@ -543,7 +557,8 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             return contentDesc.substring(0, markerIndex).trim().trimEnd(',').trim()
         }
 
-        // Formato de cartel grande sin marcador: "{Título}, {sinopsis}".
+        // Formato de cartel grande, o de plataforma+puntuación sin
+        // "cuesta:" delante: "{Título}, {resto}".
         return contentDesc.substringBefore(",").trim()
     }
 
