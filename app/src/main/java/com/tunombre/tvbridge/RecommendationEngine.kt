@@ -25,11 +25,12 @@ object RecommendationEngine {
         val isEmpty: Boolean get() = movieRows.isEmpty() && seriesRows.isEmpty()
     }
 
-    /** Bloqueante (llamadas de red a TMDb, una por fila) — llamar siempre
-     * desde un hilo de fondo. Ambas listas vacías si todavía no hay
-     * historial. */
+    /** Bloqueante (red: TMDb + el historial fusionado con otros
+     * dispositivos, ver [RecommendationHistory.fetchMerged]) — llamar
+     * siempre desde un hilo de fondo. Ambas listas vacías si todavía no
+     * hay historial. */
     fun compute(context: android.content.Context): Recommendations {
-        val history = RecommendationHistory.getAll(context)
+        val history = RecommendationHistory.fetchMerged(context)
         if (history.isEmpty()) return Recommendations(emptyList(), emptyList())
 
         val seen = history.map { it.tmdbId to it.mediaPath }.toSet()
