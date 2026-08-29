@@ -126,11 +126,14 @@
     <string name="trial_notif_day_before_text">TvRecommendationBridge dejará de funcionar cuando termine tu prueba. El acceso de por vida es un pago único de 4,99€.</string>
     <string name="trial_notif_hours_before_title">⚠️ Tu prueba gratuita termina pronto</string>
     <string name="trial_notif_hours_before_text">Sigue usando TvRecommendationBridge con acceso de por vida por 4,99€.</string>
+    <string name="trial_notif_hour_before_title">⏰ Tu prueba gratuita termina en aproximadamente una hora</string>
+    <string name="trial_notif_hour_before_text">Sigue usando TvRecommendationBridge con acceso de por vida por 4,99€.</string>
     <string name="trial_notif_expired_title">Tu prueba gratuita ha terminado</string>
     <string name="trial_notif_expired_text">Toca para desbloquear el acceso de por vida por 4,99€ — pago único, sin suscripción.</string>
     <string name="trial_expired_dialog_title">Tu prueba gratuita ha terminado</string>
     <string name="trial_expired_dialog_body">TvRecommendationBridge ya no está activa en este dispositivo. Desbloquea el acceso de por vida por 4,99€ — pago único, sin suscripción.</string>
     <string name="trial_expired_dialog_unlock_button">Desbloquear por 4,99€</string>
+    <string name="trial_ending_soon_dialog_dismiss_button">Entendido</string>
     <string name="main_check_for_update_button">Buscar actualización</string>
     <string name="update_check_up_to_date">Ya tienes la última versión (%1$s)</string>
     <string name="update_check_downloading">Descargando actualización %1$s…</string>

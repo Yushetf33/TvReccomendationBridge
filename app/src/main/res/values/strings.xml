@@ -126,11 +126,14 @@
     <string name="trial_notif_day_before_text">TvRecommendationBridge will stop working when your trial expires. Lifetime access is a one-time €4.99.</string>
     <string name="trial_notif_hours_before_title">⚠️ Your free trial expires soon</string>
     <string name="trial_notif_hours_before_text">Keep using TvRecommendationBridge with lifetime access for €4.99.</string>
+    <string name="trial_notif_hour_before_title">⏰ Your free trial expires in about an hour</string>
+    <string name="trial_notif_hour_before_text">Keep using TvRecommendationBridge with lifetime access for €4.99.</string>
     <string name="trial_notif_expired_title">Your free trial has ended</string>
     <string name="trial_notif_expired_text">Tap to unlock lifetime access for €4.99 — one-time payment, no subscription.</string>
     <string name="trial_expired_dialog_title">Your free trial has ended</string>
     <string name="trial_expired_dialog_body">TvRecommendationBridge is no longer active on this device. Unlock lifetime access for €4.99 — one-time payment, no subscription.</string>
     <string name="trial_expired_dialog_unlock_button">Unlock for €4.99</string>
+    <string name="trial_ending_soon_dialog_dismiss_button">Got it</string>
     <string name="main_check_for_update_button">Check for update</string>
     <string name="update_check_up_to_date">You\'re on the latest version (%1$s)</string>
     <string name="update_check_downloading">Downloading update %1$s…</string>

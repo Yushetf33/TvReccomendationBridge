@@ -159,6 +159,12 @@
             android:theme="@android:style/Theme.DeviceDefault.Dialog"
             android:taskAffinity=""
             android:excludeFromRecents="true" />
+        <activity
+            android:name=".TrialEndingSoonActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" />
 
         <!-- Diálogo de confirmación del modo Fire TV (ver
              FireTvCaptureService/ConfirmOpenActivity): necesita ser una

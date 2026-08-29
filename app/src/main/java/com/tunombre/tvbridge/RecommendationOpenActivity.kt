@@ -47,7 +47,7 @@ class RecommendationOpenActivity : Activity() {
 
         val candidate = TmdbCandidate(tmdbId, mediaPath, title, year = null)
         backgroundExecutor.execute {
-            val match = TmdbClient.resolveCandidate(candidate)
+            val match = TmdbClient.resolveCandidate(this, candidate)
             runOnUiThread {
                 if (isFinishing) return@runOnUiThread
                 if (match != null) {

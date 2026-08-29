@@ -47,6 +47,11 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
         private const val WATCH_NOW_REAPPEAR_DELAY_MS = 4000L
 
+        // Cuánto esperar antes de abrir la app de destino cuando se acaba de
+        // mostrar la tarjeta de "tu prueba acaba pronto" encima, para darle
+        // tiempo a leerla antes de que la tape.
+        private const val REMINDER_CARD_READ_DELAY_MS = 6500L
+
         // Ver comentario junto a lastMovieClickHandledAt: cubre con margen
         // los ~200-400ms observados en dispositivo real entre un clic
         // resuelto directamente y el eco de EntityActivity que lo sigue.
@@ -563,7 +568,11 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         // de este mismo clic ya resuelto.
         lastMovieClickHandledAt = System.currentTimeMillis()
 
-        if (!LicenseManager.isLikelyValid(this)) {
+        // El chequeo de firma solo tiene sentido en release (ver
+        // SignatureVerifier) — en debug nunca coincidiría y bloquearía
+        // todas las pruebas en desarrollo.
+        val isTampered = !BuildConfig.DEBUG && SignatureVerifier.isTampered(this)
+        if (!LicenseManager.isLikelyValid(this) || isTampered) {
             // Justo el momento de mayor intención de compra: el usuario
             // acaba de intentar usar la función que le interesa, en vez de
             // dejar que la app se quede muda sin explicar por qué.
@@ -574,7 +583,24 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
             return
         }
 
+        val justShowedReminderCard = LicenseManager.dueTrialReminderStage(this)?.let { stage ->
+            // Aviso de paso, no bloqueante: se lanza y se sigue con la
+            // recomendación igualmente (ver TrialEndingSoonActivity).
+            startActivity(
+                Intent(this, TrialEndingSoonActivity::class.java)
+                    .putExtra(TrialEndingSoonActivity.EXTRA_STAGE, stage.name)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            LicenseManager.markTrialReminderShown(this, stage)
+            true
+        } ?: false
+
         backgroundExecutor.execute {
+            if (justShowedReminderCard) {
+                // Le da tiempo a leerse la tarjeta antes de que la app de
+                // destino se abra encima y se la tape.
+                Thread.sleep(REMINDER_CARD_READ_DELAY_MS)
+            }
             when (val resolution = TmdbClient.resolve(this, title)) {
                 is TmdbResolution.Resolved -> {
                     Log.d(TAG, "IMDb ID resuelto: $title -> ${resolution.match.imdbId} (${resolution.match.type})")
@@ -585,9 +611,9 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
                         Log.d(TAG, "Match ambiguo para \"$title\" (${resolution.candidates.size} candidatos) — preguntando al usuario")
                         MatchPickerActivity.launch(this, resolution)
                     } else {
-                        val match = TmdbClient.resolveCandidate(resolution.candidates.first())
+                        val match = TmdbClient.resolveFirstAvailable(this, resolution.candidates)
                         if (match == null) {
-                            Log.w(TAG, "No se pudo resolver el primer candidato ambiguo para: $title")
+                            Log.w(TAG, "Ningún candidato ambiguo se pudo resolver para: $title")
                         } else {
                             openOrConfirm(match)
                         }

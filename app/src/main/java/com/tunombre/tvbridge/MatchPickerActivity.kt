@@ -72,7 +72,7 @@ class MatchPickerActivity : Activity() {
         if (choiceMade) return
         choiceMade = true
         backgroundExecutor.execute {
-            val match = TmdbClient.resolveCandidate(candidate)
+            val match = TmdbClient.resolveCandidate(this, candidate)
             runOnUiThread {
                 if (match == null) {
                     Log.w(TAG, "No se pudo resolver el candidato elegido: ${candidate.title}")

@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 /** Resultado de una verificación (en vivo o desde caché) de la suscripción. */
 sealed class VerifyResult {
@@ -41,8 +42,14 @@ object LicenseManager {
     private const val KEY_LAST_CHECK_AT = "last_check_at"
     private const val KEY_TRIAL_ENDS_AT = "trial_ends_at"
     private const val KEY_LICENSE_STATUS = "license_status"
+    private const val KEY_DAY_BEFORE_SHOWN_FOR_ENDS_AT = "day_before_shown_for_ends_at"
+    private const val KEY_HOURS_BEFORE_SHOWN_FOR_ENDS_AT = "hours_before_shown_for_ends_at"
+    private const val KEY_HOUR_BEFORE_SHOWN_FOR_ENDS_AT = "hour_before_shown_for_ends_at"
 
     private val GRACE_PERIOD_MS = 3 * 24 * 60 * 60 * 1000L // 3 días
+    private val DAY_BEFORE_THRESHOLD_MS = TimeUnit.HOURS.toMillis(24)
+    private val HOURS_BEFORE_THRESHOLD_MS = TimeUnit.HOURS.toMillis(3)
+    private val HOUR_BEFORE_THRESHOLD_MS = TimeUnit.HOURS.toMillis(1)
 
     private val httpClient = OkHttpClient()
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
@@ -91,6 +98,46 @@ object LicenseManager {
     fun isTrialExpired(context: Context): Boolean {
         val endsAt = getTrialEndsAt(context) ?: return false
         return System.currentTimeMillis() >= endsAt
+    }
+
+    /** Las tres etapas de aviso de "tu prueba acaba pronto", en el mismo
+     * orden que el trial las va cruzando. */
+    enum class TrialReminderStage { DAY_BEFORE, HOURS_BEFORE, HOUR_BEFORE }
+
+    /** Etapa de aviso que toca mostrar ahora mismo (justo al pulsar una
+     * recomendación, ver TvRecommendationAccessibilityService) — la más
+     * cercana al fin que ya se ha cruzado y que todavía no se ha mostrado
+     * NINGUNA vez para este trial en concreto (cada etapa se muestra una
+     * sola vez). Null si no hay trial, si el trial ya terminó del todo
+     * (eso lo cubre [isTrialExpired] aparte, que sigue bloqueando con
+     * TrialExpiredActivity), o si ninguna etapa nueva aplica. */
+    fun dueTrialReminderStage(context: Context): TrialReminderStage? {
+        val endsAt = getTrialEndsAt(context) ?: return null
+        val remaining = endsAt - System.currentTimeMillis()
+        if (remaining <= 0) return null
+
+        val stage = when {
+            remaining <= HOUR_BEFORE_THRESHOLD_MS -> TrialReminderStage.HOUR_BEFORE
+            remaining <= HOURS_BEFORE_THRESHOLD_MS -> TrialReminderStage.HOURS_BEFORE
+            remaining <= DAY_BEFORE_THRESHOLD_MS -> TrialReminderStage.DAY_BEFORE
+            else -> return null
+        }
+        val alreadyShownForEndsAt = prefs(context).getLong(shownKeyFor(stage), -1L)
+        return stage.takeIf { alreadyShownForEndsAt != endsAt }
+    }
+
+    /** Recuerda que [stage] ya se mostró para el trial actual, para no
+     * repetirlo en cada recomendación que se pulse durante esa misma
+     * ventana de tiempo. */
+    fun markTrialReminderShown(context: Context, stage: TrialReminderStage) {
+        val endsAt = getTrialEndsAt(context) ?: return
+        prefs(context).edit().putLong(shownKeyFor(stage), endsAt).apply()
+    }
+
+    private fun shownKeyFor(stage: TrialReminderStage) = when (stage) {
+        TrialReminderStage.DAY_BEFORE -> KEY_DAY_BEFORE_SHOWN_FOR_ENDS_AT
+        TrialReminderStage.HOURS_BEFORE -> KEY_HOURS_BEFORE_SHOWN_FOR_ENDS_AT
+        TrialReminderStage.HOUR_BEFORE -> KEY_HOUR_BEFORE_SHOWN_FOR_ENDS_AT
     }
 
     /** "lifetime", "active" o "trialing" según la última verificación con
