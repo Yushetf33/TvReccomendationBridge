@@ -297,7 +297,9 @@ go back to the app, enter that email, and tap **"Verify subscription"**.
 The same email can be linked to up to **5 devices** at once (in case you
 have several TVs at home). From the app, tap **"Manage devices"** to see
 which ones are currently linked and remove any you don't need anymore —
-no need to wait 30 days or contact support to free up a slot.
+no need to wait 30 days or contact support to free up a slot. Those
+devices also share watch history for **"Recommended for you"** — see
+below.
 
 ## How it works
 
@@ -405,6 +407,10 @@ The app also tries to publish this same list as a native row on the
 Android TV home screen (the same mechanism Netflix/HBO use), but many
 Google TV launchers silently refuse to show it — the in-app screen
 above is the reliable way to see it either way.
+
+Watch history is shared across every device linked to your email (up to
+5, see [Pricing](#pricing) above) — open something on the living room
+TV, and the bedroom TV's recommendations pick up on it too.
 
 Off by default, and needs a few opens before there's anything to
 recommend.
