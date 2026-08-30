@@ -126,16 +126,16 @@ touch ADB or Settings again (even after reinstalling):
 
 ```bash
 adb connect <tv-ip>:5555
+adb shell appops set com.tunombre.tvbridge ACCESS_RESTRICTED_SETTINGS allow
 adb shell pm grant com.tunombre.tvbridge android.permission.WRITE_SECURE_SETTINGS
 ```
 
-If that alone doesn't stick, one user on a Google TV Streamer needed to
-lift Restricted Settings for the app first, then repeat the command
-above:
-
-```bash
-adb shell appops set com.tunombre.tvbridge ACCESS_RESTRICTED_SETTINGS allow
-```
+On **Android 14** (confirmed on the Google TV Streamer), the first line
+is required, not optional — without it, Android kills/unbinds the
+accessibility service the instant it tries to enable, even with
+`WRITE_SECURE_SETTINGS` granted. On older Android versions the second
+line alone may already be enough, but running both is harmless either
+way.
 
 3. Go back into the app and tap **"Enable the service in
    Accessibility"** again — this time it enables directly, without
