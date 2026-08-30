@@ -131,6 +131,14 @@ adb connect <tv-ip>:5555
 adb shell pm grant com.tunombre.tvbridge android.permission.WRITE_SECURE_SETTINGS
 ```
 
+If that alone doesn't stick, one user on a Google TV Streamer needed to
+lift Restricted Settings for the app first, then repeat the command
+above:
+
+```bash
+adb shell appops set com.tunombre.tvbridge ACCESS_RESTRICTED_SETTINGS allow
+```
+
 3. Go back into the app and tap **"Enable the service in
    Accessibility"** again — this time it enables directly, without
    opening Settings at all.
