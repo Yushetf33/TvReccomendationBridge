@@ -440,11 +440,16 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
 
     /** Franja donde está el título en la ficha de detalle del launcher de
      * Google TV — medido sobre una captura real en dispositivo (búsqueda
-     * por voz de "La casa de papel"), igual que se hizo para Fire TV. */
+     * por voz de "La casa de papel"), igual que se hizo para Fire TV. El
+     * borde derecho se ensanchó de 0.75 a 0.90: con ese título corto de
+     * calibración sobraba margen, pero con uno largo ("The Fast and the
+     * Furious: Tokyo Drift") el recorte llegaba a cortar la última letra
+     * a medias, y el OCR confundía el trazo parcial con otra letra
+     * ("Tokyc" en vez de "Tokyo Drift") — confirmado real en dispositivo. */
     private fun cropEntityDetailsTitleRegion(bitmap: android.graphics.Bitmap): android.graphics.Bitmap {
         val left = (bitmap.width * 0.04).toInt()
         val top = (bitmap.height * 0.32).toInt()
-        val right = (bitmap.width * 0.75).toInt().coerceAtMost(bitmap.width)
+        val right = (bitmap.width * 0.90).toInt().coerceAtMost(bitmap.width)
         val bottom = (bitmap.height * 0.52).toInt()
         return android.graphics.Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top)
     }
