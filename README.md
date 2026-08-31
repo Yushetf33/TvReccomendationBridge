@@ -422,6 +422,10 @@ Watch history is shared across every device linked to your email (up to
 5, see [Pricing](#pricing) above) — open something on the living room
 TV, and the bedroom TV's recommendations pick up on it too.
 
+Two **"Surprise me"** buttons (movies / series) sit next to the tabs —
+pick one and it opens a random title from that same recommendation pool
+directly, no need to browse and choose.
+
 Off by default, and needs a few opens before there's anything to
 recommend.
 
