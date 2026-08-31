@@ -512,7 +512,24 @@ class TvRecommendationAccessibilityService : AccessibilityService() {
         val parts = event.text
         if (parts.isNullOrEmpty()) return null
         val first = parts[0]?.toString()?.trim() ?: return null
-        if (first.isBlank() || first.equals("Patrocinado", ignoreCase = true)) return null
+        // "Patrocinado": no es una recomendación real, se ignora a
+        // propósito. "Recomendado para ti": la propia fila de Google TV
+        // con este nombre no expone el título en el evento del clic, solo
+        // la cabecera de la fila + sinopsis + CTA ("Recomendado para ti,
+        // Peter Parker busca combinar ser estudiante y superhéroe, Ver
+        // ahora" para "Spider-Man: Homecoming", confirmado real) — usar
+        // esa cabecera como si fuera el título no encuentra nada nunca.
+        // Al devolver null aquí (en vez de ese texto malo), el clic no se
+        // marca como ya resuelto, así que cuando el launcher navega de
+        // todos modos a su ficha de detalle, esa navegación no se
+        // suprime como eco y el OCR de tryOcrFallbackForEntityDetails
+        // puede leer el título real de la pantalla.
+        if (first.isBlank() ||
+            first.equals("Patrocinado", ignoreCase = true) ||
+            first.equals("Recomendado para ti", ignoreCase = true)
+        ) {
+            return null
+        }
         return first
     }
 
