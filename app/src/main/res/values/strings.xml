@@ -147,6 +147,11 @@
     <string name="recommendations_tab_series">Series</string>
     <string name="recommendations_play_trailer">Trailer available — hold the card to play</string>
     <string name="recommendations_trailer_not_found">No trailer available for this title</string>
+    <string name="recommendations_surprise_me_movies">Surprise me (movies)</string>
+    <string name="recommendations_surprise_me_series">Surprise me (series)</string>
+    <string name="recommendations_surprise_me_loading">Picking something for you…</string>
+    <string name="recommendations_surprise_me_not_enough_history">Not enough history yet — open a few titles first</string>
+    <string name="recommendations_surprise_me_failed">Couldn\'t open that one — try again</string>
     <string name="main_voice_search_button">Enable voice search (experimental)</string>
     <string name="main_voice_search_explainer">Optional. Helps recommendations opened by voice search work on devices where they otherwise wouldn\'t — on some devices (e.g. TCL) it also fixes clicks on the launcher home screen\'s top mixed row specifically, not just voice search. Keeps a screen recording notification visible at all times while enabled.</string>
     <string name="main_voice_search_enabled">Voice search support enabled</string>

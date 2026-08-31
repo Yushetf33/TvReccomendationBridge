@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import kotlin.random.Random
 
 /**
  * Pantalla de "Recomendado para ti": panel de ficha ampliada a la
@@ -38,6 +39,8 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
         val overviewView = view.findViewById<TextView>(R.id.detail_overview)
         val tabMovies = view.findViewById<TextView>(R.id.tab_movies)
         val tabSeries = view.findViewById<TextView>(R.id.tab_series)
+        val surpriseMeMoviesButton = view.findViewById<TextView>(R.id.surprise_me_movies_button)
+        val surpriseMeSeriesButton = view.findViewById<TextView>(R.id.surprise_me_series_button)
         posterView.applyRoundedCorners(CORNER_RADIUS_PX)
 
         // El fragmento hijo puede que ya exista (p.ej. tras un cambio de
@@ -60,6 +63,67 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
 
         tabMovies.setOnClickListener { rowsFragment.setCategory(RecommendationsRowsFragment.Category.MOVIES) }
         tabSeries.setOnClickListener { rowsFragment.setCategory(RecommendationsRowsFragment.Category.SERIES) }
+        surpriseMeMoviesButton.setOnClickListener {
+            onSurpriseMeClicked(surpriseMeMoviesButton) { it.movieRows }
+        }
+        surpriseMeSeriesButton.setOnClickListener {
+            onSurpriseMeClicked(surpriseMeSeriesButton) { it.seriesRows }
+        }
+    }
+
+    /** Elige al azar un título del mismo fondo de recomendaciones que ya
+     * alimenta las filas "Porque viste X" (ver RecommendationEngine) y lo
+     * abre directamente — sin picker, sin que el usuario tenga que decidir
+     * nada. [rowsFor] escoge solo las filas de película o solo las de serie:
+     * mezclar ambas en una sola bolsa hacía que casi siempre saliera serie,
+     * porque un historial típico genera muchas más recomendaciones de serie
+     * que de película. El botón se desactiva mientras tanto para evitar un
+     * doble clic a media resolución (dos aperturas a la vez). */
+    private fun onSurpriseMeClicked(
+        button: TextView,
+        rowsFor: (RecommendationEngine.Recommendations) -> List<RecommendationEngine.SeedRow>
+    ) {
+        val context = requireContext().applicationContext
+        button.isEnabled = false
+        Toast.makeText(context, R.string.recommendations_surprise_me_loading, Toast.LENGTH_SHORT).show()
+        Thread {
+            val recommendations = RecommendationEngine.compute(context)
+            val pool = rowsFor(recommendations)
+                .flatMap { it.recommendations }
+                .distinctBy { it.mediaPath to it.tmdbId }
+            val pick = pickRandomWeightedByPopularity(pool)
+
+            val match = pick?.let {
+                TmdbClient.resolveCandidate(
+                    context,
+                    TmdbCandidate(it.tmdbId, it.mediaPath, it.title, year = null)
+                )
+            }
+
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                button.isEnabled = true
+                when {
+                    pick == null -> Toast.makeText(
+                        context, R.string.recommendations_surprise_me_not_enough_history, Toast.LENGTH_SHORT
+                    ).show()
+                    match != null -> StremioLauncher.open(context, match)
+                    else -> Toast.makeText(context, R.string.recommendations_surprise_me_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
+    /** De entre los más populares del fondo (no de todo el catálogo — un
+     * título muy de nicho recomendado por popularidad casi nula no suele
+     * ser un buen "sorpréndeme"), elige uno al azar en vez de siempre el
+     * más popular, que sería justo lo contrario de una sorpresa. */
+    private fun pickRandomWeightedByPopularity(
+        pool: List<TmdbClient.TmdbRecommendation>
+    ): TmdbClient.TmdbRecommendation? {
+        if (pool.isEmpty()) return null
+        val topPool = pool.sortedByDescending { it.popularity }.take(SURPRISE_ME_POOL_SIZE)
+        return topPool[Random.nextInt(topPool.size)]
     }
 
     /** El fondo azul de acento marca la pestaña activa (independiente del
@@ -204,5 +268,6 @@ class RecommendationsHomeFragment : Fragment(R.layout.fragment_recommendations_h
         private const val SCROLL_START_DELAY_MS = 2500L
         private const val MS_PER_OVERFLOW_PX = 35L
         private const val MIN_SCROLL_DURATION_MS = 3000L
+        private const val SURPRISE_ME_POOL_SIZE = 20
     }
 }

@@ -147,6 +147,11 @@
     <string name="recommendations_tab_series">Series</string>
     <string name="recommendations_play_trailer">Hay tráiler — mantén pulsada la tarjeta</string>
     <string name="recommendations_trailer_not_found">No hay tráiler disponible para este título</string>
+    <string name="recommendations_surprise_me_movies">Sorpréndeme (películas)</string>
+    <string name="recommendations_surprise_me_series">Sorpréndeme (series)</string>
+    <string name="recommendations_surprise_me_loading">Buscando algo para ti…</string>
+    <string name="recommendations_surprise_me_not_enough_history">Aún no hay suficiente historial — abre algún título primero</string>
+    <string name="recommendations_surprise_me_failed">No se pudo abrir ese título — inténtalo de nuevo</string>
     <string name="main_voice_search_button">Activar búsqueda por voz (experimental)</string>
     <string name="main_voice_search_explainer">Opcional. Ayuda a que las recomendaciones abiertas por búsqueda de voz funcionen en dispositivos donde si no, no funcionarían — en algunos dispositivos (p.ej. TCL) también arregla los clics en la fila mixta de arriba del todo en la pantalla de inicio del launcher, no solo la búsqueda por voz. Mantiene visible una notificación de grabación de pantalla todo el rato mientras esté activado.</string>
     <string name="main_voice_search_enabled">Soporte de búsqueda por voz activado</string>

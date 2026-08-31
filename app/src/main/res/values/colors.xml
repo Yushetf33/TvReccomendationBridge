@@ -23,6 +23,14 @@
     <color name="accent_dim">#3A5CA8</color>
     <color name="success">#4CD964</color>
 
+    <!-- Color propio para los botones "Sorpréndeme" (ver
+         fragment_recommendations_home.xml) — coral cálido a propósito,
+         distinto del azul de acento (que ya significa "esto tiene el foco")
+         y del verde de éxito, para que destaque como algo lúdico/distinto
+         del resto de botones incluso en reposo, no solo al enfocarlo. -->
+    <color name="surprise">#FF7A59</color>
+    <color name="surprise_focused">#FF9A80</color>
+
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#9AA1AC</color>
     <color name="text_tertiary">#6B7280</color>

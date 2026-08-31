@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Igual que bg_button.xml pero en el color "surprise" — coral sólido
+     siempre (no solo al enfocar), para que los botones "Sorpréndeme"
+     destaquen del resto incluso en reposo. Más claro aún al enfocar/pulsar,
+     mismo patrón que el resto de botones. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@drawable/bg_button_surprise_focused" />
+    <item android:state_pressed="true" android:drawable="@drawable/bg_button_surprise_focused" />
+    <item android:drawable="@drawable/bg_button_surprise_default" />
+</selector>

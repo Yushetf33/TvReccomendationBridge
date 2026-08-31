@@ -131,6 +131,7 @@
                 android:id="@+id/tab_series"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 android:background="@drawable/bg_button"
                 android:clickable="true"
                 android:focusable="true"
@@ -140,6 +141,49 @@
                 android:paddingBottom="10dp"
                 android:text="@string/recommendations_tab_series"
                 android:textColor="@color/text_primary"
+                android:textSize="16sp" />
+
+            <!-- Botones "Sorpréndeme" (ver RecommendationsHomeFragment.onSurpriseMeClicked)
+                 — elige al azar una recomendación del mismo fondo ya calculado
+                 por RecommendationEngine (solo películas o solo series, cada
+                 botón con su propia bolsa) y la abre directamente, sin que el
+                 usuario tenga que elegir. Separados en dos botones porque una
+                 sola bolsa mezclando ambos tipos acababa saliendo casi siempre
+                 serie, al haber muchas más recomendaciones de serie que de
+                 película en un historial típico. Viven en la misma fila que
+                 las pestañas para estar siempre accesibles, no dependen de
+                 qué tarjeta esté enfocada. -->
+            <TextView
+                android:id="@+id/surprise_me_movies_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_button_surprise"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/recommendations_surprise_me_movies"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/surprise_me_series_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_surprise"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/recommendations_surprise_me_series"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
                 android:textSize="16sp" />
         </LinearLayout>
 
