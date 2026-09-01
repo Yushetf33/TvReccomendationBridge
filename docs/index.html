@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TvRecommendationBridge — open recommendations in the app you actually want</title>
 <meta name="description" content="TvRecommendationBridge catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1.5' y='1.5' width='27' height='27' rx='8' fill='%230B0D12' stroke='%235B8DEF' stroke-width='2'/%3E%3Cpath d='M12 10.5L20 15L12 19.5V10.5Z' fill='%235B8DEF'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="logo-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="logo-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="logo-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -62,7 +64,7 @@
 <!-- NAV -->
 <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(11,13,18,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #1C1F26;">
   <a href="#top" style="display: flex; align-items: center; gap: 11px;">
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="1.5" y="1.5" width="27" height="27" rx="8" stroke="#5B8DEF" stroke-width="2"/><path d="M12 10.5L20 15L12 19.5V10.5Z" fill="#5B8DEF"/></svg>
+    <img src="logo.png" width="30" height="30" alt="" style="border-radius: 8px; display: block;">
     <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16.5px; letter-spacing: -0.01em; color: #FFFFFF;">TvRecommendationBridge</span>
   </a>
   <div style="display: flex; align-items: center; gap: 28px;">
@@ -393,7 +395,7 @@ adb install app-release.apk</code></pre>
   <div class="wrap col-2" style="display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap: 56px;">
     <div>
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
-        <svg width="22" height="22" viewBox="0 0 30 30" fill="none"><rect x="1.5" y="1.5" width="27" height="27" rx="8" stroke="#5B8DEF" stroke-width="2"/><path d="M12 10.5L20 15L12 19.5V10.5Z" fill="#5B8DEF"/></svg>
+        <img src="logo.png" width="22" height="22" alt="" style="border-radius: 6px; display: block;">
         <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; color: #E8E9EB;">TvRecommendationBridge</span>
       </div>
       <p style="margin: 0 0 14px; color: #6B7280; font-size: 13px; line-height: 1.7;" data-i18n="footer.legal1">Detects certain recommendations shown by the device's launcher, identifies the selected content, and opens its page in a third-party app you've already installed and configured yourself. It does not host, store, distribute, or provide any movies, series, streams, torrents, or other audiovisual content — you're responsible for your own use of the third-party apps it hands off to.</p>
