@@ -4,7 +4,7 @@
 
 App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
-When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, or **Wholphin**, depending on the app configured by the user.
+When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, or **Wholphin**, depending on the app configured by the user. Optionally (off by default), you can set a **different app for movies and for series** instead of one app for everything — Settings → "Always open in" → "Use different apps for movies and series".
 
 TvRecommendationBridge is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
 
