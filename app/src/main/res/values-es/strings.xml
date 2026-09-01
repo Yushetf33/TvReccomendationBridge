@@ -51,6 +51,11 @@
     <string name="match_picker_title">¿Cuál de estos es \"%1$s\"?</string>
     <string name="main_watch_now_confirm">Confirmar antes de abrir (\"Ver ahora\")</string>
     <string name="main_watch_now_confirm_explainer">Opcional. Muestra un botón de confirmación en vez de abrir directo. Descartarlo con Atrás solo lo oculta — reaparece unos segundos después hasta que confirmes o navegues a otra pantalla.</string>
+    <string name="main_per_type_routing">Usar apps distintas para películas y series</string>
+    <string name="main_per_type_routing_explainer">Opcional. Desactivado por defecto — sigue usando la app única de arriba para todo a menos que actives esto.</string>
+    <string name="main_content_type_rules_title">Reglas por tipo de contenido</string>
+    <string name="main_movies_section">Películas</string>
+    <string name="main_series_section">Series</string>
     <string name="watch_now_confirm_message">¿Abrir \"%1$s\"?</string>
     <string name="watch_now_confirm_button">Ver ahora en %1$s</string>
 

@@ -184,4 +184,74 @@ object Preferences {
             .putBoolean(KEY_RECOMMENDATIONS_ENABLED, enabled)
             .apply()
     }
+
+    // Reglas por tipo de contenido (ver ContentTypeRulesStepFragment): apps
+    // distintas para películas y series en vez de una sola para todo —
+    // opt-in y DESACTIVADA por defecto, así que a nadie le cambia el
+    // comportamiento sin pedirlo. Con la regla desactivada, getAppFor sigue
+    // devolviendo getSelectedApp() de siempre (ver StremioLauncher.open,
+    // el único punto real de lectura).
+    private const val KEY_PER_TYPE_ROUTING_ENABLED = "per_type_routing_enabled"
+    private const val KEY_MOVIE_APP = "movie_app"
+    private const val KEY_SERIES_APP = "series_app"
+
+    fun isPerTypeRoutingEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_PER_TYPE_ROUTING_ENABLED, false)
+
+    fun setPerTypeRoutingEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_PER_TYPE_ROUTING_ENABLED, enabled)
+            .apply()
+    }
+
+    /** Si nunca se ha elegido una app de película explícita, cae en la app
+     * general (getSelectedApp) — así activar el interruptor sin tocar nada
+     * más no cambia nada todavía. */
+    fun getMovieApp(context: Context): PlayerApp {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val stored = prefs.getString(KEY_MOVIE_APP, null) ?: return getSelectedApp(context)
+        return try {
+            PlayerApp.valueOf(stored)
+        } catch (e: IllegalArgumentException) {
+            getSelectedApp(context)
+        }
+    }
+
+    fun setMovieApp(context: Context, app: PlayerApp) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_MOVIE_APP, app.name)
+            .apply()
+    }
+
+    /** Mismo fallback que [getMovieApp] pero para series. */
+    fun getSeriesApp(context: Context): PlayerApp {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val stored = prefs.getString(KEY_SERIES_APP, null) ?: return getSelectedApp(context)
+        return try {
+            PlayerApp.valueOf(stored)
+        } catch (e: IllegalArgumentException) {
+            getSelectedApp(context)
+        }
+    }
+
+    fun setSeriesApp(context: Context, app: PlayerApp) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_SERIES_APP, app.name)
+            .apply()
+    }
+
+    /** App efectiva para abrir [type] — respeta las reglas por tipo si
+     * están activas, o cae en la app única de siempre si no. Único punto
+     * que StremioLauncher.open debe consultar en vez de getSelectedApp
+     * directamente. */
+    fun getAppFor(context: Context, type: MediaType): PlayerApp =
+        if (isPerTypeRoutingEnabled(context)) {
+            if (type == MediaType.SERIES) getSeriesApp(context) else getMovieApp(context)
+        } else {
+            getSelectedApp(context)
+        }
 }

@@ -56,6 +56,15 @@ class PlayerAppStepFragment : GuidedStepSupportFragment() {
                 .checked(Preferences.isWatchNowConfirmEnabled(context))
                 .build()
         )
+        actions.add(
+            GuidedAction.Builder(context)
+                .id(ID_PER_TYPE_ROUTING)
+                .title(R.string.main_per_type_routing)
+                .description(R.string.main_per_type_routing_explainer)
+                .checkSetId(GuidedAction.CHECKBOX_CHECK_SET_ID)
+                .checked(Preferences.isPerTypeRoutingEnabled(context))
+                .build()
+        )
     }
 
     override fun onGuidedActionClicked(action: GuidedAction) {
@@ -69,6 +78,15 @@ class PlayerAppStepFragment : GuidedStepSupportFragment() {
             ID_WHOLPHIN -> Preferences.setSelectedApp(context, PlayerApp.WHOLPHIN)
             ID_ASK_AMBIGUOUS -> Preferences.setAskWhenAmbiguousEnabled(context, action.isChecked)
             ID_WATCH_NOW -> Preferences.setWatchNowConfirmEnabled(context, action.isChecked)
+            ID_PER_TYPE_ROUTING -> {
+                Preferences.setPerTypeRoutingEnabled(context, action.isChecked)
+                // Solo tiene sentido elegir las apps de película/serie una
+                // vez activado -- si se acaba de desactivar, no hace falta
+                // ir a esa pantalla (getAppFor ya vuelve a ignorarlas).
+                if (action.isChecked) {
+                    add(parentFragmentManager, ContentTypeRulesStepFragment())
+                }
+            }
         }
     }
 
@@ -81,5 +99,6 @@ class PlayerAppStepFragment : GuidedStepSupportFragment() {
         private const val ID_WHOLPHIN = 8L
         private const val ID_ASK_AMBIGUOUS = 6L
         private const val ID_WATCH_NOW = 7L
+        private const val ID_PER_TYPE_ROUTING = 9L
     }
 }

@@ -46,7 +46,7 @@ object StremioLauncher {
         }
 
         if (tryOpenInPersonalJellyfin(service, match)) return
-        when (val app = Preferences.getSelectedApp(service)) {
+        when (val app = Preferences.getAppFor(service, match.type)) {
             PlayerApp.NUVIO -> {
                 val uri = if (match.type == MediaType.MOVIE) {
                     Uri.parse("nuvio://movie/${match.imdbId}")
