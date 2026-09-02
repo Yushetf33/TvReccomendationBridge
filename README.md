@@ -208,7 +208,9 @@ On some TCL units, background auto-start permissions for third-party
 apps are locked down at the OS level with no toggle exposed anywhere in
 Settings. If the service shows as enabled but silently stops detecting
 clicks after some time, and you can't find any autostart/battery
-exception option for the app, this is likely why.
+exception option for the app, this is likely why — the same
+restriction also affects [detecting what you're watching](#detect-whats-playing-experimental)
+in Nuvio/Stremio/WuPlay, if you've turned that on.
 
 The fix requires ADB access to the TV:
 
@@ -399,11 +401,9 @@ there).
 ### Recommended for you (optional, Google TV only)
 
 Independent of the click-redirect feature above, TvRecommendationBridge
-can build its own "Recommended for you" screen based on what you've
-actually opened through the app — with **Movies** and **Series** tabs
-at the top, each showing up to 5 "Because you watched X" rows, powered
-by TMDB's own recommendation engine (no AI, so it never suggests a
-title that doesn't exist). Turn it on from Settings →
+can build its own screen based on what you've actually opened through
+the app, with four tabs at the top: 🎬 **Movies**, 📺 **Series**, ⭐
+**My list**, and 🕒 **History**. Turn it on from Settings →
 **"Enable 'Recommended for you'"**; once you've opened a few titles,
 it'll show up right when you open the app, or you can jump to it
 anytime with **"View recommendations"**. Tapping a card opens it the
@@ -413,21 +413,65 @@ plays it directly (via TMDB, in your device's language when available)
 in whichever YouTube app you've picked — no separate button to navigate
 to, works on any card regardless of position.
 
-The app also tries to publish this same list as a native row on the
-Android TV home screen (the same mechanism Netflix/HBO use), but many
-Google TV launchers silently refuse to show it — the in-app screen
-above is the reliable way to see it either way.
+Within the **Movies**/**Series** tabs, each shows (when there's enough
+data for it):
 
-Watch history is shared across every device linked to your email (up to
-5, see [Pricing](#pricing) above) — open something on the living room
-TV, and the bedroom TV's recommendations pick up on it too.
+- **Continue watching** — the last things you started, filtered to that
+  tab's type. Requires [detecting what you're watching](#detect-whats-playing-experimental)
+  below. Holding a card here removes it from Continue watching (and
+  History) without touching My list.
+- **Recommended for you** — titles that come up as a recommendation
+  from *two or more* different things in your history at once, a
+  stronger signal than any single "Because you watched X" row below.
+- **Upcoming episodes** (Series only) — a small calendar with the next
+  air date for series in your list or history, pulled from TMDB.
+- Up to 8 **"Because you watched X"** rows, one per recent title,
+  powered by TMDB's own recommendation engine (no AI, so it never
+  suggests a title that doesn't exist).
 
-Two **"Surprise me"** buttons (movies / series) sit next to the tabs —
-pick one and it opens a random title from that same recommendation pool
-directly, no need to browse and choose.
+**My list** saves titles for later — hold down the select button on
+any card, anywhere in the app, to add or remove it. **History** shows
+everything you've opened, grouped as Today / Yesterday / This week /
+Earlier.
+
+The app also tries to publish the "Because you watched X" rows as a
+native row on the Android TV home screen (the same mechanism
+Netflix/HBO use), but many Google TV launchers silently refuse to show
+it — the in-app screen above is the reliable way to see it either way.
+
+Watch history and My list are shared across every device linked to
+your email (up to 5, see [Pricing](#pricing) above) — open something
+on the living room TV, and the bedroom TV picks up on it too.
+
+A single 🎲 **"Surprise me"** button sits next to the tabs — it picks a
+random title from whichever tab (Movies/Series) you're currently on and
+opens it directly, no need to browse and choose. It's hidden on My
+list, where there's no single type to pick from.
 
 Off by default, and needs a few opens before there's anything to
 recommend.
+
+### Detect what's playing (experimental)
+
+A separate, optional toggle — Settings → **"Detect what you're watching
+(experimental)"** — that works with **Nuvio**, **Stremio**, and
+**WuPlay**: it reads what's currently playing in those apps (even if
+you didn't open it through TvRecommendationBridge) to feed **Continue
+watching** and **History** above, and removes the title from **My
+list** automatically once you start it. For series, it also tries to
+work out the season/episode you're on — directly when the source app
+provides it, or by matching the episode's name against TMDB when it
+only gives a title (Stremio).
+
+Needs **notification access** enabled for TvRecommendationBridge (the
+in-app prompt walks you through it) — a system-level permission Android
+requires for any app that reads what's playing in other apps, not
+something specific to this feature.
+
+> **TCL devices:** if this stops working after a while with no obvious
+> cause, it's very likely the same background auto-start restriction as
+> error code **E04** — see [Error codes](#error-codes) above; the fix
+> is the same ADB command, and may need repeating after an app update.
 
 ## Known limitations
 
