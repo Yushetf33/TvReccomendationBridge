@@ -313,6 +313,16 @@ no need to wait 30 days or contact support to free up a slot. Those
 devices also share watch history for **"Recommended for you"** — see
 below.
 
+### Referral program
+
+Settings → Subscription shows your own referral code, right below the
+payment QR codes, plus a field to enter a friend's.
+
+- Share your code. When your friend actually uses the app — opens a
+  recommendation, not just enters the code — **you get +4 trial days**.
+- If they end up buying Lifetime, **you get +15 more days**.
+- Refer **10 friends who buy**, and you get **Lifetime for free**.
+
 ## How it works
 
 On **Google TV**, the launcher exposes the title of each recommendation
