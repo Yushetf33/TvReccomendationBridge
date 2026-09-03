@@ -321,7 +321,8 @@ payment QR codes, plus a field to enter a friend's.
 - Share your code. When your friend actually uses the app — opens a
   recommendation, not just enters the code — **you get +4 trial days**.
 - If they end up buying Lifetime, **you get +15 more days**.
-- Refer **10 friends who buy**, and you get **Lifetime for free**.
+- Refer **10 friends who buy**, and you get **Lifetime for free** — the
+  same screen shows your live progress (e.g. "3/10").
 
 ## How it works
 
