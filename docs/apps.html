@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nuvio, Wuplay, Wholphin &amp; SmartTube on Google TV/Fire TV</title>
+<meta name="description" content="How Nuvio, Wuplay, Stremio, Jellyfin, Wholphin, Plex, SmartTube and TizenTube Cobalt each work with TvRecommendationBridge on Google TV and Fire TV — pick whichever you already use, switch anytime.">
+<link rel="canonical" href="https://yushetf33.github.io/TvReccomendationBridge/apps.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yushetf33.github.io/TvReccomendationBridge/apps.html">
+<meta property="og:site_name" content="TvRecommendationBridge">
+<meta property="og:title" content="Nuvio, Wuplay, Wholphin & SmartTube on Google TV/Fire TV">
+<meta property="og:description" content="How Nuvio, Wuplay, Stremio, Jellyfin, Wholphin, Plex, SmartTube and TizenTube Cobalt each work with TvRecommendationBridge on Google TV and Fire TV — pick whichever you already use, switch anytime.">
+<meta property="og:image" content="https://yushetf33.github.io/TvReccomendationBridge/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nuvio, Wuplay, Wholphin & SmartTube on Google TV/Fire TV">
+<meta name="twitter:description" content="How Nuvio, Wuplay, Stremio, Jellyfin, Wholphin, Plex, SmartTube and TizenTube Cobalt each work with TvRecommendationBridge on Google TV and Fire TV — pick whichever you already use, switch anytime.">
+<meta name="twitter:image" content="https://yushetf33.github.io/TvReccomendationBridge/og-image.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="logo-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="logo-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="logo-180.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does TvRecommendationBridge work with both Nuvio and Wuplay?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Nuvio, Wuplay, and Stremio all work the same way: TvRecommendationBridge identifies the recommended title via TMDB and opens its exact page in whichever of the three you've picked in Settings. You can switch between them at any time." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Wholphin the same as Jellyfin?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — Wholphin is a separate, open-source client app that connects to the same kind of self-hosted Jellyfin server. If you use Jellyfin, you can pick either the official Jellyfin app or Wholphin as your destination." }
+    },
+    {
+      "@type": "Question",
+      "name": "SmartTube or TizenTube Cobalt — which does TvRecommendationBridge support?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Both. On Google TV, YouTube recommendations can be redirected to either SmartTube or TizenTube Cobalt — pick whichever alternative YouTube client you already use." }
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0B0D12; color: #FFFFFF; font-family: "Manrope", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3 { font-family: "Sora", system-ui, sans-serif; margin: 0; }
+  p { margin: 0; }
+  a { color: #5B8DEF; text-decoration: none; }
+  a:hover { color: #86A9F5; text-decoration: underline; }
+  ::selection { background: #5B8DEF; color: #FFFFFF; }
+  img, svg { display: block; }
+
+  .navlink { color: #9AA1AC; text-decoration: none; font-size: 14px; transition: color .15s ease; }
+  .navlink:hover { color: #FFFFFF; text-decoration: none; }
+  .cta-primary { display: inline-flex; align-items: center; gap: 10px; border-radius: 9px; background: #5B8DEF; color: #0B0D12; font-weight: 700; text-decoration: none; transition: background .15s ease; }
+  .cta-primary:hover { background: #6E9CF2; text-decoration: none; }
+  .card { border: 1px solid #262B36; border-radius: 12px; background: #12151C; transition: border-color .15s ease; }
+  .card:hover { border-color: #3A5CA8; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 999px; border: 1px solid #262B36; background: #171B24; font-size: 12.5px; font-weight: 600; color: #B9BCC4; }
+
+  section { padding-left: 40px; padding-right: 40px; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  @media (max-width: 900px) {
+    .nav-links { display: none !important; }
+    .col-2 { grid-template-columns: 1fr !important; }
+    .h1 { font-size: 36px !important; }
+    .h2 { font-size: 26px !important; }
+    section { padding-left: 20px !important; padding-right: 20px !important; }
+  }
+</style>
+</head>
+<body>
+
+<header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(11,13,18,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #1C1F26;">
+  <a href="index.html" style="display: flex; align-items: center; gap: 11px;">
+    <img src="logo.png" width="30" height="30" alt="" style="border-radius: 8px; display: block;">
+    <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16.5px; letter-spacing: -0.01em; color: #FFFFFF;">TvRecommendationBridge</span>
+  </a>
+  <div style="display: flex; align-items: center; gap: 28px;">
+    <nav style="display: flex; align-items: center; gap: 28px;" class="nav-links">
+      <a href="index.html#how" class="navlink">How it works</a>
+      <a href="index.html#pricing" class="navlink">Pricing</a>
+      <a href="index.html#install" class="navlink">Install</a>
+      <a href="install.html" class="navlink">Visual guide</a>
+    </nav>
+    <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" class="cta-primary" style="padding: 9px 18px; font-size: 13.5px; flex-shrink: 0;">Get the APK</a>
+  </div>
+</header>
+
+<section style="padding-top: 72px; padding-bottom: 56px;">
+  <div class="wrap" style="max-width: 820px;">
+    <div style="display: inline-flex; align-items: center; gap: 9px; padding: 6px 13px; border: 1px solid #262B36; border-radius: 999px; background: #12151C; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: #9AA1AC; margin-bottom: 24px;">
+      <span style="width: 6px; height: 6px; border-radius: 50%; background: #4CD964;"></span>Compatibility
+    </div>
+    <h1 class="h1" style="font-weight: 700; font-size: 44px; line-height: 1.12; letter-spacing: -0.03em; color: #FFFFFF; margin: 0 0 20px;">Nuvio, Wuplay, Wholphin, SmartTube — you don't have to pick a favorite</h1>
+    <p style="font-size: 17px; line-height: 1.65; color: #9AA1AC; margin: 0 0 14px; text-wrap: pretty;">TvRecommendationBridge doesn't lock you into one player. Whichever of these you already use — or if you're still deciding between two — it opens the exact recommended title there, every time. Switch apps anytime in Settings, no reinstall needed.</p>
+    <p style="font-size: 14px; line-height: 1.6; color: #6B7280;">Not a review or a "which one is better" — that's genuinely up to your own catalog/UI preference. This page is about what each one does for you <em>with TvRecommendationBridge specifically</em>.</p>
+  </div>
+</section>
+
+<!-- GENERAL STREAMING APPS -->
+<section id="streaming" style="border-top: 1px solid #1C1F26; background: #0E1014; padding-top: 72px; padding-bottom: 72px;">
+  <div class="wrap">
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">General streaming</p>
+    <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 16px;">Nuvio vs Wuplay vs Stremio</h2>
+    <p style="max-width: 44em; color: #9AA1AC; font-size: 16px; line-height: 1.65; margin: 0 0 40px;">All three organize content pulled from installed add-ons into a browsable movies/shows interface for Android TV. From TvRecommendationBridge's side they're functionally identical: a title is identified through TMDB and its exact page opens directly in whichever one you've set as your destination — no searching by name, no guessing.</p>
+    <div class="col-2" style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px;">
+      <div class="card" style="padding: 26px;">
+        <h3 style="font-size: 17px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">Nuvio</h3>
+        <p style="color: #9AA1AC; font-size: 14px; line-height: 1.6; margin: 0 0 14px;">Add-on-based media browser for Android TV. Instant open on Google TV, hold-and-confirm on Fire TV.</p>
+        <span class="pill">Google TV · Fire TV</span>
+      </div>
+      <div class="card" style="padding: 26px;">
+        <h3 style="font-size: 17px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">Wuplay</h3>
+        <p style="color: #9AA1AC; font-size: 14px; line-height: 1.6; margin: 0 0 14px;">Same idea as Nuvio — its own catalog and interface, same instant TMDB-matched open on both platforms.</p>
+        <span class="pill">Google TV · Fire TV</span>
+      </div>
+      <div class="card" style="padding: 26px;">
+        <h3 style="font-size: 17px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">Stremio</h3>
+        <p style="color: #9AA1AC; font-size: 14px; line-height: 1.6; margin: 0 0 14px;">The best-known of the three, cross-platform beyond just Android TV. Same integration either way.</p>
+        <span class="pill">Google TV · Fire TV</span>
+      </div>
+    </div>
+    <div style="margin-top: 22px; padding: 16px 20px; border-radius: 10px; background: #171B24; border: 1px solid #262B36;">
+      <p style="color: #6B7280; font-size: 13.5px; line-height: 1.6;">Using an outdated or unofficial build of Nuvio/Stremio? A recommendation click opening the app but landing nowhere is almost always that — updating to the latest build fixes it. See the <a href="https://github.com/Yushetf33/TvReccomendationBridge#e03--service-is-enabled-but-tapping-a-recommendation-doesnt-open-nuviostremio">troubleshooting guide</a> for details.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SELF-HOSTED -->
+<section id="jellyfin" style="padding-top: 72px; padding-bottom: 72px;">
+  <div class="wrap">
+    <div class="col-2" style="display: grid; grid-template-columns: minmax(0,0.9fr) minmax(0,1fr); gap: 48px; align-items: center;">
+      <div>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;">Your own server</p>
+        <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 16px; line-height: 1.2;">Jellyfin vs Wholphin</h2>
+        <p style="color: #9AA1AC; font-size: 16px; line-height: 1.65; margin: 0 0 16px;">Jellyfin is free, open-source, self-hosted media server software — you run it on your own hardware and it organizes your own library. <strong style="color: #E8E9EB;"><a href="https://github.com/damontecres/Wholphin">Wholphin</a></strong> isn't a different server, it's a separate open-source <em>client</em> app that connects to that same kind of Jellyfin server — pick either one as your destination.</p>
+        <p style="color: #9AA1AC; font-size: 16px; line-height: 1.65; margin: 0;">Because a self-hosted library has no universal catalog to link to directly, TvRecommendationBridge can optionally check <strong style="color: #E8E9EB;">your own server first</strong> — if the recommendation is already in your library, it opens straight to that exact title, no search needed. If it's not there, it falls back to your regular destination app.</p>
+      </div>
+      <div class="card" style="padding: 30px;">
+        <p style="margin: 0 0 18px; color: #E8E9EB; font-size: 15px; font-weight: 600;">Settings → "Check my Jellyfin first"</p>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; gap: 12px;"><span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; background: #171B24; border: 1px solid #262B36; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B8DEF;">1</span><p style="color: #B9BCC4; font-size: 14px; line-height: 1.5;">Enter your server URL and an API key from your admin dashboard</p></div>
+          <div style="display: flex; gap: 12px;"><span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; background: #171B24; border: 1px solid #262B36; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B8DEF;">2</span><p style="color: #B9BCC4; font-size: 14px; line-height: 1.5;">In your library → opens that exact title, in Wholphin or Jellyfin (your pick)</p></div>
+          <div style="display: flex; gap: 12px;"><span style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; background: #171B24; border: 1px solid #262B36; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B8DEF;">3</span><p style="color: #B9BCC4; font-size: 14px; line-height: 1.5;">Not there → falls back to Nuvio/Stremio/Wuplay/Plex as usual</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLEX -->
+<section id="plex" style="border-top: 1px solid #1C1F26; background: #0E1014; padding-top: 72px; padding-bottom: 72px;">
+  <div class="wrap">
+    <div class="col-2" style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,0.8fr); gap: 48px; align-items: center;">
+      <div>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #E5A00D; margin: 0 0 14px;">Free catalog</p>
+        <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 16px;">Plex</h2>
+        <p style="color: #9AA1AC; font-size: 16px; line-height: 1.65;">Plex works two ways here: as your own media server (same idea as Jellyfin, if that's how you use it), or through Plex's own free, ad-supported streaming catalog — no server of your own required. Either way, TMDB matching opens the exact recommended title directly.</p>
+      </div>
+      <div class="card" style="padding: 28px;">
+        <span class="pill" style="background: rgba(229,160,13,0.1); border-color: rgba(229,160,13,0.35); color: #E5A00D;">Google TV · Fire TV</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YOUTUBE -->
+<section id="youtube" style="padding-top: 72px; padding-bottom: 88px;">
+  <div class="wrap">
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #CC1F2D; margin: 0 0 14px;">YouTube redirect</p>
+    <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 16px;">SmartTube vs TizenTube Cobalt</h2>
+    <p style="max-width: 44em; color: #9AA1AC; font-size: 16px; line-height: 1.65; margin: 0 0 32px;">A separate toggle from your movies/shows player: YouTube recommendations on Google TV can be sent to <strong style="color: #E8E9EB;"><a href="https://github.com/yuliskov/SmartTube">SmartTube</a></strong> or <strong style="color: #E8E9EB;"><a href="https://github.com/reisxd/TizenTubeCobalt">TizenTube Cobalt</a></strong> instead of the stock YouTube app — pick whichever alternative client you already have installed. Fire TV isn't supported for this one; it's Google TV only.</p>
+    <div class="col-2" style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; max-width: 700px;">
+      <div class="card" style="padding: 26px;">
+        <h3 style="font-size: 17px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">SmartTube</h3>
+        <p style="color: #9AA1AC; font-size: 14px; line-height: 1.6;">Open-source YouTube client built for Android TV.</p>
+      </div>
+      <div class="card" style="padding: 26px;">
+        <h3 style="font-size: 17px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;">TizenTube Cobalt</h3>
+        <p style="color: #9AA1AC; font-size: 14px; line-height: 1.6;">Another open-source alternative YouTube client, same redirect support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="border-top: 1px solid #1C1F26; background: #0E1014; padding-top: 72px; padding-bottom: 88px;">
+  <div class="wrap">
+    <div style="border: 1px solid #262B36; border-radius: 16px; background: #12151C; padding: 40px 44px; display: flex; gap: 40px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+      <div style="max-width: 32em;">
+        <h2 class="h2" style="font-weight: 700; font-size: 24px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 10px;">Pick one, several, or switch later</h2>
+        <p style="color: #9AA1AC; font-size: 15px; line-height: 1.6;">Whichever of these you're already using, TvRecommendationBridge works with it today. Changing your mind later is a Settings toggle, not a reinstall.</p>
+      </div>
+      <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" class="cta-primary" style="flex-shrink: 0; padding: 15px 28px; font-size: 15.5px;">Download the APK</a>
+    </div>
+  </div>
+</section>
+
+<footer style="border-top: 1px solid #1C1F26; background: #0E1014; padding: 40px 40px 56px;">
+  <div class="wrap">
+    <p style="margin: 0 0 10px; color: #6B7280; font-size: 13px; line-height: 1.7;">TvRecommendationBridge is an independent automation and redirection tool. It does not host, store, distribute, or provide any movies, series, streams, or other audiovisual content.</p>
+    <p style="margin: 0 0 20px; color: #6B7280; font-size: 13px; line-height: 1.7;">Not affiliated with, sponsored by, or endorsed by Nuvio, Wuplay, Stremio, Plex, Jellyfin, Wholphin, SmartTube, or TizenTube Cobalt — those names are trademarks of their respective owners.</p>
+    <a href="index.html" style="font-size: 14px;">← Back to TvRecommendationBridge</a>
+  </div>
+</footer>
+
+</body>
+</html>
