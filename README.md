@@ -302,9 +302,11 @@ it first:
 | Lifetime | €4.99 one-time |
 
 Inside the app you'll see a QR code for each — scan it with your
-phone and pay using the same email you'll later enter on the TV (card,
-Google Pay, Apple Pay... whatever the payment page offers). Once paid,
-go back to the app, enter that email, and tap **"Verify subscription"**.
+phone and pay (card, Google Pay, Apple Pay... whatever the payment page
+offers). The TV picks it up on its own within a few seconds, no need to
+come back and type anything. If that doesn't happen for some reason,
+you can always enter the email you paid with by hand and tap **"Verify
+subscription"** instead.
 
 The same email can be linked to up to **5 devices** at once (in case you
 have several TVs at home). From the app, tap **"Manage devices"** to see
