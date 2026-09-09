@@ -103,6 +103,7 @@
       <a href="#firetv" class="navlink">Fire TV</a>
       <a href="#pricing" class="navlink" data-i18n="nav.pricing">Pricing</a>
       <a href="#install" class="navlink" data-i18n="nav.install">Install</a>
+      <a href="#mobile" class="navlink" data-i18n="nav.mobile">Mobile app</a>
       <a href="apps.html" class="navlink" data-i18n="nav.apps">Compatible apps</a>
       <a href="install.html" class="navlink" data-i18n="nav.guide">Visual guide</a>
     </nav>
@@ -271,6 +272,30 @@
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #262B36; display: flex; align-items: center; gap: 12px;">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <p style="color: #9AA1AC; font-size: 13.5px;" data-i18n="match.note">Recommended again later — opens the 2021 pick directly, no question shown</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOBILE APP -->
+<section id="mobile" style="border-top: 1px solid #1C1F26; padding-top: 96px; padding-bottom: 96px;">
+  <div class="wrap">
+    <div class="col-2" style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,0.8fr); gap: 56px; align-items: center;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 9px; padding: 6px 13px; border: 1px solid #262B36; border-radius: 999px; background: #12151C; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: #9AA1AC; margin-bottom: 22px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #4CD964;"></span><span data-i18n="mobile.eyebrow">New: phone &amp; tablet</span>
+        </div>
+        <h2 class="h2" style="font-weight: 700; font-size: 34px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 20px; line-height: 1.15;" data-i18n="mobile.h2">Take your recommendations to your phone</h2>
+        <p style="margin: 0 0 18px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;" data-i18n="mobile.p1">A companion app for Android phones and tablets — same account, same watch history and recommendations shared with your TV. Browse Movies, Series and My list, and tap a title to open it directly in Nuvio, Stremio, WuPlay, Plex, Jellyfin or Wholphin on your phone.</p>
+        <p style="margin: 0 0 30px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;" data-i18n="mobile.p2">Not on Google Play yet — early build, sideloaded the same way as the TV app. Same free trial and one-time payment, verified with the same email.</p>
+        <a href="https://github.com/Yushetf33/TvRecommendationBridge-mobile-public/releases/latest" class="cta-primary" style="padding: 15px 28px; font-size: 15.5px;" data-i18n="cta.download_mobile">Download the APK</a>
+      </div>
+      <div style="border: 1px solid #262B36; border-radius: 16px; background: #12151C; padding: 28px;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;" data-i18n="mobile.b1">Movies, Series, My list and full History — same as on the TV</p></div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;" data-i18n="mobile.b2">Same account: verify once, watch history syncs both ways</p></div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;" data-i18n="mobile.b3">A phone/tablet counts separately from your TVs — doesn't use up a TV device slot</p></div>
         </div>
       </div>
     </div>
@@ -472,7 +497,16 @@ adb install app-release.apk</code></pre>
     "nav.install": "Instalación",
     "nav.guide": "Guía visual",
     "nav.apps": "Apps compatibles",
+    "nav.mobile": "App de móvil",
     "cta.download": "Descargar el APK",
+    "cta.download_mobile": "Descargar el APK",
+    "mobile.eyebrow": "Novedad: móvil y tablet",
+    "mobile.h2": "Lleva tus recomendaciones al móvil",
+    "mobile.p1": "Una app complementaria para móviles y tablets Android — misma cuenta, mismo historial y recomendaciones compartidas con tu TV. Navega por Películas, Series y Mi lista, y toca un título para abrirlo directamente en Nuvio, Stremio, WuPlay, Plex, Jellyfin o Wholphin en tu móvil.",
+    "mobile.p2": "Todavía no está en Google Play — build inicial, se instala igual que la app de TV. Misma prueba gratis y pago único, verificado con el mismo email.",
+    "mobile.b1": "Películas, Series, Mi lista e Historial completo — igual que en la TV",
+    "mobile.b2": "Misma cuenta: verifica una vez, el historial se sincroniza en ambos sentidos",
+    "mobile.b3": "Un móvil/tablet cuenta aparte de tus TVs — no gasta hueco de dispositivo de TV",
     "cta.see": "Ver cómo funciona",
     "hero.eyebrow": "Google TV y Fire TV",
     "hero.h1": "La recomendación es la correcta.<br>La app, la equivocada — siempre.",
