@@ -326,6 +326,12 @@ payment QR codes, plus a field to enter a friend's.
 - Refer **10 friends who buy**, and you get **Lifetime for free** — the
   same screen shows your live progress (e.g. "3/10").
 
+## Mobile companion app
+
+There's also a phone/tablet app — same account, same watch history and My list shared with your TVs. 📦 **[Download it here](https://github.com/Yushetf33/TvRecommendationBridge-mobile-public/releases/latest)**.
+
+From its detail screen, if a phone/tablet is linked to the same account as a TV, you can tap **"Send to TV"** to open a title there directly — no need to touch the TV at all, as long as it's powered on and TvRecommendationBridge is running (it checks for anything sent to it automatically, roughly every 5 seconds).
+
 ## How it works
 
 On **Google TV**, the launcher exposes the title of each recommendation
