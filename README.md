@@ -1,25 +1,25 @@
-# TvRecommendationBridge
+# WatchBridge TV
 
 🌐 **[Official site](https://yushetf33.github.io/TvReccomendationBridge/)** — a friendlier overview than this README, if that's more your speed.
 
 App for Android TV / Google TV that lets you customize how recommendations behave on the Google TV launcher.
 
-When the user selects a compatible movie or show card, TvRecommendationBridge identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, or **Wholphin**, depending on the app configured by the user. Optionally (off by default), you can set a **different app for movies and for series** instead of one app for everything — Settings → "Always open in" → "Use different apps for movies and series".
+When the user selects a compatible movie or show card, WatchBridge TV identifies the content and lets you open its page in **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, or **Wholphin**, depending on the app configured by the user. Optionally (off by default), you can set a **different app for movies and for series** instead of one app for everything — Settings → "Always open in" → "Use different apps for movies and series".
 
-TvRecommendationBridge is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
+WatchBridge TV is an independent automation and redirection tool. **It does not host, store, distribute, or provide movies, series, streams, torrents, or any other audiovisual content.** It has no relationship with Nuvio, Stremio, or the origin or legality of any content the user accesses through those apps — that depends entirely on which apps and add-ons each user has installed and configured, under their own responsibility.
 
 ## Requirements
 
 - A device with the **Google TV** launcher (Chromecast with Google TV, or Google TV editions from Sony, TCL, Hisense, etc.), **or a Fire TV device** (Fire TV Stick, Fire TV Cube, etc.) — Fire TV works differently under the hood, see [Fire TV](#fire-tv) below.
 - **Nuvio**, **Stremio**, **WuPlay**, **Plex**, **Jellyfin**, and/or **[Wholphin](https://github.com/damontecres/Wholphin)** installed on the device — pick whichever you want recommendations to open in.
 - **SmartTube** installed (optional, Google TV only) if you want YouTube recommendations redirected there too — see [How it works](#how-it-works).
-- An active TvRecommendationBridge license (see [Pricing](#pricing) below).
+- An active WatchBridge TV license (see [Pricing](#pricing) below).
 
 > **Note:** support for Android TV launchers other than Google TV's and Amazon's own Fire TV launcher is not planned.
 
 ## Installation
 
-TvRecommendationBridge is not currently distributed through Google Play. The app is installed manually ("sideloaded") using the APK file available in this repository's releases section.
+WatchBridge TV is not currently distributed through Google Play. The app is installed manually ("sideloaded") using the APK file available in this repository's releases section.
 
 👉 **[Visual step-by-step install guide](https://yushetf33.github.io/TvReccomendationBridge/install.html)** — the same steps below, laid out more clearly.
 
@@ -64,7 +64,7 @@ last confirmation for anything installed outside Google Play).
 
 ### Activating the service
 
-Once installed, open the **TvRecommendationBridge** app from the TV's
+Once installed, open the **WatchBridge TV** app from the TV's
 launcher and tap **"Enable the service in Accessibility"** (it will take
 you straight to the right screen). Enable it there.
 
@@ -98,7 +98,7 @@ itself back off right after you enable it (sometimes right away,
 sometimes a few seconds later, with no warning), this is why.
 
 On some devices, you can lift this from **Settings → Apps →
-TvRecommendationBridge → app info screen**, look for an option along the
+WatchBridge TV → app info screen**, look for an option along the
 lines of "Allow restricted setting" (its exact wording and location
 varies by device — Google TV's Settings UI isn't consistent about this
 across manufacturers). If you find it, enable it, then go back into
@@ -253,7 +253,7 @@ asked for two permissions, once:
    dialog). While active, Android shows a persistent notification —
    that's expected and can't be hidden.
 2. **Usage access**: Settings → Apps → Special app access → Usage
-   access → TvRecommendationBridge → enable it.
+   access → WatchBridge TV → enable it.
 
 ### Known Fire TV limitations
 
@@ -292,7 +292,7 @@ which is why this is opt-in rather than always on.
 
 ## Pricing
 
-TvRecommendationBridge requires a one-time payment to work — not a
+WatchBridge TV requires a one-time payment to work — not a
 subscription, you pay once and it's yours — with a free trial to test
 it first:
 
@@ -330,7 +330,7 @@ payment QR codes, plus a field to enter a friend's.
 
 There's also a phone/tablet app — same account, same watch history and My list shared with your TVs. 📦 **[Download it here](https://github.com/Yushetf33/TvRecommendationBridge-mobile-public/releases/latest)**.
 
-From its detail screen, if a phone/tablet is linked to the same account as a TV, you can tap **"Send to TV"** to open a title there directly — no need to touch the TV at all, as long as it's powered on and TvRecommendationBridge is running (it checks for anything sent to it automatically, roughly every 5 seconds).
+From its detail screen, if a phone/tablet is linked to the same account as a TV, you can tap **"Send to TV"** to open a title there directly — no need to touch the TV at all, as long as it's powered on and WatchBridge TV is running (it checks for anything sent to it automatically, roughly every 5 seconds).
 
 ## How it works
 
@@ -345,7 +345,7 @@ On **Fire TV** it works a bit differently — see the [Fire TV](#fire-tv) sectio
 Recommendations opened via voice search on Google TV need a separate,
 optional feature to be turned on first — see [Voice search](#voice-search-google-tv) above.
 
-If the app you've chosen isn't installed, TvRecommendationBridge takes
+If the app you've chosen isn't installed, WatchBridge TV takes
 you straight to its Play Store listing instead of doing nothing.
 
 For Plex specifically, this only works for titles available in Plex's
@@ -358,14 +358,14 @@ Jellyfin and **[Wholphin](https://github.com/damontecres/Wholphin)**
 other three: since Jellyfin is self-hosted, there's no universal ID or
 shared catalog to link to either — each user's server has its own
 library with its own internal IDs. Instead of opening straight to the
-title's page, TvRecommendationBridge opens whichever of the two you've
+title's page, WatchBridge TV opens whichever of the two you've
 picked with a **search** for that title already triggered, so you land
 on the search results instead of the exact page.
 
 ### Check my Jellyfin first (optional)
 
 Independent of whichever app you've picked above as your main
-destination, you can optionally have TvRecommendationBridge check your
+destination, you can optionally have WatchBridge TV check your
 own Jellyfin server **first** — if a recommendation is already in your
 personal library, it opens straight to that title's page (no search
 needed) instead of going to Nuvio/Stremio/WuPlay/Plex; if it's not
@@ -398,7 +398,7 @@ lose it for good. Off by default.
 ### Ambiguous matches
 
 When a search turns up two or more titles with the **exact same name**
-but different years (a remake, for example), TvRecommendationBridge
+but different years (a remake, for example), WatchBridge TV
 now asks which one you meant instead of guessing — Settings →
 **"Ask when a match is ambiguous"** (on by default, turn it off if
 you'd rather it always pick automatically).
@@ -419,7 +419,7 @@ there).
 
 ### Recommended for you (optional, Google TV only)
 
-Independent of the click-redirect feature above, TvRecommendationBridge
+Independent of the click-redirect feature above, WatchBridge TV
 can build its own screen based on what you've actually opened through
 the app, with four tabs at the top: 🎬 **Movies**, 📺 **Series**, ⭐
 **My list**, and 🕒 **History**. Turn it on from Settings →
@@ -475,14 +475,14 @@ recommend.
 A separate, optional toggle — Settings → **"Detect what you're watching
 (experimental)"** — that works with **Nuvio**, **Stremio**, and
 **WuPlay**: it reads what's currently playing in those apps (even if
-you didn't open it through TvRecommendationBridge) to feed **Continue
+you didn't open it through WatchBridge TV) to feed **Continue
 watching** and **History** above, and removes the title from **My
 list** automatically once you start it. For series, it also tries to
 work out the season/episode you're on — directly when the source app
 provides it, or by matching the episode's name against TMDB when it
 only gives a title (Stremio).
 
-Needs **notification access** enabled for TvRecommendationBridge (the
+Needs **notification access** enabled for WatchBridge TV (the
 in-app prompt walks you through it) — a system-level permission Android
 requires for any app that reads what's playing in other apps, not
 something specific to this feature.
@@ -503,7 +503,7 @@ something specific to this feature.
   nothing happens — there's no fallback to another app.
 - If you've chosen Jellyfin, you land on a search results page, not the
   exact title — search accuracy depends on how closely your library's
-  naming matches the title TvRecommendationBridge found.
+  naming matches the title WatchBridge TV found.
 - The YouTube redirect only works for rows with their own YouTube
   branding (e.g. "Recommended videos", "Tourist destinations"). Videos
   that show up mixed into "Recommended for you" open the regular
@@ -512,23 +512,23 @@ something specific to this feature.
 
 ## Legal notice
 
-TvRecommendationBridge is an independent navigation and automation tool for Android TV / Google TV devices.
+WatchBridge TV is an independent navigation and automation tool for Android TV / Google TV devices.
 
 The app does not host, store, distribute, or provide movies, series, streams, torrents, or audiovisual content sources.
 
 Its function is limited to detecting certain recommendations shown by the Google TV launcher, identifying the selected content, and facilitating the opening of its page through third-party apps installed and configured by the user.
 
-TvRecommendationBridge does not provide or control the content sources available within those apps.
+WatchBridge TV does not provide or control the content sources available within those apps.
 
 The user is responsible for their use of third-party apps, and for making sure that use complies with applicable law and the corresponding terms of service.
 
-TvRecommendationBridge is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, Stremio, WuPlay, or Wholphin.
+WatchBridge TV is not affiliated with, sponsored by, authorized by, or endorsed by Google, Google TV, Nuvio, Stremio, WuPlay, or Wholphin.
 
 Google, Google TV, Android TV, Nuvio, Stremio, WuPlay, and Wholphin are trademarks or products of their respective owners.
 
 ## Credits
 
-TvRecommendationBridge uses the **The Movie Database (TMDB)** API to identify movies and shows.
+WatchBridge TV uses the **The Movie Database (TMDB)** API to identify movies and shows.
 
 <img src="https://www.themoviedb.org/assets/v4/logos/v2/blue_long_2-9665a76b1ae401a510ec1e0ca40ddcb3b0cfe45f1d51b77a308fea0845885648.svg" alt="TMDB" width="180">
 

@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TvRecommendationBridge — open recommendations in the app you actually want</title>
-<meta name="description" content="TvRecommendationBridge catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.">
+<title>WatchBridge — open recommendations in the app you actually want</title>
+<meta name="description" content="WatchBridge TV catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.">
 <link rel="canonical" href="https://yushetf33.github.io/TvReccomendationBridge/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://yushetf33.github.io/TvReccomendationBridge/">
-<meta property="og:site_name" content="TvRecommendationBridge">
-<meta property="og:title" content="TvRecommendationBridge — open recommendations in the app you actually want">
+<meta property="og:site_name" content="WatchBridge">
+<meta property="og:title" content="WatchBridge — open recommendations in the app you actually want">
 <meta property="og:description" content="Catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.">
 <meta property="og:image" content="https://yushetf33.github.io/TvReccomendationBridge/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="TvRecommendationBridge — open recommendations in the app you actually want">
+<meta name="twitter:title" content="WatchBridge — open recommendations in the app you actually want">
 <meta name="twitter:description" content="Catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.">
 <meta name="twitter:image" content="https://yushetf33.github.io/TvReccomendationBridge/og-image.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="logo-32.png">
@@ -24,7 +24,7 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "TvRecommendationBridge",
+  "name": "WatchBridge TV",
   "url": "https://yushetf33.github.io/TvReccomendationBridge/",
   "image": "https://yushetf33.github.io/TvReccomendationBridge/og-image.jpg",
   "description": "Catches a Google TV / Fire TV recommendation click and opens it in Nuvio, Stremio, Plex, Jellyfin, WuPlay, or Wholphin — whichever you picked. Native Fire TV support, no root required.",
@@ -95,7 +95,7 @@
 <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(11,13,18,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #1C1F26;">
   <a href="#top" style="display: flex; align-items: center; gap: 11px;">
     <img src="logo.png" width="30" height="30" alt="" style="border-radius: 8px; display: block;">
-    <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16.5px; letter-spacing: -0.01em; color: #FFFFFF;">TvRecommendationBridge</span>
+    <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16.5px; letter-spacing: -0.01em; color: #FFFFFF;">WatchBridge</span>
   </a>
   <div style="display: flex; align-items: center; gap: 28px;">
     <nav style="display: flex; align-items: center; gap: 28px;" class="nav-links">
@@ -120,7 +120,7 @@
           <span style="width: 6px; height: 6px; border-radius: 50%; background: #4CD964;"></span><span data-i18n="hero.eyebrow">Google TV &amp; Fire TV</span>
         </div>
         <h1 class="h1" style="font-weight: 700; font-size: 52px; line-height: 1.05; letter-spacing: -0.03em; color: #FFFFFF; margin: 0 0 22px;" data-i18n="hero.h1">Right recommendation.<br>Wrong app — every time.</h1>
-        <p style="font-size: 18px; line-height: 1.58; color: #9AA1AC; max-width: 32em; margin: 0 0 30px; text-wrap: pretty;" data-i18n="hero.sub">Google TV suggests a movie and opens whatever streaming app it happened to come from. TvRecommendationBridge catches that click and sends it straight to the player you actually chose.</p>
+        <p style="font-size: 18px; line-height: 1.58; color: #9AA1AC; max-width: 32em; margin: 0 0 30px; text-wrap: pretty;" data-i18n="hero.sub">Google TV suggests a movie and opens whatever streaming app it happened to come from. WatchBridge TV catches that click and sends it straight to the player you actually chose.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 34px;">
           <a href="https://github.com/Yushetf33/TvReccomendationBridge/releases/latest" class="cta-primary" style="padding: 15px 26px; font-size: 15.5px;">
             <span data-i18n="cta.download">Download the APK</span>
@@ -201,12 +201,12 @@
   <div class="wrap">
     <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;" data-i18n="nav.how">How it works</p>
     <h2 class="h2" style="font-weight: 700; font-size: 34px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 18px;" data-i18n="how.h2">One narrow job, done carefully</h2>
-    <p style="max-width: 44em; color: #9AA1AC; font-size: 16.5px; line-height: 1.6; margin: 0 0 44px; text-wrap: pretty;" data-i18n="how.intro">Android's Accessibility API lets an app observe what's on screen for assistive purposes. TvRecommendationBridge uses it narrowly — watching only for clicks on the launcher's recommendation cards. Every other click, app icons, menus, anything that isn't a recommendation, is left completely alone.</p>
+    <p style="max-width: 44em; color: #9AA1AC; font-size: 16.5px; line-height: 1.6; margin: 0 0 44px; text-wrap: pretty;" data-i18n="how.intro">Android's Accessibility API lets an app observe what's on screen for assistive purposes. WatchBridge TV uses it narrowly — watching only for clicks on the launcher's recommendation cards. Every other click, app icons, menus, anything that isn't a recommendation, is left completely alone.</p>
     <div class="col-3" style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px;">
       <div class="card" style="padding: 28px;">
         <div style="width: 38px; height: 38px; border-radius: 9px; background: rgba(91,141,239,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;"><svg width="19" height="19" viewBox="0 0 19 19" fill="none"><path d="M4 4L15 8L10 10L8 15L4 4Z" stroke="#5B8DEF" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
         <h3 style="font-size: 18.5px; margin: 0 0 10px; font-weight: 600; color: #FFFFFF;" data-i18n="how.s1title">Catch the click</h3>
-        <p style="color: #9AA1AC; font-size: 15px; line-height: 1.6;" data-i18n="how.s1body">You select a recommendation. TvRecommendationBridge sees that click's payload — nothing else on screen.</p>
+        <p style="color: #9AA1AC; font-size: 15px; line-height: 1.6;" data-i18n="how.s1body">You select a recommendation. WatchBridge TV sees that click's payload — nothing else on screen.</p>
       </div>
       <div class="card" style="padding: 28px;">
         <div style="width: 38px; height: 38px; border-radius: 9px; background: rgba(91,141,239,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;"><svg width="19" height="19" viewBox="0 0 19 19" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#5B8DEF" stroke-width="1.6"/><path d="M12.5 12.5L16.5 16.5" stroke="#5B8DEF" stroke-width="1.6" stroke-linecap="round"/></svg></div>
@@ -230,7 +230,7 @@
         <div style="display: inline-flex; align-items: center; gap: 9px; padding: 6px 13px; border: 1px solid rgba(255,138,61,0.35); border-radius: 999px; background: rgba(255,138,61,0.08); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: #FF8A3D; margin-bottom: 22px;" data-i18n="firetv.eyebrow">Fire TV mode</div>
         <h2 class="h2" style="font-weight: 700; font-size: 36px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 20px; line-height: 1.15;" data-i18n="firetv.h2">Fire OS blocks this for every sideloaded app. We built around it anyway.</h2>
         <p style="margin: 0 0 18px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;" data-i18n="firetv.p1">Fire OS disables the standard Android Accessibility method for any app not installed from the Amazon Appstore — the same method every recommendation-redirect app depends on. The usual workaround is temporarily rooting your Fire TV Stick and replacing Fire OS's own launcher with Google TV's.</p>
-        <p style="margin: 0 0 30px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;" data-i18n="firetv.p2">TvRecommendationBridge doesn't ask you to do any of that. Fire TV mode reads the recommendation's title straight off the screen using on-device text recognition — nothing recorded leaves the device. Grant Usage access and a one-time screen-recording permission, and it runs from your actual Fire TV home screen, no root, no launcher swap.</p>
+        <p style="margin: 0 0 30px; color: #B9BCC4; font-size: 16.5px; line-height: 1.65; text-wrap: pretty;" data-i18n="firetv.p2">WatchBridge TV doesn't ask you to do any of that. Fire TV mode reads the recommendation's title straight off the screen using on-device text recognition — nothing recorded leaves the device. Grant Usage access and a one-time screen-recording permission, and it runs from your actual Fire TV home screen, no root, no launcher swap.</p>
         <div style="display: flex; flex-direction: column; gap: 14px;">
           <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;" data-i18n="firetv.b1">No root, no replacing Fire OS's launcher</p></div>
           <div style="display: flex; align-items: flex-start; gap: 12px;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink: 0; margin-top: 2px;"><path d="M3.5 9.5L7 13L14.5 4.5" stroke="#4CD964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="color: #E8E9EB; font-size: 14.5px; line-height: 1.55;" data-i18n="firetv.b2">Text recognition runs on-device — nothing uploaded</p></div>
@@ -259,7 +259,7 @@
       <div>
         <p style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #5B8DEF; margin: 0 0 14px;" data-i18n="match.eyebrow">Matching</p>
         <h2 class="h2" style="font-weight: 700; font-size: 32px; letter-spacing: -0.02em; color: #FFFFFF; margin: 0 0 18px; line-height: 1.2;" data-i18n="match.h2">Asks once. Never asks again.</h2>
-        <p style="margin: 0 0 16px; color: #9AA1AC; font-size: 16px; line-height: 1.65; text-wrap: pretty;" data-i18n="match.p1">When two titles share an exact name but not a year — a remake, say — TvRecommendationBridge asks which one you meant instead of guessing.</p>
+        <p style="margin: 0 0 16px; color: #9AA1AC; font-size: 16px; line-height: 1.65; text-wrap: pretty;" data-i18n="match.p1">When two titles share an exact name but not a year — a remake, say — WatchBridge TV asks which one you meant instead of guessing.</p>
         <p style="margin: 0 0 16px; color: #9AA1AC; font-size: 16px; line-height: 1.65; text-wrap: pretty;" data-i18n="match.p2">Pick once, and it's remembered: the same title never has to ask twice. And when one candidate is obviously the popular pick — a new release next to a decades-old obscurity — it skips the question entirely.</p>
         <p style="color: #6B7280; font-size: 14px; line-height: 1.6;" data-i18n="match.p3">Turn it off from Settings → "Ask when a match is ambiguous" if you'd rather it always pick automatically.</p>
       </div>
@@ -463,7 +463,7 @@ adb install app-release.apk</code></pre>
     <div>
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
         <img src="logo.png" width="22" height="22" alt="" style="border-radius: 6px; display: block;">
-        <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; color: #E8E9EB;">TvRecommendationBridge</span>
+        <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; color: #E8E9EB;">WatchBridge</span>
       </div>
       <p style="margin: 0 0 14px; color: #6B7280; font-size: 13px; line-height: 1.7;" data-i18n="footer.legal1">Detects certain recommendations shown by the device's launcher, identifies the selected content, and opens its page in a third-party app you've already installed and configured yourself. It does not host, store, distribute, or provide any movies, series, streams, torrents, or other audiovisual content — you're responsible for your own use of the third-party apps it hands off to.</p>
       <p style="color: #6B7280; font-size: 13px; line-height: 1.7;" data-i18n="footer.legal2">Not affiliated with, sponsored by, or endorsed by Google, Google TV, Amazon, Fire TV, Nuvio, Stremio, WuPlay, Plex, Jellyfin, or Wholphin — those names are trademarks of their respective owners.</p>
@@ -512,7 +512,7 @@ adb install app-release.apk</code></pre>
     "cta.see": "Ver cómo funciona",
     "hero.eyebrow": "Google TV y Fire TV",
     "hero.h1": "La recomendación es la correcta.<br>La app, la equivocada — siempre.",
-    "hero.sub": "Google TV te recomienda una película y la abre en la app de streaming de la que vino, no en la que tú usas. TvRecommendationBridge intercepta ese clic y la manda directa a la app que elegiste.",
+    "hero.sub": "Google TV te recomienda una película y la abre en la app de streaming de la que vino, no en la que tú usas. WatchBridge TV intercepta ese clic y la manda directa a la app que elegiste.",
     "stats.apps": "apps compatibles",
     "stats.onetime": "pago único, no es suscripción",
     "stats.devices": "dispositivos por licencia",
@@ -529,9 +529,9 @@ adb install app-release.apk</code></pre>
     "demo.step3sub": "la app que elegiste en Ajustes",
     "strip.title": "Se abre directo en la que tú uses",
     "how.h2": "Un trabajo concreto, hecho con cuidado",
-    "how.intro": "La API de Accesibilidad de Android permite a una app observar lo que hay en pantalla con fines de asistencia. TvRecommendationBridge la usa de forma muy concreta — solo vigila los clics en las tarjetas de recomendación del launcher. Cualquier otro clic (iconos de apps, menús, lo que sea que no sea una recomendación) se deja completamente en paz.",
+    "how.intro": "La API de Accesibilidad de Android permite a una app observar lo que hay en pantalla con fines de asistencia. WatchBridge TV la usa de forma muy concreta — solo vigila los clics en las tarjetas de recomendación del launcher. Cualquier otro clic (iconos de apps, menús, lo que sea que no sea una recomendación) se deja completamente en paz.",
     "how.s1title": "Detecta el clic",
-    "how.s1body": "Seleccionas una recomendación. TvRecommendationBridge ve el contenido de ese clic — nada más de lo que hay en pantalla.",
+    "how.s1body": "Seleccionas una recomendación. WatchBridge TV ve el contenido de ese clic — nada más de lo que hay en pantalla.",
     "how.s2title": "Identifica el título",
     "how.s2body": "Se busca en <a href=\"https://www.themoviedb.org/\">TMDB</a> con una clave incluida — no hay que configurar nada. Los remakes y secuelas con el mismo nombre se desambiguan, no se adivinan.",
     "how.s3title": "Te la entrega",
@@ -539,7 +539,7 @@ adb install app-release.apk</code></pre>
     "firetv.eyebrow": "Modo Fire TV",
     "firetv.h2": "Fire OS bloquea esto para cualquier app instalada por fuera. Aun así, lo hicimos funcionar.",
     "firetv.p1": "Fire OS desactiva el método estándar de Accesibilidad de Android para cualquier app que no venga de la Amazon Appstore — el mismo método del que dependen todas las apps de este tipo. El truco habitual es rootear temporalmente el Fire TV Stick y sustituir el launcher de Fire OS por el de Google TV.",
-    "firetv.p2": "TvRecommendationBridge no te pide nada de eso. El modo Fire TV lee el título de la recomendación directamente de la pantalla usando reconocimiento de texto en el propio dispositivo — nada de lo grabado sale de él. Concede Acceso a datos de uso y un permiso de grabación de pantalla de un solo uso, y funciona desde la pantalla de inicio real de tu Fire TV, sin root ni cambiar de launcher.",
+    "firetv.p2": "WatchBridge TV no te pide nada de eso. El modo Fire TV lee el título de la recomendación directamente de la pantalla usando reconocimiento de texto en el propio dispositivo — nada de lo grabado sale de él. Concede Acceso a datos de uso y un permiso de grabación de pantalla de un solo uso, y funciona desde la pantalla de inicio real de tu Fire TV, sin root ni cambiar de launcher.",
     "firetv.b1": "Sin root, sin sustituir el launcher de Fire OS",
     "firetv.b2": "El reconocimiento de texto se ejecuta en el dispositivo — no se sube nada",
     "firetv.b3": "Con la verdad por delante: mantén el foco en una tarjeta un par de segundos y confirma con OK — no es instantáneo como en Google TV, pero funciona",
@@ -550,7 +550,7 @@ adb install app-release.apk</code></pre>
     "firetv.note": "Android mantiene visible un indicador de grabación mientras está activo — es un requisito del sistema, no algo que añadamos nosotros.",
     "match.eyebrow": "Coincidencias",
     "match.h2": "Pregunta una vez. Nunca más.",
-    "match.p1": "Cuando dos títulos comparten el nombre exacto pero no el año — un remake, por ejemplo — TvRecommendationBridge pregunta cuál querías en vez de adivinar.",
+    "match.p1": "Cuando dos títulos comparten el nombre exacto pero no el año — un remake, por ejemplo — WatchBridge TV pregunta cuál querías en vez de adivinar.",
     "match.p2": "Lo eliges una vez y se recuerda: el mismo título nunca vuelve a preguntar. Y cuando un candidato es claramente el más popular — un estreno reciente frente a algo oscuro de hace décadas — se salta la pregunta directamente.",
     "match.p3": "Desactívalo desde Ajustes → \"Preguntar cuando una coincidencia sea ambigua\" si prefieres que siempre elija automáticamente.",
     "match.demotitle": "\"Dune\" — dos coincidencias exactas",
